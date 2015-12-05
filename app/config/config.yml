@@ -85,3 +85,7 @@ fos_user:
     user_class: AppBundle\Entity\User
     group:
         group_class: AppBundle\Entity\Group
+
+scheb_two_factor:
+    google:
+        enabled: true
