@@ -32,7 +32,7 @@ class User extends BaseUser implements TwoFactorInterface
     protected $groups;
 
     /**
-     * @ORM\Column(type="googleAuthenticatorSecret", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $googleAuthenticatorSecret;
 

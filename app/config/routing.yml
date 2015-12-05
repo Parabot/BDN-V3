@@ -8,3 +8,8 @@ fos_user:
 fos_user_group:
     resource: "@FOSUserBundle/Resources/config/routing/group.xml"
     prefix: /group
+
+_security_check:
+    pattern:  /login_check
+_security_logout:
+    pattern:  /logout

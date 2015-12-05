@@ -89,3 +89,7 @@ fos_user:
 scheb_two_factor:
     google:
         enabled: true
+    trusted_computer:
+        enabled: true
+        cookie_name: two_factor_trusted_computer
+        cookie_lifetime: 5184000 # 60 days
