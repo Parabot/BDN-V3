@@ -7,12 +7,13 @@ namespace AppBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
  */
-class User extends BaseUser
+class User extends BaseUser implements TwoFactorInterface
 {
     /**
      * @ORM\Id
@@ -30,9 +31,33 @@ class User extends BaseUser
      */
     protected $groups;
 
+    /**
+     * @ORM\Column(type="googleAuthenticatorSecret", nullable=true)
+     */
+    private $googleAuthenticatorSecret;
+
     public function __construct()
     {
         parent::__construct();
         // your own logic
+    }
+
+    /**
+     * Return the Google Authenticator secret
+     * When an empty string or null is returned, the Google authentication is disabled.
+     *
+     * @return string|null
+     */
+    public function getGoogleAuthenticatorSecret() {
+        return $this->googleAuthenticatorSecret;
+    }
+
+    /**
+     * Set the Google Authenticator secret
+     *
+     * @param integer $googleAuthenticatorSecret
+     */
+    public function setGoogleAuthenticatorSecret($googleAuthenticatorSecret) {
+        $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
     }
 }
