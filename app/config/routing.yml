@@ -10,6 +10,8 @@ fos_user_group:
     prefix: /group
 
 _security_check:
-    pattern:  /login_check
+    path:  /login_check
 _security_logout:
-    pattern:  /logout
+    path:  /logout
+_security_login:
+    path:  /login
