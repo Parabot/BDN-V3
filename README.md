@@ -1,4 +1,4 @@
 BDN
 ===
 
-A Symfony project created on October 27, 2015, 7:35 am.
+The new version (V3) of the Parabot BDN
