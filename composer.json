@@ -20,7 +20,8 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "scheb/two-factor-bundle": "~1.5",
-        "whatsapp/chat-api": "v2.5.5.4"
+        "whatsapp/chat-api": "v2.5.5.4",
+        "hwi/oauth-bundle": "0.4.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
