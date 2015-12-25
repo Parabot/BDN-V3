@@ -22,7 +22,8 @@
         "scheb/two-factor-bundle": "~1.5",
         "whatsapp/chat-api": "v2.5.5.4",
         "hwi/oauth-bundle": "0.4.*",
-        "evolution7/bugsnag-bundle": "~1.4"
+        "evolution7/bugsnag-bundle": "~1.4",
+        "friendsofsymfony/rest-bundle": "~1.7"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
