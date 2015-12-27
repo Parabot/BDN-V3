@@ -1,0 +1,7 @@
+user_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: UserBundle:Default:index }
+
+get_csrf:
+    path:     /session/csrf
+    defaults: { _controller: UserBundle:Default:csrf }
