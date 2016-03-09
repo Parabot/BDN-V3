@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Entity\Scripts;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity
  */
-class Git {
+class Git
+{
     /**
      * @var integer
      *
@@ -32,17 +34,9 @@ class Git {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
-    }
-
-    /**
-     * Get url
-     *
-     * @return string
-     */
-    public function getUrl() {
-        return $this->url;
     }
 
     /**
@@ -52,9 +46,21 @@ class Git {
      *
      * @return Git
      */
-    public function setUrl( $url ) {
+    public function setUrl($url)
+    {
         $this->url = $url;
 
         return $this;
     }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }
+

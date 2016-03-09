@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Dependencies\Client;
+use AppBundle\Entity\Dependencies\Script;
 use AppBundle\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -9,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class DefaultController extends Controller
 {
@@ -17,10 +20,47 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+
+        $client = new Client();
+        $client->setVersion(1.0);
+        $client->setCommit("123SE2");
+        $client->setName("Parabot");
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($client);
+        $em->flush();
+
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
         ));
+    }
+
+    /**
+     * @Route("/api/client/build", name="nightly_build")
+     * @Method({"POST"})
+     */
+    public function createNightlyBuild(Request $request){
+        $content = $this->get("request")->getContent();
+        if (!empty($content)) {
+            $params = json_decode($content, true); // 2nd param to get as array
+
+            $client = new Client();
+            $client->setVersion(2.4);
+            $client->setCommit($params['after']);
+            $client->setName("Parabot Client");
+
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($client);
+            $em->flush();
+
+            return new JsonResponse(array('result' => 'ok'));
+        }
+
+        return new JsonResponse(array('result' => 'error'));
+
     }
 
     /**
