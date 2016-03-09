@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="AppBundle\Entity\PBRepository")
  */
-class Client extends ParabotDependency {
+class ParabotClient extends ParabotDependency {
 
     /**
      * @var string

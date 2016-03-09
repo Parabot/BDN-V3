@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Dependencies\Client;
+use AppBundle\Entity\Dependencies\ParabotClient;
 use AppBundle\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,7 +33,7 @@ class DefaultController extends Controller
         if (!empty($content)) {
             $params = json_decode($content, true);
 
-            $client = new \AppBundle\Entity\Dependencies\Client();
+            $client = new ParabotClient();
             $client->setVersion(2.4);
             $client->setCommit($params['after']);
             $client->setName("Parabot Client");
