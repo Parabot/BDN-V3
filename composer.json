@@ -51,7 +51,7 @@
     },
     "extra": {
         "symfony-app-dir": "app",
-        "symfony-web-dir": "web",
+        "symfony-web-dir": "../public_html/web",
         "symfony-assets-install": "relative",
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
