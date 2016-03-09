@@ -33,7 +33,7 @@ class DefaultController extends Controller
         if (!empty($content)) {
             $params = json_decode($content, true);
 
-            $client = new Client();
+            $client = new \AppBundle\Entity\Dependencies\Client();
             $client->setVersion(2.4);
             $client->setCommit($params['after']);
             $client->setName("Parabot Client");
