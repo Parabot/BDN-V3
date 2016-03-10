@@ -12,12 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\MappedSuperclass
  */
 abstract class ParabotDependency {
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    public $path;
+
     /**
      * @var integer
      *
@@ -48,6 +43,13 @@ abstract class ParabotDependency {
      * @ORM\Column(name="version", type="float")
      */
     private $version;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $path;
 
     /**
      * Get id
@@ -135,7 +137,7 @@ abstract class ParabotDependency {
     protected function getUploadDir() {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/documents';
+        return 'uploads/version_control';
     }
 
     public function getWebPath() {

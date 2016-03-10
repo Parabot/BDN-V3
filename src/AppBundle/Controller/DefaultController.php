@@ -33,17 +33,17 @@ class DefaultController extends Controller
         if (!empty($content)) {
             $params = json_decode($content, true);
 
-            $client = new ParabotClient();
-            $client->setVersion(2.4);
-            $client->setCommit($params['after']);
-            $client->setName("Parabot Client");
+            if ($content['status_message'] == 'Passed') {
+                $client = new ParabotClient();
+                $client->setVersion(2.4);
+                $client->setCommit($params[ 'commit' ]);
+                $client->setName($params[ 'repository' ][ 0 ][ 'name' ]);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($client);
+                $em->flush();
 
-            $em = $this->getDoctrine()->getManager();
-
-            $em->persist($client);
-            $em->flush();
-
-            return new JsonResponse(array('result' => 'ok'));
+                return new JsonResponse([ 'result' => 'ok' ]);
+            }
         }
 
         return new JsonResponse(array('result' => 'error'));
