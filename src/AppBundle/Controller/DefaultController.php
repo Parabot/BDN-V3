@@ -31,7 +31,6 @@ class DefaultController extends Controller
     public function createNightlyBuild(Request $request){
         $content = $this->get("request")->getContent();
         if (!empty($content)) {
-            var_dump($content);
             $params = json_decode($content, true);
 
             $client = new ParabotClient();
