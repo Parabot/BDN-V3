@@ -33,7 +33,7 @@ class DefaultController extends Controller
         if (!empty($content)) {
             $params = json_decode($content, true);
 
-            if ($content['status_message'] == 'Passed') {
+            if ($params['status_message'] == 'Passed') {
                 $client = new ParabotClient();
                 $client->setVersion(2.4);
                 $client->setCommit($params[ 'commit' ]);
