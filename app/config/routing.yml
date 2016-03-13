@@ -7,6 +7,7 @@ fos_user:
 
 user:
     resource: "../../src/Parabot/BDN/UserBundle/Resources/config/routing.yml"
+    prefix: /users
 
 fos_user_group:
     resource: "@FOSUserBundle/Resources/config/routing/group.xml"
