@@ -1,17 +1,18 @@
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+    prefix: /api
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
 user:
     resource: "../../src/Parabot/BDN/UserBundle/Resources/config/routing.yml"
-    prefix: /users
+    prefix: /api/users
 
 fos_user_group:
     resource: "@FOSUserBundle/Resources/config/routing/group.xml"
-    prefix: /group
+    prefix: /api/group
 
 _security_check:
     path:  /login_check
