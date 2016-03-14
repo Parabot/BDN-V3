@@ -59,3 +59,5 @@ security:
         - { path: ^/api/users/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/scripts/admin/, role: ROLE_SCRIPTER }
+        - { path: ^/scripts/, role: ROLE_USER }
