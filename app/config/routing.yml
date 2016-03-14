@@ -3,12 +3,12 @@ app:
     type:     annotation
     prefix: /api
 
-user:
-    resource: "../../src/Parabot/BDN/UserBundle/Resources/config/routing.yml"
-    prefix: /api/users
-
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+    prefix: /api/users
+
+user:
+    resource: "@UserBundle/Resources/config/routing.yml"
     prefix: /api/users
 
 fos_user_group:
@@ -24,3 +24,19 @@ fos_oauth_server_token:
 
 fos_oauth_server_authorize:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
+
+fos_user_security_check:
+    pattern: /api/users/login_check
+    defaults: { _controller: FOSUserBundle:Security:check }
+
+fos_user_security_login:
+    pattern: /api/users/login
+    defaults: { _controller: FOSUserBundle:Security:login }
+    requirements:
+        _method: GET|POST
+
+fos_user_resetting_reset:
+    pattern: /api/users/logout
+    defaults: { _controller: FOSUserBundle:Security:logout }
+    requirements:
+        _method: GET|POST
