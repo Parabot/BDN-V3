@@ -18,10 +18,6 @@ class RestController extends FOSRestController{
      * @Route("/account/oauth/v2/token", name="create_token")
      */
     public function createTokenAction(Request $request){
-        if ($this->getUser() == null){
-            return $this->redirect("/api/users/login");
-        }
-
         /**
          * @var $clientRepository ClientRepository
          * @var $client Client
