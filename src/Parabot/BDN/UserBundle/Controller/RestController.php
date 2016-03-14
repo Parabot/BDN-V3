@@ -6,6 +6,7 @@ namespace Parabot\BDN\UserBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use Parabot\BDN\UserBundle\Entity\OAuth\Client;
+use Parabot\BDN\UserBundle\Repository\ClientRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,19 +22,17 @@ class RestController extends FOSRestController{
             return $this->redirect("/api/users/login");
         }
 
+        /**
+         * @var $clientRepository ClientRepository
+         * @var $client Client
+         */
         $clientManager = $this->get('fos_oauth_server.client_manager.default');
         $clientRepository = $this->getDoctrine()->getRepository('UserBundle:OAuth\\Client');
 
         $redirectUris = array('http://v3.bdn.parabot.org');
 
-        /**
-         * @var $clientInstance Client
-         * @var $client Client
-         */
-        foreach($clientRepository->findAll() as $clientInstance){
-            if (count(array_intersect($clientInstance->getRedirectUris(), $redirectUris)) > 0){
-                return new JsonResponse(array('error' => 'Client already exists with one of your redirects', 400));
-            }
+        if ($clientRepository->redirectUrisAvailable($redirectUris)) {
+            return new JsonResponse([ 'error' => 'Client already exists with one of your redirects', 400 ]);
         }
 
         $client = $clientManager->createClient();

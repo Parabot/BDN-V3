@@ -9,7 +9,7 @@ use Parabot\BDN\UserBundle\Entity\OAuth;
  * Client
  *
  * @ORM\Table("oauth2_clients")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Parabot\BDN\UserBundle\Repository")
  */
 class Client extends BaseClient {
 
