@@ -21,6 +21,9 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+            logout:       true
+            anonymous:    true
+
         main:
             pattern: ^/
             form_login:
@@ -31,11 +34,25 @@ security:
                 always_use_default_target_path: true
                 failure_path:   /api/users/login
 
-            logout:       true
-            anonymous:    true
+        oauth_token:                                   # Everyone can access the access token URL.
+            pattern: ^/api/users/login/oauth/v2/token
+            security: false
+
+            anonymous: true
+            logout: true
+
+        login:
+            pattern: ^/api/users/login
+            security: false
+
+        api:
+            pattern: ^/api                             # All URLs are protected
+            fos_oauth: true                            # OAuth2 protected resource
+            stateless: true                            # Do no set session cookies
+            anonymous: false                           # Anonymous access is not allowed
 
     access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }

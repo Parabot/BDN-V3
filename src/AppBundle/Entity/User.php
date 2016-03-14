@@ -40,6 +40,13 @@ class User extends BaseUser implements TwoFactorInterface {
     }
 
     /**
+     * @return integer
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
      * Return the Google Authenticator secret
      * When an empty string or null is returned, the Google authentication is disabled.
      *

@@ -94,3 +94,18 @@ scheb_two_factor:
         enabled: true
         cookie_name: two_factor_trusted_computer
         cookie_lifetime: 5184000 # 60 days
+
+fos_rest:
+    routing_loader:
+        default_format: json                            # All responses should be JSON formated
+        include_format: false                           # We do not include format in request, so that all responses
+
+fos_oauth_server:
+    db_driver:           orm
+    client_class:        Parabot\BDN\UserBundle\Entity\OAuth\Client
+    access_token_class:  Parabot\BDN\UserBundle\Entity\OAuth\AccessToken
+    refresh_token_class: Parabot\BDN\UserBundle\Entity\OAuth\RefreshToken
+    auth_code_class:     Parabot\BDN\UserBundle\Entity\OAuth\AuthCode
+    service:
+        user_provider: fos_user.user_manager             # This property will be used when valid credentials are given to load the user upon access token creation
+

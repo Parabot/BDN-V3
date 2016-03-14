@@ -1,7 +1,19 @@
-user_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: UserBundle:Default:index }
+user:
+    resource: "@UserBundle/Controller/"
+    type:     annotation
 
-get_csrf:
-    path:     /session/csrf
-    defaults: { _controller: UserBundle:Default:csrf }
+fos_user_security_check:
+    pattern: /api/users/login_check
+    defaults: { _controller: FOSUserBundle:Security:check }
+
+fos_user_security_login:
+    pattern: /api/users/login
+    defaults: { _controller: FOSUserBundle:Security:login }
+    requirements:
+        _method: GET|POST
+
+fos_user_resetting_reset:
+    pattern: /api/users/logout
+    defaults: { _controller: FOSUserBundle:Security:logout }
+    requirements:
+        _method: GET|POST

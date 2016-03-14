@@ -23,7 +23,10 @@
         "whatsapp/chat-api": "v2.5.5.4",
         "hwi/oauth-bundle": "0.4.*",
         "evolution7/bugsnag-bundle": "~1.4",
-        "friendsofsymfony/rest-bundle": "~1.7"
+        "friendsofsymfony/rest-bundle": "~1.7",
+        "jms/serializer-bundle": "~1.1",
+        "nelmio/api-doc-bundle": "~2.11",
+        "friendsofsymfony/oauth-server-bundle": "~1.5"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
