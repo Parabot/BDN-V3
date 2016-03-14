@@ -31,12 +31,12 @@ class RestController extends FOSRestController{
 
         $redirectUris = array('http://v3.bdn.parabot.org');
 
-        if ($clientRepository->redirectUrisAvailable($redirectUris)) {
+        if ($clientRepository->redirectUrisAvailable($redirectUris) == false) {
             return new JsonResponse([ 'error' => 'Client already exists with one of your redirects', 400 ]);
         }
 
         $client = $clientManager->createClient();
-        $client->setRedirectUris(array());
+        $client->setRedirectUris(array($redirectUris));
         $client->setAllowedGrantTypes(array('token', 'authorization_code'));
         $clientManager->updateClient($client);
 
