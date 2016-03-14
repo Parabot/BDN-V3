@@ -36,7 +36,7 @@ class RestController extends FOSRestController{
         }
 
         $client = $clientManager->createClient();
-        $client->setRedirectUris(array($redirectUris));
+        $client->setRedirectUris($redirectUris);
         $client->setAllowedGrantTypes(array('token', 'authorization_code'));
         $clientManager->updateClient($client);
 
