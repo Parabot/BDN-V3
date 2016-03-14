@@ -27,4 +27,3 @@ fos_oauth_server:
     auth_code_class:     Parabot\BDN\UserBundle\Entity\OAuth\AuthCode
     service:
         user_provider: fos_user.user_manager             # This property will be used when valid credentials are given to load the user upon access token creation
-
