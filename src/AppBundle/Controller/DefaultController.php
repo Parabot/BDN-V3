@@ -76,4 +76,8 @@ class DefaultController extends Controller
 
         return new JsonResponse(array($bool));
     }
+
+    public function homeAction(){
+        return new JsonResponse(array("result" => "ok"));
+    }
 }
