@@ -1,0 +1,12 @@
+sylius_sequence:
+    generators:
+        BDNStoreBundle\Entity\Order: sylius.sequence.sequential_number_generator
+
+sylius_order:
+    resources:
+        order:
+            classes:
+                model: Parabot\BDN\StoreBundle\Entity\Order
+        order_item:
+            classes:
+                model: Parabot\BDN\StoreBundle\Entity\OrderItem

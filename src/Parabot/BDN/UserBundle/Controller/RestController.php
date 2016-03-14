@@ -5,6 +5,7 @@
 namespace Parabot\BDN\UserBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
+use Parabot\BDN\UserBundle\Entity\OAuth\Client;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +22,10 @@ class RestController extends FOSRestController{
         }
 
         $clientManager = $this->get('fos_oauth_server.client_manager.default');
+
+        /**
+         * @var $client Client
+         */
         $client = $clientManager->createClient();
         $client->setRedirectUris(array('http://v3.bdn.parabot.org'));
         $client->setAllowedGrantTypes(array('token', 'authorization_code'));

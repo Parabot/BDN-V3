@@ -10,7 +10,7 @@
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
-        "doctrine/orm": "^2.4.8",
+        "doctrine/orm": "^2.4.8,<2.5",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",
@@ -26,7 +26,8 @@
         "friendsofsymfony/rest-bundle": "~1.7",
         "jms/serializer-bundle": "~1.1",
         "nelmio/api-doc-bundle": "~2.11",
-        "friendsofsymfony/oauth-server-bundle": "~1.5"
+        "friendsofsymfony/oauth-server-bundle": "~1.5",
+        "sylius/cart-bundle": "0.17.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
