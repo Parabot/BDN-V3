@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 class RestController extends FOSRestController{
 
     /**
-     * @Route("/login/oauth/v2/token", name="create_token")
+     * @Route("/account/oauth/v2/token", name="create_token")
      */
     public function createTokenAction(Request $request){
         if ($this->getUser() == null){
@@ -22,19 +22,30 @@ class RestController extends FOSRestController{
         }
 
         $clientManager = $this->get('fos_oauth_server.client_manager.default');
+        $clientRepository = $this->getDoctrine()->getRepository('UserBundle:OAuth\\Client');
+
+        $redirectUris = array('http://v3.bdn.parabot.org');
 
         /**
+         * @var $clientInstance Client
          * @var $client Client
          */
+        foreach($clientRepository->findAll() as $clientInstance){
+            if (count(array_intersect($clientInstance->getRedirectUris(), $redirectUris)) > 0){
+                return new JsonResponse(array('error' => 'Client already exists with one of your redirects', 400));
+            }
+        }
+
         $client = $clientManager->createClient();
-        $client->setRedirectUris(array('http://v3.bdn.parabot.org'));
+        $client->setRedirectUris(array());
         $client->setAllowedGrantTypes(array('token', 'authorization_code'));
         $clientManager->updateClient($client);
 
-        return $this->redirect($this->generateUrl('fos_oauth_server_authorize', array(
-            'client_id'     => $client->getPublicId(),
-            'redirect_uri'  => 'http://v3.bdn.parabot.org',
-            'response_type' => 'code'
-        )));
+        return new JsonResponse(
+            array(
+                'client_id' => $client->getPublicId(),
+                'secret_id' => $client->getSecret(),
+            )
+        );
     }
 }

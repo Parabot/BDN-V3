@@ -42,7 +42,7 @@ security:
             logout: true
 
         oauth_token:                                   # Everyone can access the access token URL.
-            pattern: ^/api/users/login/oauth/v2/token
+            pattern: ^/oauth/v2/token
             security: false
 
             anonymous: true
