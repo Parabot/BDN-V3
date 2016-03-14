@@ -29,6 +29,9 @@ class RestController extends FOSRestController{
         $clientManager = $this->get('fos_oauth_server.client_manager.default');
         $clientRepository = $this->getDoctrine()->getRepository('UserBundle:OAuth\\Client');
 
+        /*
+         * TODO: Make this a POST parameter
+         */
         $redirectUris = array('http://v3.bdn.parabot.org');
 
         if ($clientRepository->redirectUrisAvailable($redirectUris) == false) {
