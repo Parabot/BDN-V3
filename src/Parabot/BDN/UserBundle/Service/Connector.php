@@ -4,12 +4,12 @@
  */
 namespace Parabot\BDN\UserBundle\Service;
 
+use AppBundle\Entity\User;
 use Lsw\ApiCallerBundle\Call\HttpGetJson;
 use Lsw\ApiCallerBundle\Caller\ApiCallerInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Connector extends ContainerAware {
-
 
     private $url;
     private $key;
@@ -17,6 +17,14 @@ class Connector extends ContainerAware {
     public function setInformation() {
         $this->url = $this->container->getParameter('community.url');
         $this->key = $this->container->getParameter('community.key');
+    }
+
+    public function getCommunityUser($username, $password){
+        if ($this->correctLogin($username, $password)){
+            $user = new User();
+
+        }
+        return null;
     }
 
     public function correctLogin($username, $password){
@@ -80,8 +88,6 @@ class Connector extends ContainerAware {
     }
 
     private function getPasswordHashed($password, $salt){
-        return crypt($password, '$2a$13$' . $salt);
+        return crypt($password, '$2a$13$' . $salt); // Simply the hashing method of IPB 4
     }
-
-//    public function isCorrectUser($username, $password)
 }
