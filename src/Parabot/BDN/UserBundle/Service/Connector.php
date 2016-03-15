@@ -2,7 +2,7 @@
 /**
  * @author JKetelaar
  */
-namespace Parabot\BDN\CommunityBundle\Service;
+namespace Parabot\BDN\UserBundle\Service;
 
 use Lsw\ApiCallerBundle\Call\HttpGetJson;
 use Lsw\ApiCallerBundle\Caller\ApiCallerInterface;
@@ -19,12 +19,28 @@ class Connector extends ContainerAware {
         $this->key = $this->container->getParameter('community.key');
     }
 
-    public function performLogin($username, $password){
-        return $this->performDo(
-            $this->createPerformArray('login', 1, $username, $password, md5($this->key . $username))
-        );
+    public function correctLogin($username, $password){
+        $saltObject = $this->performDo($this->createPerformArray('fetchSalt', 1, $username, null, md5($this->key . $username)));
+
+        if (isset($saltObject->pass_salt)) {
+            return $this->performDo(
+                $this->createPerformArray(
+                    'login',
+                    1,
+                    $username,
+                    $this->getPasswordHashed($password, $saltObject->pass_salt),
+                    md5($this->key.$username)
+                )
+            )->connect_status === 'SUCCESS';
+        }
+        return false;
     }
 
+    /**
+     * @param $fields
+     *
+     * @return \stdClass
+     */
     private function performDo($fields){
         /**
          * @var $caller ApiCallerInterface
@@ -53,8 +69,8 @@ class Connector extends ContainerAware {
         if($id != null) {
             $array[ 'id' ] = $id;
         }
-        if($password != null) {
-            $array[ 'password' ] = $this->getPasswordHashed($password);
+        if ($password != null){
+            $array['password'] = $password;
         }
         if($key != null) {
             $array[ 'key' ] = $key;
@@ -63,8 +79,8 @@ class Connector extends ContainerAware {
         return $array;
     }
 
-    private function getPasswordHashed($password){
-        return md5($password);
+    private function getPasswordHashed($password, $salt){
+        return crypt($password, '$2a$13$' . $salt);
     }
 
 //    public function isCorrectUser($username, $password)

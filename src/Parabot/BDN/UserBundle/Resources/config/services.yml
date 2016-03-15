@@ -1,4 +1,6 @@
 services:
-#    user.example:
-#        class: Parabot\BDN\UserBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+    community.connector:
+        class:  Parabot\BDN\CommunityBundle\Service\Connector
+        calls:
+          - [setContainer, [@service_container]]
+          - [setInformation]
