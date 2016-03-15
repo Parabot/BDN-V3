@@ -5,8 +5,10 @@
 namespace Parabot\BDN\UserBundle\Service;
 
 use AppBundle\Entity\User;
+use FOS\UserBundle\Util\UserManipulator;
 use Lsw\ApiCallerBundle\Call\HttpGetJson;
 use Lsw\ApiCallerBundle\Caller\ApiCallerInterface;
+use Sensio\Bundle\GeneratorBundle\Manipulator\Manipulator;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Connector extends ContainerAware {
@@ -21,8 +23,18 @@ class Connector extends ContainerAware {
 
     public function getCommunityUser($username, $password){
         if ($this->correctLogin($username, $password)){
-            $user = new User();
 
+            $user = new User();
+            $user->setUsername($username);
+            $user->setPassword($password);
+
+            /**
+             * @var $manipulator UserManipulator
+             */
+            $manipulator = $this->container->get('fos_user.util.user_manipulator');
+            $manipulator->create($username, $password, 'my@mail.com', true, false);
+
+            return $user;
         }
         return null;
     }
