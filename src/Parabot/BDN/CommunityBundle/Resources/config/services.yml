@@ -1,0 +1,6 @@
+services:
+    community.connector:
+        class:  Parabot\BDN\CommunityBundle\Service\Connector
+        calls:
+          - [setContainer, [@service_container]]
+          - [setInformation]
