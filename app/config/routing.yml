@@ -1,10 +1,10 @@
 bdn_bot:
     resource: "@BDNBotBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /api/bot
 
 bdn_community:
-    resource: "@BDNCommunityBundle/Controller/"
+    resource: "@BDNUserBundle/Controller/"
     type:     annotation
     prefix:   /
 
@@ -27,7 +27,7 @@ fos_user:
     prefix: /api/users
 
 user:
-    resource: "@UserBundle/Resources/config/routing.yml"
+    resource: "@BDNUserBundle/Resources/config/routing.yml"
     prefix: /api/users
 
 fos_user_group:
