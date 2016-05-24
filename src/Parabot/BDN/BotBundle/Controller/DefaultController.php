@@ -37,7 +37,8 @@ class DefaultController extends Controller {
         /** @var ClientRepository $repository */
         $repository = $manager->getRepository('BDNBotBundle:Types\Client');
 
-        var_dump($repository->findLatestByStability($request->query->get('nightly') === 'false'));
+        $c = $repository->findLatestByStability($request->query->get('nightly') === 'false');
+        var_dump($c->getPath());
 
         return [ 'name' => $type ];
     }
