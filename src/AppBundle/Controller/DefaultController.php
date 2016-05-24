@@ -2,6 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use AppBundle\Entity\Dependencies\ParabotClient;
 use AppBundle\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
