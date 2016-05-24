@@ -35,9 +35,10 @@ class AppKernel extends Kernel
 
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Parabot\BDN\StoreBundle\BDNStoreBundle(),
-            new Parabot\BDN\UserBundle\UserBundle(),
+            new Parabot\BDN\UserBundle\BDNUserBundle(),
 
             new Lsw\ApiCallerBundle\LswApiCallerBundle(),
+            new Parabot\BDN\BotBundle\BDNBotBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -1,3 +1,8 @@
+bdn_bot:
+    resource: "@BDNBotBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 bdn_community:
     resource: "@BDNCommunityBundle/Controller/"
     type:     annotation
