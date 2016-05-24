@@ -5,35 +5,34 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Dependencies\ParabotClient;
 use AppBundle\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 
-class DefaultController extends Controller
-{
+class DefaultController extends Controller {
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request)
-    {
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
-        ));
+    public function indexAction(Request $request) {
+        return $this->render(
+            'default/index.html.twig',
+            [
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
+            ]
+        );
     }
 
     /**
      * @Route("/api/client/build", name="nightly_build")
      * @Method({"POST"})
      */
-    public function createNightlyBuild(Request $request){
+    public function createNightlyBuild(Request $request) {
         $content = $this->get("request")->getContent();
-        if (!empty($content)) {
+        if( ! empty($content)) {
             $params = json_decode($content, true);
 
-            if ($params['status_message'] == 'Passed') {
+            if($params[ 'status_message' ] == 'Passed') {
                 $client = new ParabotClient();
                 $client->setVersion(2.4);
                 $client->setCommit($params[ 'commit' ]);
@@ -46,14 +45,14 @@ class DefaultController extends Controller
             }
         }
 
-        return new JsonResponse(array('result' => 'error'));
+        return new JsonResponse([ 'result' => 'error' ]);
 
     }
 
     /**
      * @Route("/api/get", name="get_api")
      */
-    public function getAPIAction(Request $request){
+    public function getAPIAction(Request $request) {
         $username = $request->query->get('username');
         $password = $request->query->get('password');
 
@@ -66,18 +65,18 @@ class DefaultController extends Controller
          * @var $factory EncoderFactory
          */
         $user_manager = $this->get('fos_user.user_manager');
-        $factory = $this->get('security.encoder_factory');
+        $factory      = $this->get('security.encoder_factory');
 
         $user = $user_manager->loadUserByUsername($username);
 
         $encoder = $factory->getEncoder($user);
 
-        $bool = ($encoder->isPasswordValid($user->getPassword(),$password,$user->getSalt())) ? "true" : "false";
+        $bool = ($encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) ? "true" : "false";
 
-        return new JsonResponse(array($bool));
+        return new JsonResponse([ $bool ]);
     }
 
-    public function homeAction(){
-        return new JsonResponse(array("result" => "ok"));
+    public function homeAction() {
+        return new JsonResponse([ "result" => "ok" ]);
     }
 }
