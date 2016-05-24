@@ -6,6 +6,7 @@
 namespace Parabot\BDN\BotBundle\Entity\Types;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -34,7 +35,15 @@ abstract class Type {
      * @ORM\Column(name="release_date", type="datetime")
      */
     private $releaseDate;
-    
+
+    /**
+     * Type constructor.
+     */
+    public function __construct() {
+        $this->releaseDate = new \DateTime();
+    }
+
+
     /**
      * Get id
      *
