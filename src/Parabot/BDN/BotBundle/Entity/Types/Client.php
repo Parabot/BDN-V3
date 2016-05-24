@@ -20,6 +20,13 @@ class Client extends Type {
     private $stable;
 
     /**
+     * Client constructor.
+     */
+    public function __construct() {
+        parent::__construct("Client");
+    }
+
+    /**
      * Get stability
      * 
      * @return boolean
