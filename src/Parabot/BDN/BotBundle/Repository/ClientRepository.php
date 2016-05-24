@@ -19,6 +19,11 @@ class ClientRepository extends EntityRepository {
         return $this->findBy([ 'stable' => $stable ]);
     }
 
+    /**
+     * @param boolean $stable
+     *
+     * @return null|Client
+     */
     public function findLatestByStability($stable) {
         $clients = $this->findBy([ 'stable' => $stable ], [ 'releaseDate' => 'DESC' ]);
         if($clients != null) {
