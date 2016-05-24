@@ -8,31 +8,37 @@ use Parabot\BDN\BotBundle\Repository\ClientRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\DateTime;
 
-class DefaultController extends Controller
-{
+class DefaultController extends Controller {
     /**
      * @Route("/download/{type}")
      * @Template()
+     *
+     * @param Request $request
+     * @param string  $type
+     *
+     * @return array
      */
-    public function indexAction($type)
-    {
-        $client = new Client();
-        $client->setVersion("2.5.1-RC-15816222");
-        $client->setStable(false);
-        $client->setReleaseDate(new \DateTime());
-
+    public function indexAction(Request $request, $type) {
         $manager = $this->getDoctrine()->getManager();
-        $manager->persist($client);
-        $manager->flush();
 
-        /**
-         * @var ClientRepository $repository
-         */
+        if($request->query->get('create') == 'true') {
+            $client = new Client();
+            $client->setVersion("2.5.1-RC-15816222");
+            $client->setStable(false);
+            $client->setReleaseDate(new \DateTime());
+
+            $manager->persist($client);
+            $manager->flush();
+        }
+
+        /** @var ClientRepository $repository */
         $repository = $manager->getRepository('BDNBotBundle:Types\Client');
-        var_dump($repository->findAllByStability(false));
 
-        return array('name' => $type);
+        var_dump($repository->findLatestByStability($request->query->get('nightly') === 'false'));
+
+        return [ 'name' => $type ];
     }
 }
