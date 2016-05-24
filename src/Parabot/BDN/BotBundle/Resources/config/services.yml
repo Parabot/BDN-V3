@@ -1,0 +1,7 @@
+services:
+    bot.type_listener:
+        class: Parabot\BDN\BotBundle\Listener\TypeListener
+        arguments:
+            - @kernel
+        tags:
+            - { name: doctrine.event_listener, event: postLoad }
