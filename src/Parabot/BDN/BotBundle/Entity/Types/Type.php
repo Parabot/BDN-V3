@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
  * @ORM\MappedSuperclass
  */
 abstract class Type {
-    
+
     /**
      * @var integer
      *
@@ -21,6 +21,13 @@ abstract class Type {
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255)
+     */
+    private $type;
 
     /**
      * @var string
@@ -37,12 +44,19 @@ abstract class Type {
     private $releaseDate;
 
     /**
-     * Type constructor.
+     * @var string
      */
-    public function __construct() {
-        $this->releaseDate = new \DateTime();
-    }
+    private $path;
 
+    /**
+     * Type constructor.
+     *
+     * @param string $type
+     */
+    public function __construct($type) {
+        $this->releaseDate = new \DateTime();
+        $this->type        = $type;
+    }
 
     /**
      * Get id
@@ -51,6 +65,23 @@ abstract class Type {
      */
     public function getId() {
         return $this->id;
+    }
+
+    public function getType() {
+        return $this->type;
+    }
+
+    public function setType($type) {
+        $this->type = $type;
+    }
+
+    /**
+     * Get string
+     *
+     * @return string
+     */
+    public function getVersion() {
+        return $this->version;
     }
 
     /**
@@ -64,15 +95,6 @@ abstract class Type {
         $this->version = $string;
 
         return $this;
-    }
-
-    /**
-     * Get string
-     *
-     * @return string
-     */
-    public function getVersion() {
-        return $this->version;
     }
 
     /**
@@ -96,4 +118,24 @@ abstract class Type {
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getPath() {
+        return $this->path;
+    }
+
+    /**
+     * @param string $path Directory locating to the app folder
+     */
+    public function setPath($path) {
+        $this->path = $path . '/data/' . $this->type . '/';
+
+        if( ! file_exists($this->path)) {
+            mkdir($this->path, 0755, true);
+        }
+    }
+
+
 }
