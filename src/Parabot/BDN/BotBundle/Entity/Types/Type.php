@@ -5,7 +5,21 @@
 
 namespace Parabot\BDN\BotBundle\Entity\Types;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\MappedSuperclass
+ */
 abstract class Type {
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
 
     /**
      * @var string
@@ -20,6 +34,15 @@ abstract class Type {
      * @ORM\Column(name="release_date", type="datetime")
      */
     private $releaseDate;
+    
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId() {
+        return $this->id;
+    }
 
     /**
      * Set string

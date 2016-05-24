@@ -8,18 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Client
  *
  * @ORM\Table(name="type_client")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Parabot\BDN\BotBundle\Repository\ClientRepository")
  */
 class Client extends Type {
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
 
     /**
      * @ORM\Column(name="stable", type="boolean")
@@ -27,15 +18,6 @@ class Client extends Type {
      * @var boolean
      */
     private $stable;
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId() {
-        return $this->id;
-    }
 
     /**
      * Get stability
