@@ -36,7 +36,7 @@ class AppKernel extends Kernel
 
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Parabot\BDN\StoreBundle\BDNStoreBundle(),
-            new Parabot\BDN\CommunityBundle\BDNCommunityBundle(),
+            new Parabot\BDN\UserBundle\UserBundle(),
 
             new Lsw\ApiCallerBundle\LswApiCallerBundle(),
         );
