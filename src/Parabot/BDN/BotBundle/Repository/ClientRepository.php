@@ -8,7 +8,7 @@ namespace Parabot\BDN\BotBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Parabot\BDN\BotBundle\Entity\Types\Client;
 
-class ClientRepository extends EntityRepository {
+class ClientRepository extends EntityRepository implements TypeRepository {
 
     /**
      * @param boolean $stable
@@ -20,12 +20,18 @@ class ClientRepository extends EntityRepository {
     }
 
     /**
-     * @param boolean $stable
+     * @param boolean     $stable
+     *
+     * @param null|string $branch
      *
      * @return null|Client
      */
-    public function findLatestByStability($stable) {
-        $clients = $this->findBy([ 'stable' => $stable ], [ 'releaseDate' => 'DESC' ]);
+    public function findLatestByStability($stable, $branch = null) {
+        $findBy = [ 'stable' => $stable ];
+        if($branch != null) {
+            $findBy[ 'branch' ] = $branch;
+        }
+        $clients = $this->findBy($findBy, [ 'releaseDate' => 'DESC' ]);
         if($clients != null) {
             return $clients[ 0 ];
         }
