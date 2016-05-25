@@ -39,6 +39,8 @@ class AppKernel extends Kernel
 
             new Lsw\ApiCallerBundle\LswApiCallerBundle(),
             new Parabot\BDN\BotBundle\BDNBotBundle(),
+
+            new Seferov\AwsBundle\SeferovAwsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
