@@ -1,0 +1,9 @@
+seferov_aws:
+    key: "%aws_key%"
+    secret: "%aws_secret%"
+    region: us-west-1
+    services:
+        s3:
+            key: "%aws_key%"
+            secret: "%aws_secret%"
+            region: us-west-1
