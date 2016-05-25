@@ -23,7 +23,7 @@ class Client extends Type {
      * Client constructor.
      */
     public function __construct() {
-        parent::__construct("Client");
+        parent::__construct();
     }
 
     /**
@@ -40,5 +40,9 @@ class Client extends Type {
      */
     public function setStable($stable) {
         $this->stable = $stable;
+    }
+
+    public function getType() {
+        return 'Client';
     }
 }

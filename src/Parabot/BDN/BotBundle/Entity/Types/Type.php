@@ -24,11 +24,6 @@ abstract class Type {
 
     /**
      * @var string
-     */
-    private $type;
-
-    /**
-     * @var string
      *
      * @ORM\Column(name="version", type="string", length=255)
      */
@@ -48,12 +43,9 @@ abstract class Type {
 
     /**
      * Type constructor.
-     *
-     * @param string $type
      */
-    public function __construct($type) {
+    public function __construct() {
         $this->releaseDate = new \DateTime();
-        $this->type        = $type;
     }
 
     /**
@@ -65,13 +57,7 @@ abstract class Type {
         return $this->id;
     }
 
-    public function getType() {
-        return $this->type;
-    }
-
-    public function setType($type) {
-        $this->type = $type;
-    }
+    public abstract function getType();
 
     /**
      * Get string
@@ -128,11 +114,15 @@ abstract class Type {
      * @param string $path Directory locating to the app folder
      */
     public function setPath($path) {
-        $this->path = $path . '/data/' . $this->type . '/';
+        $this->path = $path . '/data/' . $this->getType() . '/';
 
         if( ! file_exists($this->path)) {
             mkdir($this->path, 0755, true);
         }
+    }
+
+    public function getFile(){
+        return $this->path . $this->version . '.jar';
     }
 
 }
