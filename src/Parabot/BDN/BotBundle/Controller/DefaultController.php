@@ -2,6 +2,7 @@
 
 namespace Parabot\BDN\BotBundle\Controller;
 
+use Aws\S3\Exception\NoSuchKeyException;
 use Aws\S3\S3Client;
 use Parabot\BDN\BotBundle\BDNBotBundle;
 use Parabot\BDN\BotBundle\Entity\Types\Client;
@@ -66,27 +67,6 @@ class DefaultController extends Controller {
         } else {
             return new JsonResponse([ 'result' => 'No version of type or branch found' ], 404);
         }
-
-        if($request->query->get('create') == 'true') {
-            $client = new Client();
-            $client->setVersion("2.5.1-RC-15816222");
-            $client->setStable(false);
-            $client->setReleaseDate(new \DateTime());
-
-            $manager->persist($client);
-            $manager->flush();
-        }
-
-        if($request->query->get('download') === 'true') {
-
-            /** @var S3Client $aws */
-            $aws = $this->get('aws.s3');
-
-            $result = $aws->getObject([ 'Bucket' => 'parabot', 'Key' => 'artifacts/Parabot-V2.5.1.jar' ]);
-            $body   = $result->get('Body');
-            $body->rewind();
-            file_put_contents($c->getPath() . 'client-2.jar', $body->read($result[ 'ContentLength' ]));
-        }
     }
 
     /**
@@ -94,22 +74,85 @@ class DefaultController extends Controller {
      * @Template()
      *
      * @param Request $request
-     * @param Type    $type
+     * @param string  $type
      *
      * @return JsonResponse
      */
     public function createAction(Request $request, $type) {
         /**
-         * @var TravisHelper $helper
-         * @var TypeHelper $typeHelper
+         * @var TravisHelper $travisHelper
+         * @var TypeHelper   $typeHelper
+         * @var S3Client     $aws
          */
-        $helper = $this->get('bot.travis_helper');
-        $typeHelper = $this->get('bot.type_helper');
-        $r = $request->query->get('builder_id');
+        $travisHelper = $this->get('bot.travis_helper');
+        $typeHelper   = $this->get('bot.type_helper');
+        $aws          = $this->get('aws.s3');
+
+        $id      = $request->query->get('builder_id');
+        $version = $request->query->get('version');
 
         if($typeHelper->typeExists($type)) {
-            return new JsonResponse($helper->getLatestBuild($type->getTravisRepository(), $r));
+            $manager    = $this->getDoctrine()->getManager();
+            $repository = $manager->getRepository($typeHelper->getRepositorySlug($type));
+            $typeObject = $typeHelper->createType($type);
+            $build      = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
+
+            if($build->getResult() === $build::RESULT_OK) {
+                $totalVersion = $typeObject->getName() . '-V' . $version;
+                if($build->getBranch() != 'master') {
+                    $totalVersion .= '-RC-' . $build->getId();
+                }
+
+                if(($result = $repository->findOneBy([ 'version' => $totalVersion ])) == null || sizeof($result) <= 0) {
+                    $location = 'artifacts/' . strtolower($typeObject->getType()) . '/' . $totalVersion . '.jar';
+
+                    try {
+                        $result = $aws->getObject(
+                            [
+                                'Bucket' => 'parabot',
+                                'Key'    => $location,
+                            ]
+                        );
+                    } catch(NoSuchKeyException $e) {
+                        return new JsonResponse(
+                            [
+                                'result'     => 'File could not be found on external server',
+                                'error_code' => '8I8HQFV2PAZJ',
+                            ], 500
+                        );
+                    } catch(\Exception $e) {
+                        return new JsonResponse(
+                            [ 'result' => 'Something went terribly wrong', 'error_code' => '9I8IQFV1PGZJ' ], 500
+                        );
+                    }
+
+                    $typeObject->setVersion($totalVersion);
+                    $typeObject->setStable($build->getBranch() == 'master');
+                    $typeObject->setReleaseDate($build->getFinishedAt());
+                    $typeObject->setBranch($build->getBranch());
+
+                    $manager->persist($typeObject);
+                    $manager->flush();
+
+                    $body = $result->get('Body');
+                    $body->rewind();
+
+                    file_put_contents(
+                        $typeObject->getPath() . $totalVersion . '.jar',
+                        $body->read($result[ 'ContentLength' ])
+                    );
+
+                    return new JsonResponse(
+                        [ 'result' => 'Created new ' . $typeObject->getName() . ' from latest build' ]
+                    );
+                } else {
+                    return new JsonResponse(
+                        [ 'result' => 'Version ' . $totalVersion . ' already exists', 500 ]
+                    );
+                }
+            }
         }
-        return new JsonResponse(['result' => 'Unknown type requested'], 404);
+
+        return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
     }
 }
