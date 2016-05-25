@@ -38,6 +38,13 @@ abstract class Type {
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="branch", type="string", length=255)
+     */
+    private $branch;
+
+    /**
+     * @var string
      */
     private $path;
 
@@ -56,8 +63,6 @@ abstract class Type {
     public function getId() {
         return $this->id;
     }
-
-    public abstract function getType();
 
     /**
      * Get string
@@ -106,6 +111,20 @@ abstract class Type {
     /**
      * @return string
      */
+    public function getBranch() {
+        return $this->branch;
+    }
+
+    /**
+     * @param string $branch
+     */
+    public function setBranch($branch) {
+        $this->branch = $branch;
+    }
+
+    /**
+     * @return string
+     */
     public function getPath() {
         return $this->path;
     }
@@ -121,7 +140,22 @@ abstract class Type {
         }
     }
 
-    public function getFile(){
+    /**
+     * @return string
+     */
+    public abstract function getType();
+
+    /**
+     * @return string
+     */
+    public abstract function getTravisRepository();
+    
+    /**
+     * @return string
+     */
+    public abstract function getName();
+
+    public function getFile() {
         return $this->path . $this->version . '.jar';
     }
 
