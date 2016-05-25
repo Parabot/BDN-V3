@@ -5,6 +5,12 @@ services:
             - @kernel
         tags:
             - { name: doctrine.event_subscriber }
+    bot.download_manager:
+        class: Parabot\BDN\BotBundle\Service\DownloadProvider
+    bot.travis_helper:
+        class: Parabot\BDN\BotBundle\Service\TravisHelper
+    bot.type_helper:
+        class: Parabot\BDN\BotBundle\Service\TypeHelper
 #    s3:
 #        key: "%aws_key%"
 #        secret: "%aws_key%"
