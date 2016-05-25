@@ -5,3 +5,7 @@ services:
             - @kernel
         tags:
             - { name: doctrine.event_listener, event: postLoad }
+#    s3:
+#        key: "%aws_key%"
+#        secret: "%aws_key%"
+#        region: us-west-1
