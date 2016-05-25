@@ -2,19 +2,20 @@
 
 namespace Parabot\BDN\BotBundle\Controller;
 
-use Aws\Credentials\Credentials;
 use Aws\S3\S3Client;
-use Aws\Sdk;
 use Parabot\BDN\BotBundle\BDNBotBundle;
 use Parabot\BDN\BotBundle\Entity\Types\Client;
+use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Parabot\BDN\BotBundle\Repository\ClientRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class DefaultController extends Controller {
+
     /**
      * @Route("/download/{type}")
      * @Template()
@@ -26,6 +27,17 @@ class DefaultController extends Controller {
      */
     public function indexAction(Request $request, $type) {
         $manager = $this->getDoctrine()->getManager();
+        $repository = null;
+
+        switch(strtolower($type)) {
+            case 'client':
+                /** @var ClientRepository $repository */
+                $repository = $manager->getRepository('BDNBotBundle:Types\Client');
+                break;
+            default:
+                return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
+        }
+
 
         if($request->query->get('create') == 'true') {
             $client = new Client();
@@ -37,20 +49,19 @@ class DefaultController extends Controller {
             $manager->flush();
         }
 
-        /** @var ClientRepository $repository */
-        $repository = $manager->getRepository('BDNBotBundle:Types\Client');
-
         $c = $repository->findLatestByStability($request->query->get('nightly') === 'false');
-//        var_dump($c->getPath());
 
-        /** @var S3Client $aws */
-        $aws = $this->get('aws.s3');
+        if ($request->query->get('download') === 'true') {
 
-        $result = $aws->getObject(['Bucket' => 'parabot', 'Key' => 'artifacts/Parabot-V2.5.1.jar']);
-        $body = $result->get('Body');
-        $body->rewind();
-        file_put_contents($c->getPath() . 'client-2.jar', $body->read($result['ContentLength']));
+            /** @var S3Client $aws */
+            $aws = $this->get('aws.s3');
 
-        return [ 'name' => $type ];
+            $result = $aws->getObject([ 'Bucket' => 'parabot', 'Key' => 'artifacts/Parabot-V2.5.1.jar' ]);
+            $body   = $result->get('Body');
+            $body->rewind();
+            file_put_contents($c->getPath() . 'client-2.jar', $body->read($result[ 'ContentLength' ]));
+        }
+
+        return [ 'name' => $c->getType() ];
     }
 }
