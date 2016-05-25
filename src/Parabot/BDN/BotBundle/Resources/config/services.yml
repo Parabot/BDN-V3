@@ -11,6 +11,8 @@ services:
         class: Parabot\BDN\BotBundle\Service\TravisHelper
     bot.type_helper:
         class: Parabot\BDN\BotBundle\Service\TypeHelper
+        arguments:
+            entityManager: "@doctrine.orm.entity_manager"
 #    s3:
 #        key: "%aws_key%"
 #        secret: "%aws_key%"
