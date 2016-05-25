@@ -29,7 +29,7 @@
         "friendsofsymfony/oauth-server-bundle": "~1.5",
         "sylius/cart-bundle": "0.17.*",
         "leaseweb/api-caller-bundle": "~1.2",
-        "aws/aws-sdk-php": "~3.18"
+        "seferov/aws-bundle": "~1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
