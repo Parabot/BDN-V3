@@ -2,7 +2,11 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
+
     - { resource: @BDNStoreBundle/Resources/config/main.yml }
+
+    - { resource: @BDNBotBundle/Resources/config/main.yml }
+
     - { resource: @BDNUserBundle/Resources/config/main.yml }
     - { resource: @BDNUserBundle/Resources/config/parameters.yml }
 
