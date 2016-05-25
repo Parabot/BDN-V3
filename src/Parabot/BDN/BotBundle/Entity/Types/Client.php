@@ -13,33 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Client extends Type {
 
     /**
-     * @ORM\Column(name="stable", type="boolean")
-     * 
-     * @var boolean
-     */
-    private $stable;
-
-    /**
      * Client constructor.
      */
     public function __construct() {
         parent::__construct();
-    }
-
-    /**
-     * Get stability
-     * 
-     * @return boolean
-     */
-    public function getStable() {
-        return $this->stable;
-    }
-
-    /**
-     * @param boolean $stable
-     */
-    public function setStable($stable) {
-        $this->stable = $stable;
     }
 
     public function getType() {

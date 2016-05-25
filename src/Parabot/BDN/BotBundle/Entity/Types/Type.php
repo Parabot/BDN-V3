@@ -44,6 +44,13 @@ abstract class Type {
     private $branch;
 
     /**
+     * @ORM\Column(name="stable", type="boolean")
+     *
+     * @var boolean
+     */
+    private $stable;
+
+    /**
      * @var string
      */
     private $path;
@@ -138,6 +145,22 @@ abstract class Type {
         if( ! file_exists($this->path)) {
             mkdir($this->path, 0755, true);
         }
+    }
+
+    /**
+     * Get stability
+     *
+     * @return boolean
+     */
+    public function getStable() {
+        return $this->stable;
+    }
+
+    /**
+     * @param boolean $stable
+     */
+    public function setStable($stable) {
+        $this->stable = $stable;
     }
 
     /**
