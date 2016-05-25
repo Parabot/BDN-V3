@@ -4,6 +4,7 @@ namespace Parabot\BDN\BotBundle\Controller;
 
 use Aws\S3\Exception\NoSuchKeyException;
 use Aws\S3\S3Client;
+use Doctrine\Common\Persistence\ObjectManager;
 use Parabot\BDN\BotBundle\BDNBotBundle;
 use Parabot\BDN\BotBundle\Entity\Types\Client;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
@@ -31,6 +32,7 @@ class DefaultController extends Controller {
      */
     public function downloadAction(Request $request, $type) {
         /**
+         * @var ObjectManager  $manager
          * @var TypeRepository $repository
          * @var TypeHelper     $typeHelper
          */
