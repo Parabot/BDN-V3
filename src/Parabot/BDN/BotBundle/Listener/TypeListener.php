@@ -5,11 +5,12 @@
 
 namespace Parabot\BDN\BotBundle\Listener;
 
+use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class TypeListener {
+class TypeListener implements EventSubscriber {
 
     protected $kernel;
 
@@ -30,6 +31,20 @@ class TypeListener {
      * @param LifecycleEventArgs $args Doctrine event
      */
     public function postLoad(LifecycleEventArgs $args) {
+        $this->setTypePath($args);
+    }
+
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $this->setTypePath($args);
+    }
+
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $this->setTypePath($args);
+    }
+
+    private function setTypePath(LifecycleEventArgs $args){
         $entity = $args->getEntity();
 
         if( ! ($entity instanceof Type)) {
@@ -37,5 +52,18 @@ class TypeListener {
         }
 
         $entity->setPath($this->kernel->getRootDir());
+    }
+
+    /**
+     * Returns an array of events this subscriber wants to listen to.
+     *
+     * @return array
+     */
+    public function getSubscribedEvents() {
+        return [
+            'postPersist',
+            'postUpdate',
+            'postLoad'
+        ];
     }
 }
