@@ -24,8 +24,6 @@ abstract class Type {
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=255)
      */
     private $type;
 
