@@ -45,4 +45,18 @@ class Client extends Type {
     public function getType() {
         return 'Client';
     }
+
+    /**
+     * @return string
+     */
+    public function getTravisRepository() {
+        return 'Parabot/Parabot';
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        return 'Parabot';
+    }
 }
