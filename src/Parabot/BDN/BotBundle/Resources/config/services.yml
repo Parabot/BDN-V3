@@ -4,7 +4,7 @@ services:
         arguments:
             - @kernel
         tags:
-            - { name: doctrine.event_listener, event: postLoad }
+            - { name: doctrine.event_subscriber }
 #    s3:
 #        key: "%aws_key%"
 #        secret: "%aws_key%"
