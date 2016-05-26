@@ -78,6 +78,9 @@ class DefaultController extends Controller {
     }
 
     /**
+     * TODO: Check if from PR, otherwise branch could still be master
+     *          Though for now covered by Travis; all_branches: true
+     *
      * @Route("/create/{type}")
      * @Template()
      *
