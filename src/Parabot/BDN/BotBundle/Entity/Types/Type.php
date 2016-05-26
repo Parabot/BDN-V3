@@ -46,9 +46,23 @@ abstract class Type {
     /**
      * @ORM\Column(name="stable", type="boolean")
      *
-     * @var boolean
+     * @var bool
      */
     private $stable;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="build_id", type="integer")
+     */
+    private $build;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="active", type="boolean", options={"default" = 1})
+     */
+    private $active = true;
 
     /**
      * @var string
@@ -161,6 +175,34 @@ abstract class Type {
      */
     public function setStable($stable) {
         $this->stable = $stable;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBuild() {
+        return $this->build;
+    }
+
+    /**
+     * @param int $build
+     */
+    public function setBuild($build) {
+        $this->build = $build;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isActive() {
+        return $this->active;
+    }
+
+    /**
+     * @param boolean $active
+     */
+    public function setActive($active) {
+        $this->active = $active;
     }
 
     /**
