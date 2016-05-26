@@ -29,7 +29,7 @@ class DownloadProvider {
             if(ini_get('zlib.output_compression')) {
                 ini_set('zlib.output_compression', 'Off');
             }
-            $mime = mime_content_type($file);
+            $mime = \mime_content_type($file);
 
             $response = new BinaryFileResponse($file);
             $response->headers->set('Pragma', 'public');

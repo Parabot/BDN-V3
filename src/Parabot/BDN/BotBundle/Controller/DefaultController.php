@@ -88,7 +88,6 @@ class DefaultController extends Controller {
      *
      *
      * @TODO: Check if from PR, otherwise branch could still be master
-     *          Though for now covered by Travis; all_branches: true
      */
     public function createAction(Request $request, $type) {
         /**
@@ -104,7 +103,7 @@ class DefaultController extends Controller {
         $version = $request->query->get('version');
 
         if($typeHelper->typeExists($type)) {
-            $manager    = $this->getDoctrine()->getManager();
+            $manager = $this->getDoctrine()->getManager();
             /** @var TypeRepository|EntityRepository $repository */
             $repository = $manager->getRepository($typeHelper->getRepositorySlug($type));
             $typeObject = $typeHelper->createType($type);
