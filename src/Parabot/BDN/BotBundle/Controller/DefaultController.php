@@ -104,6 +104,7 @@ class DefaultController extends Controller {
 
         if($typeHelper->typeExists($type)) {
             $manager    = $this->getDoctrine()->getManager();
+            /** @var TypeRepository|EntityRepository $repository */
             $repository = $manager->getRepository($typeHelper->getRepositorySlug($type));
             $typeObject = $typeHelper->createType($type);
             $build      = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
