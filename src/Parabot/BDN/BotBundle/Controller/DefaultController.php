@@ -99,7 +99,7 @@ class DefaultController extends Controller {
         $typeHelper   = $this->get('bot.type_helper');
         $aws          = $this->get('aws.s3');
 
-        $id      = $request->query->get('builder_id');
+        $id      = $request->query->get('build_id');
         $version = $request->query->get('version');
 
         if($typeHelper->typeExists($type)) {
