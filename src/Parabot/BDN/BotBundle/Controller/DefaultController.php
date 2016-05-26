@@ -169,7 +169,7 @@ class DefaultController extends Controller {
                     }
                 }
             } else {
-                return new JsonResponse([ 'result' => 'Unknown build requiested' ], 400);
+                return new JsonResponse([ 'result' => 'Unknown build requested' ], 400);
             }
         }
 
