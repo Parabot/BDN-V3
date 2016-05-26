@@ -5,6 +5,7 @@ namespace Parabot\BDN\BotBundle\Controller;
 use Aws\S3\Exception\NoSuchKeyException;
 use Aws\S3\S3Client;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityRepository;
 use Parabot\BDN\BotBundle\BDNBotBundle;
 use Parabot\BDN\BotBundle\Entity\Types\Client;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
@@ -32,12 +33,13 @@ class DefaultController extends Controller {
      */
     public function downloadAction(Request $request, $type) {
         /**
-         * @var ObjectManager  $manager
-         * @var TypeRepository $repository
-         * @var TypeHelper     $typeHelper
+         * @var ObjectManager                   $manager
+         * @var TypeRepository|EntityRepository $repository
+         * @var TypeHelper                      $typeHelper
          */
         $manager    = $this->getDoctrine()->getManager();
         $branch     = $request->query->get('branch');
+        $build      = $request->query->get('build');
         $typeHelper = $this->get('bot.type_helper');
         $repository = null;
         $download   = null;
@@ -45,10 +47,14 @@ class DefaultController extends Controller {
         if($typeHelper->typeExists($type)) {
             $repository = $manager->getRepository($typeHelper->getRepositorySlug($type));
 
-            $download = $repository->findLatestByStability(
-                ! ($request->query->get('nightly') === 'true'),
-                $branch
-            );
+            if($build != null) {
+                $download = $repository->findOneBy([ 'build' => $build ]);
+            } else {
+                $download = $repository->findLatestByStability(
+                    ! ($request->query->get('nightly') === 'true'),
+                    $branch
+                );
+            }
         } else {
             return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
         }
@@ -67,7 +73,7 @@ class DefaultController extends Controller {
                 return $result;
             }
         } else {
-            return new JsonResponse([ 'result' => 'No version of type or branch found' ], 404);
+            return new JsonResponse([ 'result' => 'No version of type, branch or build found' ], 404);
         }
     }
 
@@ -132,6 +138,7 @@ class DefaultController extends Controller {
                     $typeObject->setStable($build->getBranch() == 'master');
                     $typeObject->setReleaseDate($build->getFinishedAt());
                     $typeObject->setBranch($build->getBranch());
+                    $typeObject->setBuild($build->getId());
 
                     $manager->persist($typeObject);
                     $manager->flush();
@@ -156,5 +163,42 @@ class DefaultController extends Controller {
         }
 
         return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
+    }
+
+    /**
+     * @Route("/list/{type}")
+     * @Template()
+     *
+     * @param string $type
+     *
+     * @return JsonResponse
+     */
+    public function listBuildVersionsAction($type) {
+        /**
+         * @var TypeHelper   $typeHelper
+         */
+        $typeHelper   = $this->get('bot.type_helper');
+
+        if ($typeHelper->typeExists($type)){
+            /** @var TypeRepository|EntityRepository $repository */
+            $repository = $this->getDoctrine()->getManager()->getRepository($typeHelper->getRepositorySlug($type));
+            
+            /** @var Type[] $typeList */
+            $typeList = $repository->findBy(['active' => true], ['releaseDate' => 'DESC']);
+            $typeListJson = [];
+            
+            foreach($typeList as $t){
+                $typeListJson[$t->getId()] = [
+                    'build' => $t->getBuild(),
+                    'version' => $t->getVersion(),
+                    'release' => $t->getReleaseDate()->format('d-m-Y H:i'),
+                    'stable' => $t->getStable()
+                ];
+            }
+
+            return new JsonResponse($typeListJson);
+        }else {
+            return new JsonResponse(['result' => 'Unknown type requested'], 404);
+        }
     }
 }
