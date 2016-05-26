@@ -29,7 +29,6 @@ class DownloadProvider {
             if(ini_get('zlib.output_compression')) {
                 ini_set('zlib.output_compression', 'Off');
             }
-            $mime = \mime_content_type($file);
 
             $response = new BinaryFileResponse($file);
             $response->headers->set('Pragma', 'public');
@@ -39,7 +38,7 @@ class DownloadProvider {
             $response->headers->set('Last-Modified', gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
             $response->headers->set('Cache-Control', '0');
             $response->headers->set('Expires', 'private');
-            $response->headers->set('Content-Type', $mime);
+            $response->headers->set('Content-Type', 'application/java-archive');
             $response->headers->set('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
 
             $response->headers->set('Content-Transfer-Encoding', 'binary');
