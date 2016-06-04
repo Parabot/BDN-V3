@@ -198,22 +198,50 @@ class DefaultController extends Controller {
      * @Route("/list/{type}")
      * @Template()
      *
-     * @param string $type
+     * @param Request $request
+     * @param string  $type
      *
      * @return JsonResponse
      */
-    public function listBuildVersionsAction($type) {
+    public function listBuildVersionsAction(Request $request, $type) {
         /**
          * @var TypeHelper $typeHelper
+         * @var bool       $nightly
          */
         $typeHelper = $this->get('bot.type_helper');
+        $stable     = $request->query->get('stable') == 'false' ? false : true;
+
+        if(($limit = $request->query->get('limit')) != null) {
+            $limit = intval($limit);
+            if($limit > 30 || $limit < 0) {
+                $limit = 30;
+            }
+        } else {
+            $limit = 30;
+        }
+
+        if(($page = $request->query->get('page')) != null) {
+            $page = intval($page);
+            if($page < 0) {
+                $page = null;
+            } else {
+                $page = $limit * $page;
+            }
+        } else {
+            $page = null;
+        }
 
         if($typeHelper->typeExists($type)) {
             /** @var TypeRepository|EntityRepository $repository */
             $repository = $this->getDoctrine()->getManager()->getRepository($typeHelper->getRepositorySlug($type));
 
             /** @var Type[] $typeList */
-            $typeList     = $repository->findBy([ 'active' => true ], [ 'releaseDate' => 'DESC' ]);
+            $typeList     = $repository->findBy(
+                [ 'active' => true, 'stable' => $stable ],
+                [ 'releaseDate' => 'DESC' ],
+                $limit,
+                $page
+            );
             $typeListJson = [ ];
 
             foreach($typeList as $t) {
