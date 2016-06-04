@@ -163,7 +163,7 @@ class DefaultController extends Controller {
                         $this->get('slack_manager')->sendSuccessMessage(
                             'New release available',
                             'Created new ' . $typeObject->getName() . ' from latest ' . ($typeObject->getStable(
-                            ) ?: 'nightly ') . 'build.',
+                            ) ? '' : 'nightly ') . 'build.',
                             $request->getSchemeAndHttpHost() . $this->generateUrl(
                                 'bot_download',
                                 [ 'type' => 'client', 'build' => $typeObject->getBuild() ]
