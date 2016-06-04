@@ -36,11 +36,12 @@ class SlackManager {
      * @param string   $message
      * @param string   $link
      * @param string[] $fields
+     * @param string   $channel
      */
-    public function sendSuccessMessage($title, $message, $link = '', $fields = [ ]) {
+    public function sendSuccessMessage($title, $message, $link = '', $fields = [ ], $channel = '') {
         $attachment = $this->createAttachment($title, $message, 'good', $link, $fields);
 
-        $this->sendMessage('', [ $attachment ]);
+        $this->sendMessage('', [ $attachment ], $channel);
     }
 
     /**
@@ -74,13 +75,16 @@ class SlackManager {
      * @param                         $message
      * @param array|MessageAttachment $attachments
      *
+     * @param string                  $channel
      * @param string                  $user
      *
-     * @throws \Exception
      */
-    public function sendMessage($message, $attachments = [ ], $user = 'BDN') {
+    public function sendMessage($message, $attachments = [ ], $channel = '#releases', $user = 'BDN') {
+        if ($channel == null){
+            $channel = '#releases';
+        }
         $this->messenger->message(
-            '#releases',
+            $channel,
             $message,
             $user,
             $attachments

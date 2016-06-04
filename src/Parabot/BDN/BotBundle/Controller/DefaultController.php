@@ -172,8 +172,8 @@ class DefaultController extends Controller {
 
                         $this->get('slack_manager')->sendSuccessMessage(
                             'New release available',
-                            'Created new ' . $typeObject->getName() . ' from latest ' . ($build->getBranch(
-                            ) == 'master' ?: 'nightly ') . 'build.',
+                            'Created new ' . $typeObject->getName() . ' from latest ' . ($typeObject->getStable(
+                            ) ?: 'nightly ') . 'build.',
                             $request->getSchemeAndHttpHost() . $this->generateUrl(
                                 'bot_download',
                                 [ 'type' => 'client', 'build' => $typeObject->getBuild() ]
@@ -183,7 +183,8 @@ class DefaultController extends Controller {
                                 'Build'   => ucfirst($typeObject->getBuild()),
                                 'Version' => ucfirst($typeObject->getVersion()),
                                 'Branch'  => ucfirst($typeObject->getBranch()),
-                            ]
+                            ],
+                            $build->getBranch() == 'master' ? 'news' : null
                         );
 
                         return new JsonResponse(
