@@ -174,7 +174,13 @@ class DefaultController extends Controller {
                             'New release available',
                             'Created new ' . $typeObject->getName() . ' from latest ' . ($build->getBranch(
                             ) == 'master' ?: 'nightly ') . 'build.',
-                            $request->getSchemeAndHttpHost() . $this->generateUrl('bot_download', ['type' => 'client', 'nightly' => 'true'])
+                            $request->getSchemeAndHttpHost() . $this->generateUrl('bot_download', ['type' => 'client', 'nightly' => 'true']),
+                            [
+                                'stable' => $typeObject->getStable(),
+                                'build' => $typeObject->getBuild(),
+                                'version' => $typeObject->getVersion(),
+                                'branch' => $typeObject->getBranch()
+                            ]
                         );
 
                         return new JsonResponse(

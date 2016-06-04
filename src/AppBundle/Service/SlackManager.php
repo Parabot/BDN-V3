@@ -62,7 +62,7 @@ class SlackManager {
         $attachment->setTitleLink($link);
 
         foreach($fields as $key => $value) {
-            $attachment->addField($key, $value);
+            $attachment->addField($key, $value, true);
         }
 
         $attachment->setText($message);
