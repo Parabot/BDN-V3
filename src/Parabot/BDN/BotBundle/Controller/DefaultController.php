@@ -166,7 +166,7 @@ class DefaultController extends Controller {
                             ) ? '' : 'nightly ') . 'build.',
                             $request->getSchemeAndHttpHost() . $this->generateUrl(
                                 'bot_download',
-                                [ 'type' => 'client', 'build' => $typeObject->getBuild() ]
+                                [ 'type' => strtolower($typeObject->getType()), 'build' => $typeObject->getBuild() ]
                             ),
                             [
                                 'Stable'  => ucfirst($typeObject->getStable() ? 'true' : 'false'),
