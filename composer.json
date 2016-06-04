@@ -1,5 +1,5 @@
 {
-    "name": "jeroen/bdn",
+    "name": "parabot/bdn",
     "license": "proprietary",
     "type": "project",
     "autoload": {
@@ -30,7 +30,8 @@
         "sylius/cart-bundle": "0.17.*",
         "leaseweb/api-caller-bundle": "~1.2",
         "seferov/aws-bundle": "~1.2",
-        "l3l0/php-travis-client": "dev-master"
+        "l3l0/php-travis-client": "dev-master",
+        "dzunke/slack-bundle": "~1.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
