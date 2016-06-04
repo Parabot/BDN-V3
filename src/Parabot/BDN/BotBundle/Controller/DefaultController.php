@@ -198,6 +198,59 @@ class DefaultController extends Controller {
     }
 
     /**
+     * @Route("/compare/{type}/{current}")
+     * @Template()
+     *
+     * @param Request $request
+     * @param string  $type
+     *
+     * @param string  $current
+     *
+     * @return JsonResponse
+     */
+    public function compareVersionsAction(Request $request, $type, $current) {
+        /**
+         * @var TypeHelper $typeHelper
+         */
+        $typeHelper = $this->get('bot.type_helper');
+
+        if($typeHelper->typeExists($type)) {
+            /**
+             * @var TypeRepository|EntityRepository $repository
+             * @var Type                            $currentObject
+             * @var Type                            $latestObject
+             */
+            $repository    = $this->getDoctrine()->getManager()->getRepository($typeHelper->getRepositorySlug($type));
+            $currentResult = $repository->findBy([ 'version' => $current ], [ 'releaseDate' => 'DESC' ], 1);
+            if($currentResult != null && sizeof($currentResult) == 1) {
+                $currentObject = $currentResult[ 0 ];
+                $latestResult  = $repository->findBy(
+                    [ 'stable' => $currentObject->getStable() ],
+                    [ 'releaseDate' => 'DESC' ],
+                    1
+                );
+                if($latestResult != null && sizeof($latestResult) == 1) {
+                    $latestObject = $latestResult[ 0 ];
+                    $latest       = boolval(
+                        $latestObject->getReleaseDate() <= $currentObject->getReleaseDate()
+                    ) ? 'true' : 'false';
+
+                    return new JsonResponse(
+                        [
+                            'result'  => $latest,
+                            'message' => 'There is ' . ($latest === 'true' ? 'no' : 'a') . ' new release',
+                        ]
+                    );
+                }
+            } else {
+                return new JsonResponse([ 'result' => 'Unknown version requested' ], 404);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
+        }
+    }
+
+    /**
      * @Route("/list/{type}")
      * @Template()
      *
@@ -212,7 +265,7 @@ class DefaultController extends Controller {
          * @var bool       $nightly
          */
         $typeHelper = $this->get('bot.type_helper');
-        $stable     = $request->query->get('stable') == 'false' ? false : true;
+        $stable     = $request->query->get('nightly') == 'true' ? false : true;
 
         if(($limit = $request->query->get('limit')) != null) {
             $limit = intval($limit);
@@ -253,7 +306,7 @@ class DefaultController extends Controller {
                 $page
             );
             $typeListJson = [ ];
-            if ($typeList != null && sizeof($typeList) > 1) {
+            if($typeList != null && sizeof($typeList) > 1) {
                 foreach($typeList as $t) {
                     $typeListJson[ $t->getId() ] = [
                         'build'   => $t->getBuild(),
@@ -262,8 +315,8 @@ class DefaultController extends Controller {
                         'stable'  => $t->getStable(),
                     ];
                 }
-            }elseif ($typeList != null && sizeof($typeList) > 0){
-                $t = $typeList[0];
+            } elseif($typeList != null && sizeof($typeList) > 0) {
+                $t            = $typeList[ 0 ];
                 $typeListJson = [
                     'build'   => $t->getBuild(),
                     'version' => $t->getVersion(),
