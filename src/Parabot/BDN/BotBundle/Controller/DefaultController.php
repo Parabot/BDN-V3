@@ -112,16 +112,19 @@ class DefaultController extends Controller {
 
             if($build != null) {
                 if($build->getResult() === $build::RESULT_OK) {
-                    $totalVersion = $typeObject->getName() . '-V' . $version;
+                    $totalNamedVersion = $typeObject->getName();
                     if($build->getBranch() != 'master') {
-                        $totalVersion .= '-RC-' . $build->getId();
+                        $version .= '-RC-' . $build->getId();
                     }
+                    $totalNamedVersion .= '-V' . $version;
 
-                    if(($result = $repository->findOneBy([ 'version' => $totalVersion ])) == null || sizeof(
-                                                                                                         $result
-                                                                                                     ) <= 0
+                    if(($result = $repository->findOneBy([ 'version' => $version ])) == null || sizeof(
+                                                                                                    $result
+                                                                                                ) <= 0
                     ) {
-                        $location = 'artifacts/' . strtolower($typeObject->getType()) . '/' . $totalVersion . '.jar';
+                        $location = 'artifacts/' . strtolower(
+                                $typeObject->getType()
+                            ) . '/' . $totalNamedVersion . '.jar';
 
                         try {
                             $result = $aws->getObject(
@@ -143,7 +146,7 @@ class DefaultController extends Controller {
                             );
                         }
 
-                        $typeObject->setVersion($totalVersion);
+                        $typeObject->setVersion($version);
                         $typeObject->setStable($build->getBranch() == 'master');
                         $typeObject->setReleaseDate($build->getFinishedAt());
                         $typeObject->setBranch($build->getBranch());
@@ -156,7 +159,7 @@ class DefaultController extends Controller {
                         $body->rewind();
 
                         file_put_contents(
-                            $typeObject->getPath() . $totalVersion . '.jar',
+                            $typeObject->getPath() . $version . '.jar',
                             $body->read($result[ 'ContentLength' ])
                         );
 
@@ -182,7 +185,7 @@ class DefaultController extends Controller {
                         );
                     } else {
                         return new JsonResponse(
-                            [ 'result' => 'Version ' . $totalVersion . ' already exists', 500 ]
+                            [ 'result' => 'Version ' . $version . ' already exists', 500 ]
                         );
                     }
                 }
@@ -229,6 +232,13 @@ class DefaultController extends Controller {
             }
         } else {
             $page = null;
+        }
+
+        if(($latest = $request->query->get('latest')) != null) {
+            if($latest == 'true') {
+                $limit = 2;
+                $page  = 0;
+            }
         }
 
         if($typeHelper->typeExists($type)) {
