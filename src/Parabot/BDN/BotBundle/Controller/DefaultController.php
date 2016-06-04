@@ -23,16 +23,6 @@ use Symfony\Component\Validator\Constraints\DateTime;
 class DefaultController extends Controller {
 
     /**
-     * @Route("/send")
-     * @Template()
-     *
-     * @return JsonResponse
-     */
-    public function sendAction() {
-        return new JsonResponse([ 'result' => 'ok' ]);
-    }
-
-    /**
      * @Route("/download/{type}", name="bot_download")
      * @Template()
      *
