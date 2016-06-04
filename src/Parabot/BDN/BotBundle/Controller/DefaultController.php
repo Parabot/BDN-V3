@@ -236,7 +236,7 @@ class DefaultController extends Controller {
 
         if(($latest = $request->query->get('latest')) != null) {
             if($latest == 'true') {
-                $limit = 2;
+                $limit = 1;
                 $page  = 0;
             }
         }
