@@ -41,6 +41,8 @@ class AppKernel extends Kernel
             new Parabot\BDN\BotBundle\BDNBotBundle(),
 
             new Seferov\AwsBundle\SeferovAwsBundle(),
+
+            new DZunke\SlackBundle\DZunkeSlackBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

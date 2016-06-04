@@ -9,6 +9,6 @@ parameters:
 #    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    slack_manager:
+        class: AppBundle\Service\SlackManager
+        arguments: ['@dz.slack.messaging', '@dz.slack.identity_bag']

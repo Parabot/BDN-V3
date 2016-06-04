@@ -78,6 +78,12 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+d_zunke_slack:
+    token: "%slack_token%"
+    identities:
+        BDN:
+          icon_url: http://station.ketelaar.me/files/unnamed60.png
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"

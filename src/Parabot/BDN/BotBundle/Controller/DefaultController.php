@@ -23,7 +23,17 @@ use Symfony\Component\Validator\Constraints\DateTime;
 class DefaultController extends Controller {
 
     /**
-     * @Route("/download/{type}")
+     * @Route("/send")
+     * @Template()
+     *
+     * @return JsonResponse
+     */
+    public function sendAction() {
+        return new JsonResponse([ 'result' => 'ok' ]);
+    }
+
+    /**
+     * @Route("/download/{type}", name="bot_download")
      * @Template()
      *
      * @param Request $request
@@ -158,6 +168,13 @@ class DefaultController extends Controller {
                         file_put_contents(
                             $typeObject->getPath() . $totalVersion . '.jar',
                             $body->read($result[ 'ContentLength' ])
+                        );
+
+                        $this->get('slack_manager')->sendSuccessMessage(
+                            'New release available',
+                            'Created new ' . $typeObject->getName() . ' from latest ' . ($build->getBranch(
+                            ) == 'master' ?: 'nightly ') . 'build.',
+                            $request->getSchemeAndHttpHost() . $this->generateUrl('bot_download', ['type' => 'client', 'nightly' => 'true'])
                         );
 
                         return new JsonResponse(

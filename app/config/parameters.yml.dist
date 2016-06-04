@@ -20,3 +20,5 @@ parameters:
 
     aws_key: ~
     aws_secret: ~
+
+    slack_token: ~
