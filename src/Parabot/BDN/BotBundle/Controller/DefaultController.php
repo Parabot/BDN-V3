@@ -176,7 +176,7 @@ class DefaultController extends Controller {
                             ) == 'master' ?: 'nightly ') . 'build.',
                             $request->getSchemeAndHttpHost() . $this->generateUrl('bot_download', ['type' => 'client', 'nightly' => 'true']),
                             [
-                                'stable' => $typeObject->getStable(),
+                                'stable' => $typeObject->getStable() ? 'true' : 'false',
                                 'build' => $typeObject->getBuild(),
                                 'version' => $typeObject->getVersion(),
                                 'branch' => $typeObject->getBranch()
