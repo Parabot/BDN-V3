@@ -62,6 +62,8 @@ class SlackManager {
 
         $attachment->setTitleLink($link);
 
+        $attachment->setFallback($title);
+
         foreach($fields as $key => $value) {
             $attachment->addField($key, $value, true);
         }
