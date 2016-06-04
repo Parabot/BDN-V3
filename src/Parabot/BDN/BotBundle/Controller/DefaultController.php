@@ -253,9 +253,18 @@ class DefaultController extends Controller {
                 $page
             );
             $typeListJson = [ ];
-
-            foreach($typeList as $t) {
-                $typeListJson[ $t->getId() ] = [
+            if ($typeList != null && sizeof($typeList) > 1) {
+                foreach($typeList as $t) {
+                    $typeListJson[ $t->getId() ] = [
+                        'build'   => $t->getBuild(),
+                        'version' => $t->getVersion(),
+                        'release' => $t->getReleaseDate()->format('d-m-Y H:i'),
+                        'stable'  => $t->getStable(),
+                    ];
+                }
+            }elseif ($typeList != null && sizeof($typeList) > 0){
+                $t = $typeList[0];
+                $typeListJson = [
                     'build'   => $t->getBuild(),
                     'version' => $t->getVersion(),
                     'release' => $t->getReleaseDate()->format('d-m-Y H:i'),
