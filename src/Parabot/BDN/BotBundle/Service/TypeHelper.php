@@ -15,6 +15,7 @@ class TypeHelper {
      */
     private static $types = [
         'client' => 'BDNBotBundle:Types\Client',
+        'randoms' => 'BDNBotBundle:Types\Randoms',
     ];
 
     private $entityManager;
