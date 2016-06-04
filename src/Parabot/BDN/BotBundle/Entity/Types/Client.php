@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author JKetelaar
+ */
 
 namespace Parabot\BDN\BotBundle\Entity\Types;
 

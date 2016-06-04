@@ -5,6 +5,14 @@
 
 namespace Parabot\BDN\BotBundle\Entity\Types;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Randoms
+ *
+ * @ORM\Table(name="type_randoms")
+ * @ORM\Entity(repositoryClass="Parabot\BDN\BotBundle\Repository\RandomsRepository")
+ */
 class Randoms extends Type {
 
     /**
