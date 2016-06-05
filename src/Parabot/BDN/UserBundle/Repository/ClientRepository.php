@@ -19,7 +19,7 @@ class ClientRepository extends EntityRepository {
          * @var $clientInstance Client
          * @var $client Client
          */
-        $clientRepository = $this->getEntityManager()->getRepository('UserBundle:OAuth\\Client');
+        $clientRepository = $this->getEntityManager()->getRepository('BDNUserBundle:OAuth\\Client');
 
         foreach($clientRepository->findAll() as $clientInstance){
             if (count(array_intersect($clientInstance->getRedirectUris(), $redirectUris)) > 0){

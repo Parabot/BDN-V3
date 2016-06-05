@@ -10,22 +10,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-class SecurityController extends BaseController
-{
+class SecurityController extends BaseController {
 
     /**
-     * @Route("/login", name="login")
+     * @Route("/login", name="bdn_login")
      */
-    public function loginAction(Request $request)
-    {
-        $response = parent::loginAction($request);
-        return $response;
-//        return new JsonResponse($response);
+    public function loginAction(Request $request) {
+        $return = parent::loginAction($request);
+
+        return new JsonResponse($return, 401);
     }
 
-    protected function renderLogin(array $data)
-    {
-        return parent::renderLogin($data);
-//        return $data;
+    protected function renderLogin(array $data) {
+        return $data;
     }
 }

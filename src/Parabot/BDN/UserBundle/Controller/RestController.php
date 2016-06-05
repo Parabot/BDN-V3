@@ -11,11 +11,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 
 class RestController extends FOSRestController{
 
     /**
      * @Route("/account/oauth/v2/token", name="create_token")
+     * @PreAuthorize("hasRole('ROLE_DEVELOPER')")
+     * @Method({"POST"})
      */
     public function createTokenAction(Request $request){
         /**
@@ -23,27 +26,30 @@ class RestController extends FOSRestController{
          * @var $client Client
          */
         $clientManager = $this->get('fos_oauth_server.client_manager.default');
-        $clientRepository = $this->getDoctrine()->getRepository('UserBundle:OAuth\\Client');
+        $clientRepository = $this->getDoctrine()->getRepository('BDNUserBundle:OAuth\\Client');
 
-        /*
-         * TODO: Make this a POST parameter
-         */
-        $redirectUris = array('http://v3.bdn.parabot.org');
+        if (($redirectUris = $request->request->get('uris')) != null) {
+            if (!is_array($redirectUris)){
+                $redirectUris = [$redirectUris];
+            }
 
-        if ($clientRepository->redirectUrisAvailable($redirectUris) == false) {
-            return new JsonResponse([ 'error' => 'Client already exists with one of your redirects', 400 ]);
+            if($clientRepository->redirectUrisAvailable($redirectUris) == false) {
+                return new JsonResponse([ 'error' => 'Client already exists with one of your redirects', 400 ]);
+            }
+
+            $client = $clientManager->createClient();
+            $client->setRedirectUris($redirectUris);
+            $client->setAllowedGrantTypes([ 'token', 'authorization_code' ]);
+            $clientManager->updateClient($client);
+
+            return new JsonResponse(
+                [
+                    'client_id' => $client->getPublicId(),
+                    'secret_id' => $client->getSecret(),
+                ]
+            );
+        }else{
+            return new JsonResponse(['result' => 'Incorrect parameter \'uris\' given'], 400);
         }
-
-        $client = $clientManager->createClient();
-        $client->setRedirectUris($redirectUris);
-        $client->setAllowedGrantTypes(array('token', 'authorization_code'));
-        $clientManager->updateClient($client);
-
-        return new JsonResponse(
-            array(
-                'client_id' => $client->getPublicId(),
-                'secret_id' => $client->getSecret(),
-            )
-        );
     }
 }

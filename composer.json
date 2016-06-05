@@ -31,7 +31,8 @@
         "leaseweb/api-caller-bundle": "~1.2",
         "seferov/aws-bundle": "~1.2",
         "l3l0/php-travis-client": "dev-master",
-        "dzunke/slack-bundle": "~1.4"
+        "dzunke/slack-bundle": "~1.4",
+        "jms/security-extra-bundle": "^1.6"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

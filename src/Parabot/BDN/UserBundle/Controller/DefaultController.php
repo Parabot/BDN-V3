@@ -11,7 +11,18 @@ class DefaultController extends Controller
 {
     public function indexAction($name)
     {
-        return $this->render('UserBundle:Default:index.html.twig', array('name' => $name));
+        return $this->render('BDNUserBundle:Default:index.html.twig', array('name' => $name));
+    }
+
+    /**
+     * @Route("/unauthorised", name="unauthorised_notice")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function unAuthorisedAction(Request $request){
+        return new JsonResponse(['result' => 'User not authorized to access this page'], 401);
     }
 
     /**

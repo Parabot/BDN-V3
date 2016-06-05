@@ -4,3 +4,6 @@ services:
         calls:
           - [setContainer, [@service_container]]
           - [setInformation]
+
+    authentication_handler:
+        class: Parabot\BDN\UserBundle\Listener\AuthenticationListener
