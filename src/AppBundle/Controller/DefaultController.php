@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\CronTask;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -81,5 +82,26 @@ class DefaultController extends Controller {
 
     public function homeAction() {
         return new JsonResponse([ "result" => "ok" ]);
+    }
+
+    /**
+     * @Route("/test", name="your_examplebundle_crontasks_test")
+     */
+    public function testAction() {
+        $entity = new CronTask();
+
+        $entity->setName('Example asset symlinking task');
+        $entity->setInterval(3600);
+        $entity->setCommands(
+            [
+                ' cache:clear',
+            ]
+        );
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+
+        return new JsonResponse([ 'OK!' ]);
     }
 }

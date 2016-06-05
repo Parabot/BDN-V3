@@ -17,8 +17,6 @@ class RestController extends FOSRestController{
 
     /**
      * @Route("/account/oauth/v2/token", name="create_token")
-     * @PreAuthorize("hasRole('ROLE_DEVELOPER')")
-     * @Method({"POST"})
      */
     public function createTokenAction(Request $request){
         /**

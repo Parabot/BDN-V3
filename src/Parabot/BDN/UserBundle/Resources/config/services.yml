@@ -10,3 +10,7 @@ services:
     apikey_authenticator:
         class:  Parabot\BDN\UserBundle\Listener\ApiKeyAuthenticator
         public: false
+
+    bdn_authenticator:
+        class:     Parabot\BDN\UserBundle\Security\BDNAuthenticator
+        arguments: ["@security.password_encoder"]

@@ -9,7 +9,7 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Parabot\BDN\UserBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
 class User extends BaseUser implements TwoFactorInterface {
