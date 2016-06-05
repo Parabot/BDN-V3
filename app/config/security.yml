@@ -36,7 +36,7 @@ security:
             security: false
 
         scripts_area:
-            pattern: ^/api/scripts/
+            pattern: ^/api/
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator

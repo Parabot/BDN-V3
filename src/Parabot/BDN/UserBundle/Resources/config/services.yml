@@ -4,6 +4,8 @@ services:
 
     api_key_user_provider:
         class: Parabot\BDN\UserBundle\Provider\ApiKeyUserProvider
+        arguments:
+            entityManager: "@doctrine.orm.entity_manager"
 
     apikey_authenticator:
         class:  Parabot\BDN\UserBundle\Listener\ApiKeyAuthenticator

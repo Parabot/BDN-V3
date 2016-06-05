@@ -30,12 +30,33 @@ class User extends BaseUser implements TwoFactorInterface {
     protected $groups;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="api_key", length=255, nullable=true)
+     */
+    private $apiKey = null;
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      */
     private $googleAuthenticatorSecret;
 
     public function __construct() {
         parent::__construct();
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiKey() {
+        return $this->apiKey;
+    }
+
+    /**
+     * @param string $apiKey
+     */
+    public function setApiKey($apiKey) {
+        $this->apiKey = $apiKey;
     }
 
     /**
