@@ -165,7 +165,7 @@ class DefaultController extends Controller {
 
                         $this->get('slack_manager')->sendSuccessMessage(
                             'New release available',
-                            'Created new ' . $typeObject->getName() . ' from latest ' . ($typeObject->getStable(
+                            'Created new ' . $typeObject->getType() . ' from latest ' . ($typeObject->getStable(
                             ) ? '' : 'nightly ') . 'build.',
                             $request->getSchemeAndHttpHost() . $this->generateUrl(
                                 'bot_download',
@@ -241,12 +241,66 @@ class DefaultController extends Controller {
                             'message' => 'There is ' . ($latest === 'true' ? 'no' : 'a') . ' new release',
                         ]
                     );
+                } else {
+                    return new JsonResponse(
+                        [ 'result' => 'Something went terribly wrong', 'error_code' => '8AOB1SH67A' ], 500
+                    );
                 }
             } else {
                 return new JsonResponse([ 'result' => 'Unknown version requested' ], 404);
             }
         } else {
             return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
+        }
+    }
+
+    /**
+     * @Route("/checksum/{type}/{version}")
+     * @Template()
+     *
+     * @param Request $request
+     * @param string  $type
+     * @param string  $version
+     *
+     * @return JsonResponse
+     *
+     */
+    public function compareChecksumAction(Request $request, $type, $version) {
+        /**
+         * @var TypeHelper $typeHelper
+         * @var string     $currentMD5
+         */
+        $typeHelper = $this->get('bot.type_helper');
+        $currentMD5 = $request->request->get('checksum');
+
+        if($currentMD5 != null && strlen($currentMD5) == 32 && ctype_xdigit($currentMD5)) {
+            if($typeHelper->typeExists($type)) {
+                /**
+                 * @var TypeRepository|EntityRepository $repository
+                 * @var Type                            $currentObject
+                 * @var Type                            $latestObject
+                 */
+                $repository    = $this->getDoctrine()->getManager()->getRepository(
+                    $typeHelper->getRepositorySlug($type)
+                );
+                $currentObject = $repository->findOneBy([ 'version' => $version ], [ 'releaseDate' => 'DESC' ]);
+                if($currentObject != null) {
+                    $latestMD5 = md5(file_get_contents($currentObject->getFile()));
+
+                    return new JsonResponse(
+                        [
+                            'result'  => $match = boolval($latestMD5 == $currentMD5),
+                            'message' => 'Given checksum does' . ($match === 'true' ? '' : ' not') . ' match the checksum of the given version',
+                        ]
+                    );
+                } else {
+                    return new JsonResponse([ 'result' => 'Unknown version requested' ], 404);
+                }
+            } else {
+                return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'No valid checksum given' ], 404);
         }
     }
 
