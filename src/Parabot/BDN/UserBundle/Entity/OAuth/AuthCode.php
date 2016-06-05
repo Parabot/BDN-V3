@@ -4,10 +4,10 @@
  */
 namespace Parabot\BDN\UserBundle\Entity\OAuth;
 
-use AppBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\OAuthServerBundle\Entity\AuthCode as BaseAuthCode;
 use Parabot\BDN\UserBundle\Entity\OAuth;
+use Parabot\BDN\UserBundle\Entity\User;
 
 /**
  * @ORM\Table("oauth2_auth_codes")
@@ -32,7 +32,7 @@ class AuthCode extends BaseAuthCode {
     /**
      * @var $user User
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User")
      */
     protected $user;
 }

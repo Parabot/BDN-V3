@@ -1,9 +1,9 @@
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
-    user_class: AppBundle\Entity\User
+    user_class: Parabot\BDN\UserBundle\Entity\User
     group:
-        group_class: AppBundle\Entity\Group
+        group_class: Parabot\BDN\UserBundle\Entity\Group
 
 scheb_two_factor:
     google:

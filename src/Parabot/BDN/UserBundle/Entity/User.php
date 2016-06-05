@@ -2,7 +2,7 @@
 /**
  * @author JKetelaar
  */
-namespace AppBundle\Entity;
+namespace Parabot\BDN\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -21,7 +21,7 @@ class User extends BaseUser implements TwoFactorInterface {
     protected $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Group")
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\Group")
      * @ORM\JoinTable(name="user_user_group",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
@@ -36,7 +36,6 @@ class User extends BaseUser implements TwoFactorInterface {
 
     public function __construct() {
         parent::__construct();
-        // your own logic
     }
 
     /**

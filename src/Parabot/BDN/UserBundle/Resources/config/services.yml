@@ -1,9 +1,10 @@
 services:
-    community.connector:
-        class:  Parabot\BDN\CommunityBundle\Service\Connector
-        calls:
-          - [setContainer, [@service_container]]
-          - [setInformation]
-
     authentication_handler:
         class: Parabot\BDN\UserBundle\Listener\AuthenticationListener
+
+    api_key_user_provider:
+        class: Parabot\BDN\UserBundle\Provider\ApiKeyUserProvider
+
+    apikey_authenticator:
+        class:  Parabot\BDN\UserBundle\Listener\ApiKeyAuthenticator
+        public: false

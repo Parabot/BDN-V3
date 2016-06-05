@@ -2,7 +2,7 @@
 /**
  * @author JKetelaar
  */
-namespace AppBundle\Entity;
+namespace Parabot\BDN\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\Group as BaseGroup;

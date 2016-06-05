@@ -15,6 +15,12 @@ security:
             memory: ~
         fos_userbundle:
             id: fos_user.user_provider.username
+        api_key_user_provider:
+            id: api_key_user_provider
+
+        chain_provider:
+            chain:
+                providers: [in_memory, fos_userbundle, api_key_user_provider]
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -28,6 +34,27 @@ security:
         login:
             pattern: ^/api/users/login$
             security: false
+
+        scripts_area:
+            pattern: ^/api/scripts/
+            stateless: true
+            simple_preauth:
+                authenticator: apikey_authenticator
+            provider: api_key_user_provider
+
+        servers_area:
+            pattern: ^/api/servers/
+            stateless: true
+            simple_preauth:
+                authenticator: apikey_authenticator
+            provider: api_key_user_provider
+
+        user_area:
+            pattern: ^/api/user/
+            stateless: true
+            simple_preauth:
+                authenticator: apikey_authenticator
+            provider: api_key_user_provider
 
         main:
             pattern: ^/
