@@ -3,6 +3,8 @@
 namespace Parabot\BDN\BotBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Parabot\BDN\BotBundle\Entity\Scripts\Git;
+use Parabot\BDN\UserBundle\Entity\User;
 
 /**
  * Script
@@ -11,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Parabot\BDN\BotBundle\Repository\ScriptRepository")
  */
 class Script {
+
     /**
      * @var integer
      *
@@ -28,23 +31,35 @@ class Script {
     private $name;
 
     /**
-     * @var array
-     *
-     * @ORM\Column(name="user", type="array")
+     * @var User[]
+     * 
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User")
+     * @ORM\JoinTable(name="script_authors",
+     *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
+     * )
      */
-    private $user;
+    private $authors;
 
     /**
-     * @var array
+     * @var User[]
      *
-     * @ORM\Column(name="users", type="array")
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User")
+     * @ORM\JoinTable(name="script_users",
+     *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
+     * )
      */
     private $users;
 
     /**
      * @var array
      *
-     * @ORM\Column(name="groups", type="array")
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\Group")
+     * @ORM\JoinTable(name="script_groups",
+     *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+     * )
      */
     private $groups;
 
@@ -58,7 +73,11 @@ class Script {
     /**
      * @var array
      *
-     * @ORM\Column(name="categories", type="array")
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Category")
+     * @ORM\JoinTable(name="script_categories",
+     *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
+     * )
      */
     private $categories;
 
@@ -89,6 +108,13 @@ class Script {
      * @ORM\Column(name="active", type="boolean")
      */
     private $active;
+
+    /**
+     * @var Git
+     *
+     * @ORM\OneToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Git")
+     */
+    private $git;
 
 
     /**
@@ -125,21 +151,21 @@ class Script {
     /**
      * Get user
      *
-     * @return array
+     * @return User[]
      */
-    public function getUser() {
-        return $this->user;
+    public function getAuthors() {
+        return $this->authors;
     }
 
     /**
      * Set user
      *
-     * @param array $user
+     * @param User[] $authors
      *
      * @return Script
      */
-    public function setUser($user) {
-        $this->user = $user;
+    public function setAuthors($authors) {
+        $this->authors = $authors;
 
         return $this;
     }
