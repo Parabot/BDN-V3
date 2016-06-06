@@ -36,21 +36,21 @@ security:
             security: false
 
         scripts_area:
-            pattern: ^/api/scripts/
+            pattern: ^/api_dev/scripts/
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator
             provider: api_key_user_provider
 
         servers_area:
-            pattern: ^/api/servers/
+            pattern: ^/api_dev/servers/
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator
             provider: api_key_user_provider
 
         user_area:
-            pattern: ^/api/user/
+            pattern: ^/api_dev/user/
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator
