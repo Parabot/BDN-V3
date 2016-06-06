@@ -19,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Travis\Client\Entity\Build;
 
 class DefaultController extends Controller {
 
@@ -108,6 +109,25 @@ class DefaultController extends Controller {
             /** @var TypeRepository|EntityRepository $repository */
             $repository = $manager->getRepository($typeHelper->getRepositorySlug($type));
             $typeObject = $typeHelper->createType($type);
+            
+            if ($id === 'latest'){
+                $travis = $travisHelper->getRepository($typeHelper->createType($type)->getTravisRepository());
+                $branch = $request->query->get('branch');
+                if ($branch != null){
+                    /**
+                     * @var Build $build
+                     */
+                    foreach($travis->getBuilds()->toArray() as $build){
+                        if ($build->getBranch() == $branch){
+                            $id = $build->getBranch();
+                            break;
+                        }
+                    }
+                }else{
+                    $id = $travis->getLastBuildId();
+                }
+            }
+
             $build      = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
 
             if($build != null) {
