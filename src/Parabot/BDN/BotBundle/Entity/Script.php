@@ -31,7 +31,7 @@ class Script {
     private $name;
 
     /**
-     * @var User[]
+     * @var ArrayCollection
      * 
      * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User")
      * @ORM\JoinTable(name="script_authors",
@@ -355,8 +355,12 @@ class Script {
 
     /**
      * @param Git $git
+     *
+     * @return Script
      */
     public function setGit($git) {
         $this->git = $git;
+        
+        return $this;
     }
 }
