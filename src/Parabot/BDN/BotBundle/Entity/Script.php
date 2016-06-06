@@ -345,4 +345,18 @@ class Script {
 
         return $this;
     }
+
+    /**
+     * @return Git
+     */
+    public function getGit() {
+        return $this->git;
+    }
+
+    /**
+     * @param Git $git
+     */
+    public function setGit($git) {
+        $this->git = $git;
+    }
 }
