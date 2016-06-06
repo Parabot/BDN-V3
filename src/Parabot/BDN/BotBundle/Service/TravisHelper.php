@@ -21,6 +21,15 @@ class TravisHelper {
 
     /**
      * @param string $slug
+     *
+     * @return Client\Entity\Repository
+     */
+    public function getRepository($slug){
+        return $this->client->fetchRepository($slug);
+    }
+
+    /**
+     * @param string $slug
      * @param int    $build_id
      *
      * @return null|Client\Entity\Build
