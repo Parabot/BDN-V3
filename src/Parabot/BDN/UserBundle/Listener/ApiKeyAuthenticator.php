@@ -27,7 +27,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface {
                 ], 500
             );
         }
-        
+
         $apiKey   = $token->getCredentials();
         $username = $userProvider->getUsernameForApiKey($apiKey);
 
@@ -50,6 +50,9 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface {
 
     public function createToken(Request $request, $providerKey) {
         $apiKey = $request->query->get('apikey');
+        if( ! $apiKey) {
+            $apiKey = $request->cookies->get('apikey');
+        }
 
         if( ! $apiKey) {
             throw new BadCredentialsException('No API key found');
