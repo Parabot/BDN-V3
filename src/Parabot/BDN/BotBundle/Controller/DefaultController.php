@@ -109,26 +109,26 @@ class DefaultController extends Controller {
             /** @var TypeRepository|EntityRepository $repository */
             $repository = $manager->getRepository($typeHelper->getRepositorySlug($type));
             $typeObject = $typeHelper->createType($type);
-            
-            if ($id === 'latest'){
+
+            if($id === 'latest') {
                 $travis = $travisHelper->getRepository($typeHelper->createType($type)->getTravisRepository());
                 $branch = $request->query->get('branch');
-                if ($branch != null){
+                if($branch != null) {
                     /**
                      * @var Build $build
                      */
-                    foreach($travis->getBuilds()->toArray() as $build){
-                        if ($build->getBranch() == $branch){
-                            $id = $build->getBranch();
+                    foreach($travis->getBuilds()->toArray() as $build) {
+                        if($build->getBranch() == $branch) {
+                            $id = $build->getId();
                             break;
                         }
                     }
-                }else{
+                } else {
                     $id = $travis->getLastBuildId();
                 }
             }
 
-            $build      = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
+            $build = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
 
             if($build != null) {
                 if($build->getResult() === $build::RESULT_OK) {
