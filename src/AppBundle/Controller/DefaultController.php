@@ -3,11 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\CronTask;
+use Parabot\BDN\BotBundle\Entity\Script;
+use Parabot\BDN\BotBundle\Entity\Scripts\Git;
+use Parabot\BDN\BotBundle\Repository\ScriptRepository;
+use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use AppBundle\Entity\Dependencies\ParabotClient;
-use AppBundle\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -88,19 +90,42 @@ class DefaultController extends Controller {
      * @Route("/test", name="your_examplebundle_crontasks_test")
      */
     public function testAction() {
-        $entity = new CronTask();
+        $uRepository = $this->getDoctrine()->getRepository('BDNUserBundle:User');
+        $script = new Script();
 
-        $entity->setName('Example asset symlinking task');
-        $entity->setInterval(3600);
-        $entity->setCommands(
-            [
-                ' cache:clear',
-            ]
-        );
+        $git = new Git();
+        $git->setUrl('asd');
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($entity);
-        $em->flush();
+        $script->setName('asd')
+            ->setActive(true)
+            ->setAuthors($uRepository->findAll())
+            ->setCategories([])
+            ->setDescription('')
+            ->setForum(1)
+//            ->setGit($git)
+            ->setProduct(null)
+        ->setVersion(1.0);
+
+//        $this->getDoctrine()->getManager()->persist($script);
+//        $this->getDoctrine()->getManager()->flush();
+
+        /**
+         * @var ScriptRepository $repository
+         */
+        $repository = $this->getDoctrine()->getRepository('BDNBotBundle:Script');
+        $resultt = $repository->findByAuthor($uRepository->findOneBy(['username' => 'test']));
+
+        foreach($resultt as $r){
+            foreach($r->getAuthors() as $a){
+                var_dump($a->getEmail());
+                echo("<br>");
+            }
+            var_dump($r->getId());
+
+            echo("<br>");
+            echo("<br>");
+        }
+        die();
 
         return new JsonResponse([ 'OK!' ]);
     }
