@@ -15,7 +15,7 @@ class ScriptRepository extends EntityRepository {
      *
      * @return null|Git
      */
-    public function findGitById($id) {
+    public function findOneGitById($id) {
         /** @var Script $result */
         $result = $this->findOneBy([ 'id' => $id ]);
         if($result != null) {
@@ -26,4 +26,6 @@ class ScriptRepository extends EntityRepository {
 
         return null;
     }
+
+//    public function find
 }
