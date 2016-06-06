@@ -1,7 +1,12 @@
 bdn_bot:
-    resource: "@BDNBotBundle/Controller/"
+    resource: "@BDNBotBundle/Controller/BotController.php"
     type:     annotation
     prefix:   /api/bot
+
+bdn_script:
+    resource: "@BDNBotBundle/Controller/ScriptController.php"
+    type:     annotation
+    prefix:   /api/scripts
 
 bdn_community:
     resource: "@BDNUserBundle/Controller/"
