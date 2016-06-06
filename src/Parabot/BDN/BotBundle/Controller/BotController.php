@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Travis\Client\Entity\Build;
 
-class DefaultController extends Controller {
+class BotController extends Controller {
 
     /**
      * @Route("/download/{type}", name="bot_download")
