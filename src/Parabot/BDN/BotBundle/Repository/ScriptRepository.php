@@ -36,7 +36,7 @@ class ScriptRepository extends EntityRepository {
      */
     public function findByAuthor($user) {
         $query = $this->getEntityManager()->createQuery(
-            'SELECT s FROM BDNBotBundle:Script s JOIN s.authors a WHERE a.id = :id'
+            'SELECT s FROM BDNBotBundle:Script s JOIN s.authors a WHERE a.id = :id AND s.active = 1'
         )->setParameter('id', $user->getId());
 
         return $query->getResult();
