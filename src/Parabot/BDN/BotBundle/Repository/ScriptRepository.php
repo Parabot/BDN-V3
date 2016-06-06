@@ -1,9 +1,11 @@
 <?php
 
-namespace Parabot\BDN\BotBundle\Entity;
+namespace Parabot\BDN\BotBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
+use Parabot\BDN\UserBundle\Entity\User;
 
 /**
  * ScriptRepository
@@ -27,5 +29,16 @@ class ScriptRepository extends EntityRepository {
         return null;
     }
 
-//    public function find
+    /**
+     * @param User $user
+     *
+     * @return Script[]
+     */
+    public function findByAuthor($user) {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s FROM BDNBotBundle:Script s JOIN s.authors a WHERE a.id = :id'
+        )->setParameter('id', $user->getId());
+
+        return $query->getResult();
+    }
 }
