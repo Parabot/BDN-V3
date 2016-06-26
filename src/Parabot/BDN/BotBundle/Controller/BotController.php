@@ -131,7 +131,7 @@ class BotController extends Controller {
             $build = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
 
             if($build != null) {
-                if($build->getResult() === $build::RESULT_OK) {
+                if($build->getResult() !== $build::RESULT_FAILED) {
                     $totalNamedVersion = $typeObject->getName();
                     if($build->getBranch() != 'master') {
                         $version .= '-RC-' . $build->getId();
@@ -208,9 +208,11 @@ class BotController extends Controller {
                             [ 'result' => 'Version ' . $version . ' already exists', 500 ]
                         );
                     }
+                } else {
+                    return new JsonResponse([ 'result' => 'Cannot create a release of a failed build' ], 400);
                 }
             } else {
-                return new JsonResponse([ 'result' => 'Unknown build requested' ], 400);
+                return new JsonResponse([ 'result' => 'Unknown build requested' ], 404);
             }
         }
 
