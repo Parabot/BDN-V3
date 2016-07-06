@@ -7,6 +7,7 @@ namespace Parabot\BDN\BotBundle\Entity\Types;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\MappedSuperclass
@@ -19,6 +20,7 @@ abstract class Type {
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"default"})
      */
     private $id;
 
@@ -26,6 +28,7 @@ abstract class Type {
      * @var string
      *
      * @ORM\Column(name="version", type="string", length=255)
+     * @Groups({"default"})
      */
     private $version;
 
@@ -33,6 +36,7 @@ abstract class Type {
      * @var \DateTime
      *
      * @ORM\Column(name="release_date", type="datetime")
+     * @Groups({"default"})
      */
     private $releaseDate;
 
@@ -40,13 +44,15 @@ abstract class Type {
      * @var string
      *
      * @ORM\Column(name="branch", type="string", length=255)
+     * @Groups({"default"})
      */
     private $branch;
 
     /**
-     * @ORM\Column(name="stable", type="boolean")
-     *
      * @var bool
+     *
+     * @ORM\Column(name="stable", type="boolean")
+     * @Groups({"default"})
      */
     private $stable;
 
@@ -54,6 +60,7 @@ abstract class Type {
      * @var int
      *
      * @ORM\Column(name="build_id", type="integer")
+     * @Groups({"default"})
      */
     private $build;
     
@@ -127,6 +134,15 @@ abstract class Type {
         $this->releaseDate = $releaseDate;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"default"})
+     *
+     * @return int
+     */
+    public function getReleaseTimestamp(){
+        return $this->releaseDate->getTimestamp();
     }
 
     /**
@@ -206,16 +222,22 @@ abstract class Type {
     }
 
     /**
+     * @Groups({"default"})
+     *
      * @return string
      */
     public abstract function getType();
 
     /**
+     * @Groups({"default"})
+     *
      * @return string
      */
     public abstract function getTravisRepository();
     
     /**
+     * @Groups({"default"})
+     * 
      * @return string
      */
     public abstract function getName();
