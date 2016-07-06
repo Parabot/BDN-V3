@@ -13,22 +13,22 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 
-class RestController extends FOSRestController{
+class RestController extends FOSRestController {
 
     /**
      * @Route("/account/oauth/v2/token", name="create_token")
      */
-    public function createTokenAction(Request $request){
+    public function createTokenAction(Request $request) {
         /**
          * @var $clientRepository ClientRepository
-         * @var $client Client
+         * @var $client           Client
          */
-        $clientManager = $this->get('fos_oauth_server.client_manager.default');
+        $clientManager    = $this->get('fos_oauth_server.client_manager.default');
         $clientRepository = $this->getDoctrine()->getRepository('BDNUserBundle:OAuth\\Client');
 
-        if (($redirectUris = $request->request->get('uris')) != null) {
-            if (!is_array($redirectUris)){
-                $redirectUris = [$redirectUris];
+        if(($redirectUris = $request->request->get('uris')) != null) {
+            if( ! is_array($redirectUris)) {
+                $redirectUris = [ $redirectUris ];
             }
 
             if($clientRepository->redirectUrisAvailable($redirectUris) == false) {
@@ -46,8 +46,8 @@ class RestController extends FOSRestController{
                     'secret_id' => $client->getSecret(),
                 ]
             );
-        }else{
-            return new JsonResponse(['result' => 'Incorrect parameter \'uris\' given'], 400);
+        } else {
+            return new JsonResponse([ 'result' => 'Incorrect parameter \'uris\' given' ], 400);
         }
     }
 }
