@@ -385,7 +385,7 @@ class BotController extends Controller {
             $typeListJson = [ ];
             if($typeList != null && sizeof($typeList) > 1) {
                 foreach($typeList as $t) {
-                    $typeListJson[ ] = $typeListJson = SerializerManager::normalize($t);
+                    $typeListJson[ ] = SerializerManager::normalize($t);
 
                 }
             } elseif($typeList != null && sizeof($typeList) > 0) {
