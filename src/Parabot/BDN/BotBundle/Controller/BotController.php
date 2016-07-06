@@ -2,6 +2,7 @@
 
 namespace Parabot\BDN\BotBundle\Controller;
 
+use AppBundle\Service\SerializerManager;
 use Aws\S3\Exception\NoSuchKeyException;
 use Aws\S3\S3Client;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -384,21 +385,11 @@ class BotController extends Controller {
             $typeListJson = [ ];
             if($typeList != null && sizeof($typeList) > 1) {
                 foreach($typeList as $t) {
-                    $typeListJson[ $t->getId() ] = [
-                        'build'   => $t->getBuild(),
-                        'version' => $t->getVersion(),
-                        'release' => $t->getReleaseDate()->format('d-m-Y H:i'),
-                        'stable'  => $t->getStable(),
-                    ];
+                    $typeListJson[ ] = $typeListJson = SerializerManager::normalize($t);
+
                 }
             } elseif($typeList != null && sizeof($typeList) > 0) {
-                $t            = $typeList[ 0 ];
-                $typeListJson = [
-                    'build'   => $t->getBuild(),
-                    'version' => $t->getVersion(),
-                    'release' => $t->getReleaseDate()->format('d-m-Y H:i'),
-                    'stable'  => $t->getStable(),
-                ];
+                $typeListJson = SerializerManager::normalize($typeList[0]);
             }
 
             return new JsonResponse($typeListJson);
