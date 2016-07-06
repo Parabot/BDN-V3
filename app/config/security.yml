@@ -50,7 +50,7 @@ security:
             provider: api_key_user_provider
 
         user_area:
-            pattern: ^/api_dev/user/
+            pattern: ^/api/user/
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator
@@ -60,7 +60,7 @@ security:
             pattern: ^/
             form_login:
                 provider: fos_userbundle
-                csrf_provider: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
+                csrf_provider: security.csrf.token_manager
                 check_path: fos_user_security_check
                 default_target_path: /
                 always_use_default_target_path: true
