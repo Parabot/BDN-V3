@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerI
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
-class AuthenticationListener implements AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface{
+class AuthenticationListener implements AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface {
 
     /**
      * @var EntityManager
@@ -47,7 +47,7 @@ class AuthenticationListener implements AuthenticationFailureHandlerInterface, A
         $this->entityManager->persist($session);
         $this->entityManager->flush();
 
-        return new JsonResponse(['result' => $exception->getMessage()], 401);
+        return new JsonResponse([ 'result' => $exception->getMessage() ], 401);
     }
 
     /**
@@ -61,6 +61,6 @@ class AuthenticationListener implements AuthenticationFailureHandlerInterface, A
      * @return Response never null
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token) {
-        return new JsonResponse(['result' => 'ok']);
+        return new JsonResponse([ 'result' => 'ok' ]);
     }
 }

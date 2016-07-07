@@ -36,9 +36,9 @@ class BlockingLoginListener {
      * @param int           $blockCount
      */
     public function __construct($blocks, EntityManager $entityManager, $blockCount = 5) {
-        $this->blocks = $blocks;
+        $this->blocks        = $blocks;
         $this->entityManager = $entityManager;
-        $this->blockCount = $blockCount;
+        $this->blockCount    = $blockCount;
     }
 
     /**
@@ -49,14 +49,16 @@ class BlockingLoginListener {
             return;
         }
 
-        if($this->shouldBlock($event->getRequest()->getClientIp(), $event->getRequest()->attributes->get('_route'))){
+        if($this->shouldBlock($event->getRequest()->getClientIp(), $event->getRequest()->attributes->get('_route'))) {
             throw new AccessDeniedException();
         }
     }
-    
-    private function shouldBlock($ip, $route){
-        if (in_array(strtolower($route), $this->blocks)) {
-            return $this->entityManager->getRepository('BDNUserBundle:Session')->getSessionCount($ip) >= $this->blockCount;
+
+    private function shouldBlock($ip, $route) {
+        if(in_array(strtolower($route), $this->blocks)) {
+            return $this->entityManager->getRepository('BDNUserBundle:Session')->getSessionCount(
+                $ip
+            ) >= $this->blockCount;
         }
 
         return false;
