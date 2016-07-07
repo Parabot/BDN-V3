@@ -63,19 +63,19 @@ doctrine:
         connections:
             default:
                 driver:   pdo_mysql
-                host:     "%database.default.host%"
-                port:     "%database.default.port%"
-                dbname:   "%database.default.name%"
-                user:     "%database.default.user%"
-                password: "%database.default.password%"
+                host:     "%database_default_host%"
+                port:     "%database_default_port%"
+                dbname:   "%database_default_name%"
+                user:     "%database_default_user%"
+                password: "%database_default_password%"
                 charset:  UTF8
             community:
                 driver:   pdo_mysql
-                host:     "%database.community_host%"
-                port:     "%database.community_port%"
-                dbname:   "%database.community_name%"
-                user:     "%database.community_user%"
-                password: "%database.community_password%"
+                host:     "%database_community_host%"
+                port:     "%database_community_port%"
+                dbname:   "%database_community_name%"
+                user:     "%database_community_user%"
+                password: "%database_community_password%"
                 charset:  UTF8
 
     orm:

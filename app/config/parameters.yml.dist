@@ -2,19 +2,17 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database:
-        default:
-            host:     127.0.0.1
-            port:     ~
-            name:     symfony
-            user:     root
-            password: ~
-        community:
-            host:     127.0.0.1
-            port:     ~
-            name:     community
-            user:     root
-            password: ~
+    database_default_host:     127.0.0.1
+    database_default_port:     ~
+    database_default_name:     symfony
+    database_default_user:     root
+    database_default_password: ~
+
+    database_community_host:     127.0.0.1
+    database_community_port:     ~
+    database_community_name:     community
+    database_community_user:     root
+    database_community_password: ~
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
