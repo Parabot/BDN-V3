@@ -10,8 +10,10 @@ use Lsw\ApiCallerBundle\Call\HttpGetJson;
 use Lsw\ApiCallerBundle\Caller\ApiCallerInterface;
 use Sensio\Bundle\GeneratorBundle\Manipulator\Manipulator;
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class Connector extends ContainerAware {
+class Connector {
+    use ContainerAwareTrait;
 
     private $url;
     private $key;
