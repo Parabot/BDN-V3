@@ -8,11 +8,6 @@ bdn_script:
     type:     annotation
     prefix:   /api/scripts
 
-bdn_user:
-    resource: "@BDNUserBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
 bdn_store:
     resource: "@BDNStoreBundle/Controller/"
     type:     annotation
