@@ -13,6 +13,7 @@ use Parabot\BDN\BotBundle\Entity\Types\Client;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Parabot\BDN\BotBundle\Repository\ClientRepository;
 use Parabot\BDN\BotBundle\Repository\TypeRepository;
+use Parabot\BDN\BotBundle\Service\ParameterParser;
 use Parabot\BDN\BotBundle\Service\TravisHelper;
 use Parabot\BDN\BotBundle\Service\TypeHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -35,6 +36,12 @@ class BotController extends Controller {
      *          "dataType"="string",
      *          "description"="type to be downloaded"
      *      }
+     *  },
+     *  parameters={
+     *      {"name"="branch", "dataType"="string", "required"=false, "description"="Branch to be downloaded from"},
+     *      {"name"="build", "dataType"="string", "required"=false, "description"="Travis build id to download"},
+     *      {"name"="nightly", "dataType"="boolean", "required"=false, "description"="Defines if it should list nightly
+     *      or stable types"}
      *  }
      * )
      *
@@ -67,7 +74,7 @@ class BotController extends Controller {
                 $download = $repository->findOneBy([ 'build' => $build ]);
             } else {
                 $download = $repository->findLatestByStability(
-                    ! ($request->query->get('nightly') === 'true'),
+                    ! (ParameterParser::parseStringToBoolean($request->query->get('nightly'))),
                     $branch
                 );
             }
@@ -386,10 +393,14 @@ class BotController extends Controller {
      *      }
      *  },
      *  parameters={
-     *      {"name"="nightly", "dataType"="boolean", "required"=false, "description"="Defines if it should list nightly or stable types"},
-     *      {"name"="limit", "dataType"="integer", "required"=false, "description"="Sets the limit of the amount to be shown, max 30"},
-     *      {"name"="page", "dataType"="integer", "required"=false, "description"="The page of the list, combined with the limit"},
-     *      {"name"="latest", "dataType"="boolean", "required"=false, "description"="Returns the latest type, whereas it will return an object instead of an array"}
+     *      {"name"="nightly", "dataType"="boolean", "required"=false, "description"="Defines if it should list nightly
+     *      or stable types"},
+     *      {"name"="limit", "dataType"="integer", "required"=false, "description"="Sets the limit of the amount to be
+     *      shown, max 30"},
+     *      {"name"="page", "dataType"="integer", "required"=false, "description"="The page of the list, combined with
+     *      the limit"},
+     *      {"name"="latest", "dataType"="boolean", "required"=false, "description"="Returns the latest type, whereas
+     *      it will return an object instead of an array"}
      *  }
      * )
      *
@@ -408,7 +419,7 @@ class BotController extends Controller {
          * @var bool       $nightly
          */
         $typeHelper = $this->get('bot.type_helper');
-        $stable     = $request->query->get('nightly') == 'true' ? false : true;
+        $stable     = ! ParameterParser::parseStringToBoolean($request->query->get('nightly'));
 
         if(($limit = $request->query->get('limit')) != null) {
             $limit = intval($limit);
@@ -431,7 +442,7 @@ class BotController extends Controller {
         }
 
         if(($latest = $request->query->get('latest')) != null) {
-            if($latest == 'true') {
+            if(ParameterParser::parseStringToBoolean($latest)) {
                 $limit = 1;
                 $page  = 0;
             }
