@@ -8,9 +8,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller {
-    public function indexAction($name) {
-        return $this->render('BDNUserBundle:Default:index.html.twig', [ 'name' => $name ]);
-    }
 
     /**
      * @Route("/unauthorised", name="unauthorised_notice")

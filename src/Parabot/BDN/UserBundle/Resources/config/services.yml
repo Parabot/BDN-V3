@@ -16,6 +16,10 @@ services:
         class:     Parabot\BDN\UserBundle\Security\BDNAuthenticator
         arguments: ["@security.password_encoder"]
 
+    bdn_connector:
+        class:    Parabot\BDN\UserBundle\Service\Connector
+        arguments: ['@doctrine.dbal.community_connection', '@doctrine.orm.entity_manager', '@security.password_encoder']
+
     bdn_blocking_login_listener:
         class: Parabot\BDN\UserBundle\Listener\BlockingLoginListener
         tags:

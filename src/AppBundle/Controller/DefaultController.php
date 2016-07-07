@@ -21,6 +21,8 @@ class DefaultController extends Controller {
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request) {
+        $this->get('bdn_connector')->updateCommunityUsers();
+        
         return $this->render(
             'default/index.html.twig',
             [

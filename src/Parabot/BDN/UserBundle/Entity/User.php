@@ -41,6 +41,14 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     private $googleAuthenticatorSecret;
 
+    /**
+     * @var CommunityUser
+     *
+     * @ORM\OneToOne(targetEntity="CommunityUser", mappedBy="user")
+     * @ORM\JoinColumn(name="communityuser_id", referencedColumnName="id")
+     */
+    private $communityUser;
+
     public function __construct() {
         parent::__construct();
     }
@@ -83,5 +91,19 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     public function setGoogleAuthenticatorSecret( $googleAuthenticatorSecret ) {
         $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
+    }
+
+    /**
+     * @return CommunityUser
+     */
+    public function getCommunityUser() {
+        return $this->communityUser;
+    }
+
+    /**
+     * @param CommunityUser $communityUser
+     */
+    public function setCommunityUser($communityUser) {
+        $this->communityUser = $communityUser;
     }
 }

@@ -32,7 +32,8 @@
         "seferov/aws-bundle": "~1.2",
         "l3l0/php-travis-client": "dev-master",
         "dzunke/slack-bundle": "~1.4",
-        "jms/security-extra-bundle": "^1.6"
+        "jms/security-extra-bundle": "^1.6",
+        "doctrine/doctrine-fixtures-bundle": "^2.3"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

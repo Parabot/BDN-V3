@@ -20,7 +20,7 @@ home:
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
-    prefix: /
+    prefix: /asd
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
