@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RegistrationController extends BaseController {
     public function registerAction(Request $request) {
-        return new JsonResponse('Access page through community', 404);
+        return new JsonResponse([ 'error' => 'Access page through community' ], 404);
     }
 
 }
