@@ -3,6 +3,7 @@
 namespace Parabot\BDN\BotBundle\Controller;
 
 use AppBundle\Service\SerializerManager;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Aws\S3\Exception\NoSuchKeyException;
 use Aws\S3\S3Client;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -25,6 +26,17 @@ use Travis\Client\Entity\Build;
 class BotController extends Controller {
 
     /**
+     * @ApiDoc(
+     *  description="Returns the requested download file",
+     *  requirements={
+     *      {
+     *          "name"="type",
+     *          "dataType"="string",
+     *          "description"="type to be downloaded"
+     *      }
+     *  }
+     * )
+     *
      * @Route("/download/{type}", name="bot_download")
      * @Template()
      *
