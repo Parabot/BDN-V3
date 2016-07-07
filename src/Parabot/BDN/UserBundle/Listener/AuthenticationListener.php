@@ -5,6 +5,7 @@
 
 namespace Parabot\BDN\UserBundle\Listener;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,20 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 class AuthenticationListener implements AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface{
 
     /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * AuthenticationListener constructor.
+     *
+     * @param EntityManager $entityManager
+     */
+    public function __construct(EntityManager $entityManager) {
+        $this->entityManager = $entityManager;
+    }
+
+    /**
      * This is called when an interactive authentication attempt fails. This is
      * called by authentication listeners inheriting from
      * AbstractAuthenticationListener.
@@ -28,6 +43,10 @@ class AuthenticationListener implements AuthenticationFailureHandlerInterface, A
      * @return Response The response to return, never null
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
+        $session = $this->entityManager->getRepository('BDNUserBundle:Session')->createBlock($request->getClientIp());
+        $this->entityManager->persist($session);
+        $this->entityManager->flush();
+
         return new JsonResponse(['result' => $exception->getMessage()], 401);
     }
 

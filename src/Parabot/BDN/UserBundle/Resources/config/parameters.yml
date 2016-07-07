@@ -6,3 +6,7 @@ parameters:
         followlocation: false  # to follow any "Location: " header that the server sends.
         sslversion: 3  # set to 3 to avoid any bugs that relate to automatic version selection.
         fresh_connect: true  # set to true to force full reconnect every call.
+    blocking_routes:
+        - bdn_login
+        - fos_user_security_check
+    block_count: 5

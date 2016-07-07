@@ -8,7 +8,7 @@ bdn_script:
     type:     annotation
     prefix:   /api/scripts
 
-bdn_community:
+bdn_user:
     resource: "@BDNUserBundle/Controller/"
     type:     annotation
     prefix:   /
