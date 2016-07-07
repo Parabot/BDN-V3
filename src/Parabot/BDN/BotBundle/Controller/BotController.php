@@ -20,6 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Travis\Client\Entity\Build;
 
@@ -42,6 +43,7 @@ class BotController extends Controller {
      *
      * @param Request $request
      * @param string  $type
+     * @Method({"GET"})
      *
      * @return JsonResponse
      */
@@ -94,12 +96,12 @@ class BotController extends Controller {
     /**
      * @Route("/create/{type}")
      * @Template()
+     * @Method({"POST"})
      *
      * @param Request $request
      * @param string  $type
      *
      * @return JsonResponse
-     *
      *
      * @TODO: Check if from PR, otherwise branch could still be master
      * @TODO: Finish Slack notifications, by adding error messages
@@ -233,8 +235,25 @@ class BotController extends Controller {
     }
 
     /**
+     * @ApiDoc(
+     *  description="Compares a version against the latest version",
+     *  requirements={
+     *      {
+     *          "name"="type",
+     *          "dataType"="string",
+     *          "description"="type to be compared to"
+     *      },
+     *      {
+     *          "name"="current",
+     *          "dataType"="string",
+     *          "description"="current version"
+     *      }
+     *  }
+     * )
+     *
      * @Route("/compare/{type}/{current}")
      * @Template()
+     * @Method({"GET"})
      *
      * @param Request $request
      * @param string  $type
@@ -290,8 +309,25 @@ class BotController extends Controller {
     }
 
     /**
+     * @ApiDoc(
+     *  description="Compares a checksum against the latest version",
+     *  requirements={
+     *      {
+     *          "name"="type",
+     *          "dataType"="string",
+     *          "description"="type to be compared to"
+     *      },
+     *      {
+     *          "name"="version",
+     *          "dataType"="string",
+     *          "description"="current version checksum"
+     *      }
+     *  }
+     * )
+     *
      * @Route("/checksum/{type}/{version}")
      * @Template()
+     * @Method({"GET"})
      *
      * @param Request $request
      * @param string  $type
@@ -340,8 +376,26 @@ class BotController extends Controller {
     }
 
     /**
+     * @ApiDoc(
+     *  description="Lists a type",
+     *  requirements={
+     *      {
+     *          "name"="type",
+     *          "dataType"="string",
+     *          "description"="type to be compared to"
+     *      }
+     *  },
+     *  parameters={
+     *      {"name"="nightly", "dataType"="boolean", "required"=false, "description"="Defines if it should list nightly or stable types"},
+     *      {"name"="limit", "dataType"="integer", "required"=false, "description"="Sets the limit of the amount to be shown, max 30"},
+     *      {"name"="page", "dataType"="integer", "required"=false, "description"="The page of the list, combined with the limit"},
+     *      {"name"="latest", "dataType"="boolean", "required"=false, "description"="Returns the latest type, whereas it will return an object instead of an array"}
+     *  }
+     * )
+     *
      * @Route("/list/{type}")
      * @Template()
+     * @Method({"GET"})
      *
      * @param Request $request
      * @param string  $type
@@ -397,11 +451,11 @@ class BotController extends Controller {
             $typeListJson = [ ];
             if($typeList != null && sizeof($typeList) > 1) {
                 foreach($typeList as $t) {
-                    $typeListJson[ ] = SerializerManager::normalize($t);
+                    $typeListJson[] = SerializerManager::normalize($t);
 
                 }
             } elseif($typeList != null && sizeof($typeList) > 0) {
-                $typeListJson = SerializerManager::normalize($typeList[0]);
+                $typeListJson = SerializerManager::normalize($typeList[ 0 ]);
             }
 
             return new JsonResponse($typeListJson);
