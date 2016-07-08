@@ -19,6 +19,7 @@ class RestController extends FOSRestController {
      * @Route("/account/oauth/v2/token", name="create_token")
      */
     public function createTokenAction(Request $request) {
+        die();
         /**
          * @var $clientRepository ClientRepository
          * @var $client           Client
