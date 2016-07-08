@@ -31,7 +31,7 @@ class Script {
     private $name;
 
     /**
-     * @var ArrayCollection
+     * @var User[]
      * 
      * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User")
      * @ORM\JoinTable(name="script_authors",

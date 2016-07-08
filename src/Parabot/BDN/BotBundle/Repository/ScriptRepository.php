@@ -41,4 +41,9 @@ class ScriptRepository extends EntityRepository {
 
         return $query->getResult();
     }
+
+    public function findScriptsForUser(User $user){
+        $query = $this->createQueryBuilder('s')
+            ->leftJoin();
+    }
 }

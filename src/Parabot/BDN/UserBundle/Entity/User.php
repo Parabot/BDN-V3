@@ -49,6 +49,11 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     private $communityUser;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Script", mappedBy="scripts")
+     */
+    private $scripts;
+
     public function __construct() {
         parent::__construct();
     }
@@ -72,6 +77,20 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     public function getId() {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getScripts() {
+        return $this->scripts;
+    }
+
+    /**
+     * @param mixed $scripts
+     */
+    public function setScripts($scripts) {
+        $this->scripts = $scripts;
     }
 
     /**
