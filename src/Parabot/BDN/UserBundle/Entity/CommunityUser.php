@@ -223,26 +223,4 @@ class CommunityUser {
     public function setMemberId($member_id) {
         $this->member_id = $member_id;
     }
-
-    /**
-     * Get user
-     *
-     * @return User
-     */
-    public function getUser() {
-        return $this->user;
-    }
-
-    /**
-     * Set user
-     *
-     * @param User $user
-     *
-     * @return CommunityUser
-     */
-    public function setUser($user) {
-        $this->user = $user;
-
-        return $this;
-    }
 }
