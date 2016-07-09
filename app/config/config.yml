@@ -6,6 +6,7 @@ imports:
     - { resource: @BDNStoreBundle/Resources/config/main.yml }
 
     - { resource: @BDNBotBundle/Resources/config/main.yml }
+    - { resource: @BDNBotBundle/Resources/config/parameters.yml }
 
     - { resource: @BDNUserBundle/Resources/config/main.yml }
     - { resource: @BDNUserBundle/Resources/config/parameters.yml }
