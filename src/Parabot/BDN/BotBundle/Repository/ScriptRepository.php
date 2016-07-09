@@ -50,9 +50,9 @@ class ScriptRepository extends EntityRepository {
         $query = $this->createQueryBuilder('s')
             ->leftJoin('s.users', 'user')
             ->leftJoin('s.authors', 'author')
-            ->leftJoin('author.groups', 'group')
+            ->leftJoin('author.groups', 'groups')
             ->where('user.id = :id')
-            ->andWhere('group.id IN :gids')
+            ->andWhere('groups.id IN (:gids)')
             ->setParameter('id', $user->getId())
             ->setParameter('gids', $scriptWriters)->getQuery();
         
