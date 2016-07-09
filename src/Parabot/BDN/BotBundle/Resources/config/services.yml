@@ -13,7 +13,6 @@ services:
         class: Parabot\BDN\BotBundle\Service\TypeHelper
         arguments:
             entityManager: "@doctrine.orm.entity_manager"
-#    s3:
-#        key: "%aws_key%"
-#        secret: "%aws_key%"
-#        region: us-west-1
+    bot.script_repository_service:
+        class: Parabot\BDN\BotBundle\Service\Repository\ScriptRepositoryService
+        arguments: ['@doctrine.orm.entity_manager', %groups%]
