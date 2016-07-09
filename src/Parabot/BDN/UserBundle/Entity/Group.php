@@ -12,6 +12,7 @@ use FOS\UserBundle\Model\Group as BaseGroup;
  * @ORM\Table(name="user_group")
  */
 class Group extends BaseGroup {
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
