@@ -21,7 +21,9 @@ class DefaultController extends Controller {
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request) {
-        $this->get('bdn_connector')->updateCommunityUsers();
+        $user = $this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[0];
+        $result = $this->get('bot.script_repository_service')->getScriptsForUser($user);
+        var_dump(sizeof($result));
         
         return $this->render(
             'default/index.html.twig',
@@ -118,7 +120,7 @@ class DefaultController extends Controller {
          * @var ScriptRepository $repository
          */
         $repository = $this->getDoctrine()->getRepository('BDNBotBundle:Script');
-        $resultt = $repository->findByAuthor($uRepository->findOneBy(['username' => 'test']));
+        $resultt = $repository->findByAuthor($uRepository->findOneBy(['username' => 'minimal']));
 
         foreach($resultt as $r){
             foreach($r->getAuthors() as $a){
