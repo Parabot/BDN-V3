@@ -116,6 +116,13 @@ class Script {
      */
     private $git;
 
+    /**
+     * @var User
+     * 
+     * @ORM\OneToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User")
+     */
+    private $creator;
+
 
     /**
      * Get id
