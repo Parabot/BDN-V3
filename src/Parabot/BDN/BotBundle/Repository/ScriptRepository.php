@@ -42,8 +42,20 @@ class ScriptRepository extends EntityRepository {
         return $query->getResult();
     }
 
-    public function findScriptsForUser(User $user){
+    public function findScriptsForUser(User $user, $scriptWriters){
+        if (!is_array($scriptWriters)){
+            $scriptWriters = [$scriptWriters];
+        }
+
         $query = $this->createQueryBuilder('s')
-            ->leftJoin();
+            ->leftJoin('s.users', 'user')
+            ->leftJoin('s.authors', 'author')
+            ->leftJoin('author.groups', 'group')
+            ->where('user.id = :id')
+            ->andWhere('group.id IN :gids')
+            ->setParameter('id', $user->getId())
+            ->setParameter('gids', $scriptWriters)->getQuery();
+        
+        return $query->getResult();
     }
 }
