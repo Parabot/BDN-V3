@@ -35,7 +35,13 @@ class SyncCommand extends ContainerAwareCommand {
 
         if( ! empty($users[ 'new' ])) {
             foreach($users[ 'new' ] as $user) {
-                $logger->info('Synced new user: ' . $user);
+                $logger->info('Added new user: ' . $user);
+            }
+        }
+
+        if( ! empty($users[ 'updated' ])) {
+            foreach($users[ 'updated' ] as $user) {
+                $logger->info('Updated user: ' . $user);
             }
         }
     }
