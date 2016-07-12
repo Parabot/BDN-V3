@@ -86,7 +86,9 @@ class Connector {
         $repository = $this->entityManager->getRepository('BDNUserBundle:User');
 
         $gRepository = $this->entityManager->getRepository('BDNUserBundle:Group');
-        $groups = $gRepository->findAll();
+        $groups      = $gRepository->findAll();
+
+        $newUsers = [ 'new' => [ ], 'updated' => [ ] ];
 
         foreach($result as $member) {
             if(($user = $repository->getUserByCommunityMemberId($member[ 'member_id' ])) == null) {
@@ -109,33 +111,35 @@ class Connector {
                 $user = $this->parseCommunityUserToUser($user, $groups);
 
                 $this->entityManager->persist($user);
-                $cUser->setUser($user);
 
                 $this->entityManager->persist($cUser);
+
+                $newUsers[ 'new' ][] = $user->getUsername();
             }
         }
         $this->entityManager->flush();
-        die('');
+
+        return $newUsers;
     }
 
     /**
-     * @param User $user
+     * @param User    $user
      *
      * @param Group[] $groups
      *
      * @return User
      */
     public function parseCommunityUserToUser($user, $groups) {
-        $cUser = $user->getCommunityUser();
-        $oGroups = [];
-        if (($go = $cUser->getMgroupOthers()) != null && strlen($go)) {
+        $cUser   = $user->getCommunityUser();
+        $oGroups = [ ];
+        if(($go = $cUser->getMgroupOthers()) != null && strlen($go)) {
             $oGroups = explode(',', $go);
         }
-        $ids = array_merge([$cUser->getMemberGroupId()], $oGroups);
+        $ids = array_merge([ $cUser->getMemberGroupId() ], $oGroups);
 
         foreach($ids as $id) {
-            foreach($groups as $group){
-                if ($group->getCommunityId() == $id){
+            foreach($groups as $group) {
+                if($group->getCommunityId() == $id) {
                     $user->addGroup($group);
                     break;
                 }
