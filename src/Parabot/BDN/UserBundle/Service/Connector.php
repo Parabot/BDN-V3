@@ -68,13 +68,15 @@ class Connector {
     }
 
     /**
+     * TODO: Check last visit, don't sync again
+     * 
      * @param null|int $timestamp
      *
      * @return string[][]
      */
     public function updateCommunityUsers($timestamp = null) {
         if($timestamp == null) {
-            $timestamp = time() - (15 * 60);
+            $timestamp = time() - (5 * 60);
         }
 
         $query = 'SELECT ' . implode(', ', self::$connection_information[ 'columns' ]);
@@ -91,16 +93,13 @@ class Connector {
         $groups      = $gRepository->findAll();
 
         $newUsers = [ 'new' => [ ], 'updated' => [ ] ];
+        $cUser    = null;
 
         foreach($result as $member) {
             if(($user = $repository->getUserByCommunityMemberId($member[ 'member_id' ])) == null) {
                 $cUser = new CommunityUser();
 
-                $cUser->setEmail($member[ 'email' ])->setMemberGroupId($member[ 'member_group_id' ])->setMgroupOthers(
-                    $member[ 'mgroup_others' ]
-                )->setMembersPassHash($member[ 'members_pass_hash' ])->setMembersPassSalt(
-                    $member[ 'members_pass_salt' ]
-                )->setName($member[ 'name' ])->setMemberId($member[ 'member_id' ]);
+                $cUser = $this->updateInformation($cUser, $member);
 
                 $user = new User();
 
@@ -112,16 +111,45 @@ class Connector {
 
                 $user = $this->parseCommunityUserToUser($user, $groups);
 
-                $this->entityManager->persist($user);
-
-                $this->entityManager->persist($cUser);
-
                 $newUsers[ 'new' ][] = $user->getUsername();
+            } else {
+                if($user !== null) {
+                    $cUser = $this->updateInformation($user->getCommunityUser(), $member);
+                    $user->setCommunityUser($cUser);
+                    
+                    $user = $this->parseCommunityUserToUser($user, $groups);
+
+                    $newUsers[ 'updated' ][] = $user->getUsername();
+                }
+            }
+
+            if($user != null) {
+                $this->entityManager->persist($user);
+            }
+
+            if($cUser != null) {
+                $this->entityManager->persist($cUser);
             }
         }
         $this->entityManager->flush();
 
         return $newUsers;
+    }
+
+    /**
+     * @param CommunityUser $cUser
+     * @param string        $member
+     *
+     * @return CommunityUser
+     */
+    private function updateInformation(CommunityUser $cUser, $member) {
+        $cUser->setEmail($member[ 'email' ])->setMemberGroupId($member[ 'member_group_id' ])->setMgroupOthers(
+            $member[ 'mgroup_others' ]
+        )->setMembersPassHash($member[ 'members_pass_hash' ])->setMembersPassSalt(
+            $member[ 'members_pass_salt' ]
+        )->setName($member[ 'name' ])->setMemberId($member[ 'member_id' ]);
+
+        return $cUser;
     }
 
     /**
