@@ -69,7 +69,7 @@ class Connector {
 
     /**
      * TODO: Check last visit, don't sync again
-     * 
+     *
      * @param null|int $timestamp
      *
      * @return string[][]
@@ -103,9 +103,7 @@ class Connector {
 
                 $user = new User();
 
-                $user->setPlainPassword(StringUtils::generateRandomString()); // Temporary password
-                $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
-                $user->setPassword($password);
+                $this->updateUserPassword($user, StringUtils::generateRandomString()); // Temporary password
 
                 $user->setCommunityUser($cUser);
 
@@ -116,7 +114,7 @@ class Connector {
                 if($user !== null) {
                     $cUser = $this->updateInformation($user->getCommunityUser(), $member);
                     $user->setCommunityUser($cUser);
-                    
+
                     $user = $this->parseCommunityUserToUser($user, $groups);
 
                     $newUsers[ 'updated' ][] = $user->getUsername();
@@ -153,13 +151,23 @@ class Connector {
     }
 
     /**
+     * @param User   $user
+     * @param string $input
+     */
+    public function updateUserPassword(User $user, $input) {
+        $user->setPlainPassword($input);
+        $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
+        $user->setPassword($password);
+    }
+
+    /**
      * @param User    $user
      *
      * @param Group[] $groups
      *
      * @return User
      */
-    public function parseCommunityUserToUser($user, $groups) {
+    private function parseCommunityUserToUser($user, $groups) {
         $cUser   = $user->getCommunityUser();
         $oGroups = [ ];
         if(($go = $cUser->getMgroupOthers()) != null && strlen($go)) {
@@ -182,7 +190,15 @@ class Connector {
         return $user;
     }
 
-    private function getPasswordHashed($password, $salt) {
-        return crypt($password, '$2a$13$' . $salt); // Simply the hashing method of IPB 4
+    /**
+     * Comparing the saved community password with the encryption method of IPB 4
+     *
+     * @param CommunityUser $user
+     * @param string        $input Given password of user
+     *
+     * @return bool
+     */
+    public function compareCommunityPassword(CommunityUser $user, $input) {
+        return $user->getMembersPassHash() === crypt($input, '$2a$13$' . $user->getMembersPassSalt());
     }
 }
