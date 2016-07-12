@@ -69,6 +69,8 @@ class Connector {
 
     /**
      * @param null|int $timestamp
+     *
+     * @return string[][]
      */
     public function updateCommunityUsers($timestamp = null) {
         if($timestamp == null) {
