@@ -104,6 +104,11 @@ nelmio_api_doc:
         enabled: true
 
 hwi_oauth:
+    http_client:
+        timeout:       10
+        verify_peer:   true
+        ignore_errors: false
+        max_redirects: 5
     firewall_names: [main]
     fosub:
         username_iterations: 30
