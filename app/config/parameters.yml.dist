@@ -26,3 +26,6 @@ parameters:
     aws_secret: ~
 
     slack_token: ~
+
+    oauth_id: ~
+    oauth_secret: ~

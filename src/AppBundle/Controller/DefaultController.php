@@ -105,7 +105,7 @@ class DefaultController extends Controller {
 
         $script->setName('asd')
             ->setActive(true)
-            ->setAuthors($uRepository->findAll())
+            ->setAuthors([$uRepository->findAll()[1]])
             ->setCategories([])
             ->setDescription('')
             ->setForum(1)

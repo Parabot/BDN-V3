@@ -102,3 +102,25 @@ nelmio_api_doc:
     name: BDN API V3
     cache:
         enabled: true
+
+hwi_oauth:
+    firewall_names: [main]
+    fosub:
+        username_iterations: 30
+        properties:
+            forums: forums
+    connect:
+        confirmation: true
+    resource_owners:
+        forums:
+            type: oauth2
+            client_id: '%oauth_id%'
+            client_secret: '%oauth_secret%'
+            access_token_url: https://www.parabot.org/community/applications/oauth2server/interface/token.php
+            authorization_url: https://www.parabot.org/community/applications/oauth2server/interface/authorize.php
+            infos_url: https://www.parabot.org/community/applications/oauth2server/interface/me.php
+            user_response_class: HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse
+            paths:
+                identifier: id
+                nickname:   username
+                realname:   fullname

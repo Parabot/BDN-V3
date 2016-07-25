@@ -21,7 +21,7 @@
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "scheb/two-factor-bundle": "~1.5",
         "whatsapp/chat-api": "v2.5.5.4",
-        "hwi/oauth-bundle": "0.4.*",
+        "hwi/oauth-bundle": "^0.4.1",
         "evolution7/bugsnag-bundle": "~1.4",
         "friendsofsymfony/rest-bundle": "~1.7",
         "jms/serializer-bundle": "~1.1",

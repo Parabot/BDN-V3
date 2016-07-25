@@ -44,18 +44,17 @@ fos_oauth_server_token:
 fos_oauth_server_authorize:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
 
-fos_user_security_check:
-    path: /api/users/login_check
-    defaults: { _controller: FOSUserBundle:Security:check }
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /api/users/connect
 
-fos_user_security_login:
-    path: /api/users/login
-    defaults: { _controller: FOSUserBundle:Security:login }
-    requirements:
-        _method: GET|POST
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /api/users/connect
 
-fos_user_resetting_reset:
-    path: /api/users/logout
-    defaults: { _controller: FOSUserBundle:Security:logout }
-    requirements:
-        _method: GET|POST
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /api/users/connect
+
+hwi_forums_login:
+    pattern: /api/users/login/forums

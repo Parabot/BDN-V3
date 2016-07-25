@@ -24,4 +24,4 @@ services:
         class: Parabot\BDN\UserBundle\Listener\BlockingLoginListener
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 9 }
-        arguments: [%blocking_routes%, '@doctrine.orm.entity_manager', %block_count%]
+        arguments: ['%blocking_routes%', '@doctrine.orm.entity_manager', '%block_count%']
