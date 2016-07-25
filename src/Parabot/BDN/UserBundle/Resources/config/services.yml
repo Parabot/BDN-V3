@@ -25,3 +25,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 9 }
         arguments: ['%blocking_routes%', '@doctrine.orm.entity_manager', '%block_count%']
+
+    oauth_user_provider:
+        class: Parabot\BDN\UserBundle\Security\UserProvider
+        arguments: ['@fos_user.user_manager',{forums: forums}]

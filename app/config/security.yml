@@ -66,7 +66,7 @@ security:
                 resource_owners:
                     forums: "/api/users/login/forums"
                 oauth_user_provider:
-                    service: hwi_oauth.user.provider.fosub_bridge
+                    service: oauth_user_provider
             anonymous: true
             logout:
                 path: /api/users/logout

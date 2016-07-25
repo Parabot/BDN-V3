@@ -106,7 +106,7 @@ nelmio_api_doc:
 hwi_oauth:
     http_client:
         timeout:       10
-        verify_peer:   true
+        verify_peer:   false
         ignore_errors: false
         max_redirects: 5
     firewall_names: [main]
@@ -125,7 +125,10 @@ hwi_oauth:
             authorization_url: https://www.parabot.org/community/applications/oauth2server/interface/authorize.php
             infos_url: https://www.parabot.org/community/applications/oauth2server/interface/me.php
             user_response_class: HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse
+            options:
+                use_bearer_authorization: false
             paths:
                 identifier: id
                 nickname:   username
                 realname:   fullname
+                email: email

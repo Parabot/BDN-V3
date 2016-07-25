@@ -42,12 +42,25 @@ class User extends BaseUser implements TwoFactorInterface {
     private $googleAuthenticatorSecret;
 
     /**
-     * @var CommunityUser
+     * @var int
      *
-     * @ORM\OneToOne(targetEntity="CommunityUser", mappedBy="user")
-     * @ORM\JoinColumn(name="communityuser_id", referencedColumnName="id")
+     * @ORM\Column(type="integer", name="forums_id")
      */
-    private $communityUser;
+    private $forumsId;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", name="forums_access_token")
+     */
+    private $forumsAccessToken;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", name="community_id")
+     */
+    private $communityId;
 
     /**
      * @ORM\ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Script", mappedBy="scripts")
@@ -113,16 +126,44 @@ class User extends BaseUser implements TwoFactorInterface {
     }
 
     /**
-     * @return CommunityUser
+     * @param int $forumsId
      */
-    public function getCommunityUser() {
-        return $this->communityUser;
+    public function setForumsId($forumsId) {
+        $this->forumsId = $forumsId;
     }
 
     /**
-     * @param CommunityUser $communityUser
+     * @return int
      */
-    public function setCommunityUser($communityUser) {
-        $this->communityUser = $communityUser;
+    public function getForumsId() {
+        return $this->forumsId;
+    }
+
+    /**
+     * @param int $forumsAccessToken
+     */
+    public function setForumsAccessToken($forumsAccessToken) {
+        $this->forumsAccessToken = $forumsAccessToken;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCommunityId() {
+        return $this->communityId;
+    }
+
+    /**
+     * @param int $communityId
+     */
+    public function setCommunityId($communityId) {
+        $this->communityId = $communityId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getForumsAccessToken() {
+        return $this->forumsAccessToken;
     }
 }
