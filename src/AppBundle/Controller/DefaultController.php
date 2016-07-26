@@ -21,14 +21,12 @@ class DefaultController extends Controller {
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request) {
-        $user = $this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[0];
-        $result = $this->get('bot.script_repository_service')->getScriptsForUser($user);
-        var_dump(sizeof($result));
-        
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         return $this->render(
             'default/index.html.twig',
             [
-                'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
+                'base_dir' => print_r($user->getUsername(), true),
             ]
         );
     }
