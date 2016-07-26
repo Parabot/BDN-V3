@@ -2,14 +2,17 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\CronTask;
 use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
 use Parabot\BDN\BotBundle\Repository\ScriptRepository;
 use Parabot\BDN\UserBundle\Entity\User;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
+use JMS\SecurityExtraBundle\Annotation\Secure;
+
 use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,15 +21,17 @@ use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 
 class DefaultController extends Controller {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/a", name="homepage")
+     *
+     * @PreAuthorize("hasRole('ROLE_USER')")
      */
     public function indexAction(Request $request) {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getRoles();
 
         return $this->render(
             'default/index.html.twig',
             [
-                'base_dir' => print_r($user->getUsername(), true),
+                'base_dir' => print_r($user, true),
             ]
         );
     }
