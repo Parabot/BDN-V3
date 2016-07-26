@@ -44,13 +44,13 @@ class AppKernel extends Kernel
 
             new DZunke\SlackBundle\DZunkeSlackBundle(),
 
-            new JMS\AopBundle\JMSAopBundle(),
-            new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
-            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
-
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
 
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+
+            new JMS\AopBundle\JMSAopBundle(),
+            new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
 
         );
 
