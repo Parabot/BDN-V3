@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Symfony\Component\Security\Core\Role\Role;
 
 class DefaultController extends Controller {
     /**
@@ -26,12 +27,16 @@ class DefaultController extends Controller {
      * @PreAuthorize("hasRole('ROLE_USER')")
      */
     public function indexAction(Request $request) {
+        /**
+         * @var User $user
+         */
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         return $this->render(
             'default/index.html.twig',
             [
                 'username' => $user->getUsername(),
+                'roles' => $user->getRoles()
             ]
         );
     }

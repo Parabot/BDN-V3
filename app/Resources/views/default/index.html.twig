@@ -18,6 +18,15 @@
                     This application says you're logged in as
                     <code>{{ username }}</code>
                 </p>
+                <p>
+                    <br>
+                    With roles
+                    <ul>
+                        {% for role in roles %}
+                            <li>{{ role }}</li>
+                        {% endfor %}
+                    </ul>
+                </p>
             </div>
 
         </div>
