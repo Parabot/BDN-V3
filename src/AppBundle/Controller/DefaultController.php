@@ -26,12 +26,12 @@ class DefaultController extends Controller {
      * @PreAuthorize("hasRole('ROLE_USER')")
      */
     public function indexAction(Request $request) {
-        $user = $this->get('security.token_storage')->getToken()->getRoles();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         return $this->render(
             'default/index.html.twig',
             [
-                'base_dir' => print_r($user, true),
+                'username' => $user->getUsername(),
             ]
         );
     }
