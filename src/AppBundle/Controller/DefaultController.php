@@ -36,7 +36,7 @@ class DefaultController extends Controller {
             'default/index.html.twig',
             [
                 'username' => $user->getUsername(),
-                'roles' => $user->getRoles()
+                'groups' => $user->getGroupNames()
             ]
         );
     }
