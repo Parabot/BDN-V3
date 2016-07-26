@@ -47,10 +47,10 @@ class BotController extends Controller {
      *
      * @Route("/download/{type}", name="bot_download")
      * @Template()
+     * @Method({"GET"})
      *
      * @param Request $request
      * @param string  $type
-     * @Method({"GET"})
      *
      * @return JsonResponse
      */
