@@ -129,6 +129,6 @@ hwi_oauth:
                 use_bearer_authorization: false
             paths:
                 identifier: id
-                nickname:   username
-                realname:   fullname
+                nickname: username
+                realname: fullname
                 email: email
