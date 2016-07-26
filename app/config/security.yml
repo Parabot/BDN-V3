@@ -59,8 +59,8 @@ security:
         main:
             pattern: ^/
             oauth:
-                failure_path: /api/users/connect
-                login_path: /api/users/connect
+                failure_path: /api/users/connect/forums
+                login_path: /api/users/connect/forums
                 check_path: /api/users/connect
                 provider: fos_userbundle
                 resource_owners:
@@ -70,7 +70,7 @@ security:
             anonymous: true
             logout:
                 path: /api/users/logout
-                target: /api/users/connect
+                target: /
 
     access_control:
         - { path: ^/api/users/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
