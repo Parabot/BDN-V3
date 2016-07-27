@@ -9,4 +9,8 @@ parameters:
     blocking_routes:
         - bdn_login
         - fos_user_security_check
+        - hwi_oauth_connect_service
+        - hwi_oauth_connect_registration
+        - hwi_oauth_connect
+        - hwi_oauth_service_redirect
     block_count: 5
