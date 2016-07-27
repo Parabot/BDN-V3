@@ -13,6 +13,8 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
 use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
+use Parabot\BDN\UserBundle\Service\LoginRequestManager;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -29,17 +31,38 @@ class UserProvider extends BaseClass {
     private $entityManager;
 
     /**
+     * @var LoginRequestManager
+     */
+    private $loginRequestManager;
+
+    /**
+     * @var null|\Symfony\Component\HttpFoundation\Request
+     */
+    private $request;
+
+    /**
      * UserProvider constructor.
      *
      * @param UserManagerInterface $userManager
      * @param array                $properties
      * @param UserPasswordEncoder  $passwordEncoder
      * @param EntityManager        $entityManager
+     * @param LoginRequestManager  $loginRequestManager
+     * @param RequestStack         $requestStack
      */
-    public function __construct(UserManagerInterface $userManager, array $properties, UserPasswordEncoder $passwordEncoder, EntityManager $entityManager) {
+    public function __construct(
+        UserManagerInterface $userManager,
+        array $properties,
+        UserPasswordEncoder $passwordEncoder,
+        EntityManager $entityManager,
+        LoginRequestManager $loginRequestManager,
+        RequestStack $requestStack
+    ) {
         parent::__construct($userManager, $properties);
-        $this->passwordEncoder = $passwordEncoder;
-        $this->entityManager = $entityManager;
+        $this->passwordEncoder     = $passwordEncoder;
+        $this->entityManager       = $entityManager;
+        $this->loginRequestManager = $loginRequestManager;
+        $this->request             = $requestStack->getCurrentRequest();
     }
 
 
@@ -71,7 +94,10 @@ class UserProvider extends BaseClass {
             'username' => $response->getResponse()[ 'username' ],
             'id'       => $response->getResponse()[ 'id' ],
             'email'    => $response->getResponse()[ 'email' ],
-            'groups'   => array_merge([$response->getResponse()['group']], $response->getResponse()['group_others'])
+            'groups'   => array_merge(
+                [ $response->getResponse()[ 'group' ] ],
+                $response->getResponse()[ 'group_others' ]
+            ),
         ];
     }
 
@@ -108,16 +134,30 @@ class UserProvider extends BaseClass {
             $user->setEnabled(true);
             $user->setCommunityId($userInfo[ 'id' ]);
 
-            $user = $this->setGroups($user, $userInfo['groups']);
+            $user = $this->setGroups($user, $userInfo[ 'groups' ]);
 
             $this->userManager->updateUser($user);
+
+            if($this->request->cookies->has(LoginRequestManager::KEY_COOKIE)) {
+                $this->loginRequestManager->assignUserToKey(
+                    $this->request->cookies->get(LoginRequestManager::KEY_COOKIE),
+                    $user
+                );
+            }
 
             return $user;
         } else {
             $user->setUsername($userInfo[ 'username' ]);
             $user->setEmail($userInfo[ 'email' ]);
 
-            $user = $this->setGroups($user, $userInfo['groups']);
+            $user = $this->setGroups($user, $userInfo[ 'groups' ]);
+
+            if($this->request->cookies->has(LoginRequestManager::KEY_COOKIE)) {
+                $this->loginRequestManager->assignUserToKey(
+                    $this->request->cookies->get(LoginRequestManager::KEY_COOKIE),
+                    $user
+                );
+            }
         }
 
         $serviceName = $response->getResourceOwner()->getName();
