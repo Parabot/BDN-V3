@@ -59,12 +59,12 @@ security:
         main:
             pattern: ^/
             oauth:
-                failure_path: /api/users/connect/forums
-                login_path: /api/users/connect/forums
+                failure_path: /api/users/connect
+                login_path: /api/users/connect/service/forums
                 check_path: /api/users/connect
                 provider: fos_userbundle
                 resource_owners:
-                    forums: "/api/users/login/forums"
+                    forums: "/api/users/connect/service/forums"
                 oauth_user_provider:
                     service: oauth_user_provider
             anonymous: true
