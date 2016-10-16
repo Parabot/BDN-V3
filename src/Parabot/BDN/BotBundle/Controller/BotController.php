@@ -27,6 +27,8 @@ use Travis\Client\Entity\Build;
 
 class BotController extends Controller {
 
+    const ALLOWED_BRANCHES = [ 'master', 'development' ];
+
     /**
      * @ApiDoc(
      *  description="Returns the requested download file",
@@ -123,8 +125,8 @@ class BotController extends Controller {
         $typeHelper   = $this->get('bot.type_helper');
         $aws          = $this->get('aws.s3');
 
-        $id      = $request->query->get('build_id');
-        $version = $request->query->get('version');
+        $id      = $request->request->get('build_id');
+        $version = $request->request->get('version');
 
         if($typeHelper->typeExists($type)) {
             $manager = $this->getDoctrine()->getManager();
@@ -151,6 +153,10 @@ class BotController extends Controller {
             }
 
             $build = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
+
+            if( ! in_array(strtolower($build->getBranch()), self::ALLOWED_BRANCHES)) {
+                return new JsonResponse([ 'result' => 'Given branch is not allowed' ], 500);
+            }
 
             if($build != null) {
                 if($build->getResult() !== $build::RESULT_FAILED) {
@@ -459,7 +465,7 @@ class BotController extends Controller {
                 $limit,
                 $page
             );
-            $typeListJson = [ ];
+            $typeListJson = [];
             if($typeList != null && sizeof($typeList) > 1) {
                 foreach($typeList as $t) {
                     $typeListJson[] = SerializerManager::normalize($t);
