@@ -340,7 +340,7 @@ class BotController extends Controller {
      *
      * @Route("/checksum/{type}/{version}")
      * @Template()
-     * @Method({"GET"})
+     * @Method({"POST"})
      *
      * @param Request $request
      * @param string  $type
