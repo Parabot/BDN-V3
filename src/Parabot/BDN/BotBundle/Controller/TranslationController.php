@@ -29,7 +29,7 @@ class TranslationController extends Controller {
      *  }
      * )
      *
-     * @Route("/translations/{lang}", name="language_download")
+     * @Route("/get/{lang}", name="language_download")
      * @Template()
      * @Method({"GET"})
      *
@@ -40,5 +40,27 @@ class TranslationController extends Controller {
      */
     public function downloadAction(Request $request, $lang) {
         return new JsonResponse($this->get('bot.translation_helper')->returnTranslation($lang));
+    }
+
+
+    /**
+     * @ApiDoc(
+     *  description="Returns all available translations",
+     *  requirements={
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/list", name="language_list")
+     * @Template()
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function listAction(Request $request) {
+        return new JsonResponse([ 'languages' => [ 'en' => 'English', 'pt' => 'Portuguese', 'nl' => 'Dutch' ] ]);
     }
 }
