@@ -154,11 +154,11 @@ class BotController extends Controller {
 
             $build = $travisHelper->getLatestBuild($typeObject->getTravisRepository(), $id);
 
-            if( ! in_array(strtolower($build->getBranch()), self::ALLOWED_BRANCHES)) {
-                return new JsonResponse([ 'result' => 'Given branch is not allowed' ], 500);
-            }
-
             if($build != null) {
+                if( ! in_array(strtolower($build->getBranch()), self::ALLOWED_BRANCHES)) {
+                    return new JsonResponse([ 'result' => 'Given branch is not allowed' ], 500);
+                }
+
                 if($build->getResult() !== $build::RESULT_FAILED) {
                     $totalNamedVersion = $typeObject->getName();
                     if($build->getBranch() != 'master') {
