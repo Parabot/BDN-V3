@@ -30,7 +30,14 @@ class Language {
     /**
      * @var string
      *
-     * @ORM\Column(name="language", type="string", length=32)
+     * @ORM\Column(name="language_key", type="string", length=15)
+     */
+    private $languageKey;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="language", type="string", length=64)
      */
     private $language;
 
@@ -61,6 +68,28 @@ class Language {
      */
     public function setActive($active) {
         $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get language key
+     *
+     * @return string
+     */
+    public function getLanguageKey() {
+        return $this->languageKey;
+    }
+
+    /**
+     * Set language key
+     *
+     * @param string $languageKey
+     *
+     * @return Language
+     */
+    public function setLanguageKey($languageKey) {
+        $this->languageKey = $languageKey;
 
         return $this;
     }

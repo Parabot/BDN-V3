@@ -42,7 +42,6 @@ class TranslationController extends Controller {
         return new JsonResponse($this->get('bot.translation_helper')->returnTranslation($lang));
     }
 
-
     /**
      * @ApiDoc(
      *  description="Returns all available translations",
@@ -61,6 +60,17 @@ class TranslationController extends Controller {
      * @return JsonResponse
      */
     public function listAction(Request $request) {
-        return new JsonResponse([ 'languages' => [ 'en' => 'English', 'pt' => 'Portuguese', 'nl' => 'Dutch' ] ]);
+        $manager = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository('BDNBotBundle:Language');
+        $jsonLanguages = [];
+
+        $languages = $repository->findBy(['active' => true]);
+        if ($languages != null && count($languages) > 0) {
+            foreach($languages as $language){
+                $jsonLanguages['languages'][$language->getLanguageKey()] = $language->getLanguage();
+            }
+        }
+
+        return new JsonResponse($jsonLanguages);
     }
 }
