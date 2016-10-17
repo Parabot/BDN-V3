@@ -6,7 +6,7 @@ bdn_bot:
 bdn_bot_translations:
     resource: "@BDNBotBundle/Controller/TranslationController.php"
     type:     annotation
-    prefix:   /api/bot
+    prefix:   /api/bot/translations
 
 bdn_script:
     resource: "@BDNBotBundle/Controller/ScriptController.php"
