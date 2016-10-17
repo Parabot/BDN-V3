@@ -21,7 +21,7 @@ class DownloadProvider {
     /**
      * @param Type $type
      *
-     * @return bool
+     * @return bool|BinaryFileResponse
      */
     public function provideDownload($type) {
         $file = $type->getFile();

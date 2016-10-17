@@ -16,3 +16,6 @@ services:
     bot.script_repository_service:
         class: Parabot\BDN\BotBundle\Service\Repository\ScriptRepositoryService
         arguments: ['@doctrine.orm.entity_manager', %groups%]
+    bot.translation_helper:
+        class: Parabot\BDN\BotBundle\Service\TranslationHelper
+        arguments: ['@doctrine.orm.entity_manager', '@kernel']
