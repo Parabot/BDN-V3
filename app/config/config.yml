@@ -121,9 +121,9 @@ hwi_oauth:
             type: oauth2
             client_id: '%oauth_id%'
             client_secret: '%oauth_secret%'
-            access_token_url: https://www.parabot.org/community/applications/oauth2server/interface/token.php
-            authorization_url: https://www.parabot.org/community/applications/oauth2server/interface/authorize.php
-            infos_url: https://www.parabot.org/community/applications/oauth2server/interface/me.php
+            access_token_url: https://www.parabot.org/community/applications/oauth2server/interface/oauth/token.php
+            authorization_url: "https://www.parabot.org/community/applications/oauth2server/interface/oauth/authorize.php?scope=user.profile user.email user.groups"
+            infos_url: https://www.parabot.org/community/applications/oauth2server/interface/oauth/me.php
             user_response_class: HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse
             options:
                 use_bearer_authorization: false
