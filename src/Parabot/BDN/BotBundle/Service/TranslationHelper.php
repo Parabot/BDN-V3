@@ -98,7 +98,7 @@ class TranslationHelper {
         foreach($json as $lang) {
             $language = new Language();
             $language->setLanguageKey($lang[ 'language_code' ]);
-            $language->setLanguage(locale_get_display_name($language->getLanguageKey(), 'en'));
+            $language->setLanguage(\Locale::getDisplayName($language->getLanguageKey()));
 
             $languages[] = $language;
         }
