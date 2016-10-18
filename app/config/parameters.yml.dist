@@ -29,3 +29,6 @@ parameters:
 
     oauth_id: ~
     oauth_secret: ~
+
+    transifex_username: ~
+    transifex_password: ~
