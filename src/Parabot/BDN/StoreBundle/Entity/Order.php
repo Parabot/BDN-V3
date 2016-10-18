@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("orders")
  * @ORM\Entity
  */
-class Order extends SyliusOrder{
+class Order extends SyliusOrder {
 
     /**
      * @var string
@@ -23,16 +23,14 @@ class Order extends SyliusOrder{
     /**
      * @return string
      */
-    public function getEmail()
-    {
+    public function getEmail() {
         return $this->email;
     }
 
     /**
      * @param string $email
      */
-    public function setEmail($email)
-    {
+    public function setEmail($email) {
         $this->email = $email;
     }
 }

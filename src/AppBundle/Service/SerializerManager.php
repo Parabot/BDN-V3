@@ -17,26 +17,27 @@ use Symfony\Component\Serializer\Serializer;
 class SerializerManager {
 
     /**
-     * @return Serializer
-     */
-    public static function getSerializers(){
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory));
-
-        $serializer = new Serializer($normalizers, $encoders);
-        return $serializer;
-    }
-
-    /**
      * @param        $object
      * @param string $format
      * @param array  $groups
      *
      * @return object
      */
-    public static function normalize($object, $format = 'json', $groups = ['default']){
-        return SerializerManager::getSerializers()->normalize($object, $format, ['groups' => $groups]);
+    public static function normalize($object, $format = 'json', $groups = [ 'default' ]) {
+        return SerializerManager::getSerializers()->normalize($object, $format, [ 'groups' => $groups ]);
+    }
+
+    /**
+     * @return Serializer
+     */
+    public static function getSerializers() {
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+
+        $encoders    = [ new XmlEncoder(), new JsonEncoder() ];
+        $normalizers = [ new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory) ];
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        return $serializer;
     }
 }

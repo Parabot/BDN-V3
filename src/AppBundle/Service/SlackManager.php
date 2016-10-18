@@ -38,7 +38,7 @@ class SlackManager {
      * @param string[] $fields
      * @param string   $channel
      */
-    public function sendSuccessMessage($title, $message, $link = '', $fields = [ ], $channel = '') {
+    public function sendSuccessMessage($title, $message, $link = '', $fields = [], $channel = '') {
         $attachment = $this->createAttachment($title, $message, 'good', $link, $fields);
 
         $this->sendMessage('', [ $attachment ], $channel);
@@ -53,7 +53,7 @@ class SlackManager {
      *
      * @return MessageAttachment
      */
-    public function createAttachment($title, $message = '', $color = '', $link = '', $fields = [ ]) {
+    public function createAttachment($title, $message = '', $color = '', $link = '', $fields = []) {
         $attachment = new MessageAttachment();
 
         $attachment->setColor($color);
@@ -81,8 +81,8 @@ class SlackManager {
      * @param string                  $user
      *
      */
-    public function sendMessage($message, $attachments = [ ], $channel = '#releases', $user = 'BDN') {
-        if ($channel == null){
+    public function sendMessage($message, $attachments = [], $channel = '#releases', $user = 'BDN') {
+        if($channel == null) {
             $channel = '#releases';
         }
         $this->messenger->message(

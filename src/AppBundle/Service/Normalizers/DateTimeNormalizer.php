@@ -31,7 +31,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
      *
      * @throws InvalidArgumentException
      */
-    public function normalize($object, $format = null, array $context = [ ]) {
+    public function normalize($object, $format = null, array $context = []) {
         if( ! $object instanceof \DateTimeInterface) {
             throw new InvalidArgumentException('The object must implement the "\DateTimeInterface".');
         }
@@ -53,7 +53,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
      *
      * @throws UnexpectedValueException
      */
-    public function denormalize($data, $class, $format = null, array $context = [ ]) {
+    public function denormalize($data, $class, $format = null, array $context = []) {
         try {
             return \DateTime::class === $class ? new \DateTime($data) : new \DateTimeImmutable($data);
         } catch(\Exception $e) {

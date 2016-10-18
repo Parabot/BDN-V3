@@ -39,7 +39,10 @@ class DownloadProvider {
             $response->headers->set('Cache-Control', '0');
             $response->headers->set('Expires', 'private');
             $response->headers->set('Content-Type', 'application/java-archive');
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $type->getType() . '-' . basename($file) . '"');
+            $response->headers->set(
+                'Content-Disposition',
+                'attachment; filename="' . $type->getType() . '-' . basename($file) . '"'
+            );
 
             $response->headers->set('Content-Transfer-Encoding', 'binary');
             $response->headers->set('Content-Length', filesize($file));

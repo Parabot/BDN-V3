@@ -12,10 +12,10 @@ class ParameterParser {
      *
      * @return bool
      */
-    public static function parseStringToBoolean($request){
-        if (!is_numeric($request)) {
+    public static function parseStringToBoolean($request) {
+        if( ! is_numeric($request)) {
             return $request == 'true' ? true : false;
-        }else{
+        } else {
             return $request == 1 ? true : false;
         }
     }

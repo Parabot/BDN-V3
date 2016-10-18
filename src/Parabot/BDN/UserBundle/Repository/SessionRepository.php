@@ -12,16 +12,16 @@ use Parabot\BDN\UserBundle\Entity\Session;
 class SessionRepository extends EntityRepository {
 
     /**
-     * @param string $ip IP of the user trying to access the page
+     * @param string $ip   IP of the user trying to access the page
      * @param int    $span Amount of minutes since now, default 5
      *
      * @return array
      */
     public function getSessionCount($ip, $span = 5) {
         $query = $this->createQueryBuilder('s')->where('s.ip = :ip')->andWhere('s.date > :dt')->setParameter(
-                'ip',
-                $ip
-            )->setParameter('dt', new \DateTime('-' . intval($span) . ' minutes'), Type::DATETIME)->getQuery();
+            'ip',
+            $ip
+        )->setParameter('dt', new \DateTime('-' . intval($span) . ' minutes'), Type::DATETIME)->getQuery();
 
         $result = $query->getArrayResult();
         if($result != null && is_array($result)) {

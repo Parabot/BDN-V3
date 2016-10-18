@@ -14,7 +14,7 @@ class TypeHelper {
      * @var string[] $types
      */
     private static $types = [
-        'client' => 'BDNBotBundle:Types\Client',
+        'client'  => 'BDNBotBundle:Types\Client',
         'randoms' => 'BDNBotBundle:Types\Randoms',
     ];
 
@@ -25,8 +25,7 @@ class TypeHelper {
      *
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager)
-    {
+    public function __construct(EntityManager $entityManager) {
         $this->entityManager = $entityManager;
     }
 
@@ -35,22 +34,14 @@ class TypeHelper {
      *
      * @return bool
      */
-    public function typeExists($type){
-        foreach(self::$types as $key => $value){
-            if (strtolower($key) == strtolower($type)){
+    public function typeExists($type) {
+        foreach(self::$types as $key => $value) {
+            if(strtolower($key) == strtolower($type)) {
                 return true;
             }
         }
-        return false;
-    }
 
-    /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function getRepositorySlug($type){
-        return self::$types[strtolower($type)];
+        return false;
     }
 
     /**
@@ -58,9 +49,19 @@ class TypeHelper {
      *
      * @return Type
      */
-    public function createType($type){
+    public function createType($type) {
         $repository = $this->getRepositorySlug($type);
-        $class = $this->entityManager->getClassMetadata($repository)->getName();
+        $class      = $this->entityManager->getClassMetadata($repository)->getName();
+
         return new $class();
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public function getRepositorySlug($type) {
+        return self::$types[ strtolower($type) ];
     }
 }

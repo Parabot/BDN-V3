@@ -10,8 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity
  */
-class Category
-{
+class Category {
     /**
      * @var integer
      *
@@ -39,45 +38,30 @@ class Category
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName() {
+        return $this->name;
     }
 
     /**
      * Set name
      *
      * @param string $name
+     *
      * @return Category
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string 
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set scripts
-     *
-     * @param array $scripts
-     * @return Category
-     */
-    public function setScripts($scripts)
-    {
-        $this->scripts = $scripts;
 
         return $this;
     }
@@ -85,10 +69,22 @@ class Category
     /**
      * Get scripts
      *
-     * @return array 
+     * @return array
      */
-    public function getScripts()
-    {
+    public function getScripts() {
         return $this->scripts;
+    }
+
+    /**
+     * Set scripts
+     *
+     * @param array $scripts
+     *
+     * @return Category
+     */
+    public function setScripts($scripts) {
+        $this->scripts = $scripts;
+
+        return $this;
     }
 }

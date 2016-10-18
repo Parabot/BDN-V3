@@ -28,10 +28,13 @@ class ScriptRepositoryService {
      */
     public function __construct(EntityManager $entityManager, $groups) {
         $this->entityManager = $entityManager;
-        $this->groups = $groups;
+        $this->groups        = $groups;
     }
 
-    public function getScriptsForUser($user){
-        return $this->entityManager->getRepository('BDNBotBundle:Script')->findScriptsForUser($user, $this->groups['script_writers']);
+    public function getScriptsForUser($user) {
+        return $this->entityManager->getRepository('BDNBotBundle:Script')->findScriptsForUser(
+            $user,
+            $this->groups[ 'script_writers' ]
+        );
     }
 }

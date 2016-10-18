@@ -36,7 +36,7 @@ class DefaultController extends Controller {
             'default/index.html.twig',
             [
                 'username' => $user->getUsername(),
-                'groups' => $user->getGroupNames()
+                'groups'   => $user->getGroupNames(),
             ]
         );
     }
@@ -106,32 +106,27 @@ class DefaultController extends Controller {
      */
     public function testAction() {
         $uRepository = $this->getDoctrine()->getRepository('BDNUserBundle:User');
-        $script = new Script();
+        $script      = new Script();
 
         $git = new Git();
         $git->setUrl('asd');
 
-        $script->setName('asd')
-            ->setActive(true)
-            ->setAuthors([$uRepository->findAll()[1]])
-            ->setCategories([])
-            ->setDescription('')
-            ->setForum(1)
-//            ->setGit($git)
-            ->setProduct(null)
-        ->setVersion(1.0);
+        $script->setName('asd')->setActive(true)->setAuthors([ $uRepository->findAll()[ 1 ] ])->setCategories(
+                []
+            )->setDescription('')->setForum(1)//            ->setGit($git)
+               ->setProduct(null)->setVersion(1.0);
 
-//        $this->getDoctrine()->getManager()->persist($script);
-//        $this->getDoctrine()->getManager()->flush();
+        //        $this->getDoctrine()->getManager()->persist($script);
+        //        $this->getDoctrine()->getManager()->flush();
 
         /**
          * @var ScriptRepository $repository
          */
         $repository = $this->getDoctrine()->getRepository('BDNBotBundle:Script');
-        $resultt = $repository->findByAuthor($uRepository->findOneBy(['username' => 'minimal']));
+        $resultt    = $repository->findByAuthor($uRepository->findOneBy([ 'username' => 'minimal' ]));
 
-        foreach($resultt as $r){
-            foreach($r->getAuthors() as $a){
+        foreach($resultt as $r) {
+            foreach($r->getAuthors() as $a) {
                 var_dump($a->getEmail());
                 echo("<br>");
             }

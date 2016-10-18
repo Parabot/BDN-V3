@@ -10,8 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity
  */
-class Git
-{
+class Git {
     /**
      * @var integer
      *
@@ -32,33 +31,31 @@ class Git
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl() {
+        return $this->url;
     }
 
     /**
      * Set url
      *
      * @param string $url
+     *
      * @return Git
      */
-    public function setUrl($url)
-    {
+    public function setUrl($url) {
         $this->url = $url;
 
         return $this;
-    }
-
-    /**
-     * Get url
-     *
-     * @return string 
-     */
-    public function getUrl()
-    {
-        return $this->url;
     }
 }

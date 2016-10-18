@@ -13,90 +13,90 @@ class LoadUserGroupData implements FixtureInterface {
     public function load(ObjectManager $manager) {
 
         $groups = [
-            4 => [
-                'name' => 'Administrators',
+            4  => [
+                'name'  => 'Administrators',
                 'roles' => [
-                    'ROLE_ADMIN'
-                ]
+                    'ROLE_ADMIN',
+                ],
             ],
             23 => [
-                'name' => 'Banned',
+                'name'  => 'Banned',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
             21 => [
-                'name' => 'Coding Legend',
+                'name'  => 'Coding Legend',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
             12 => [
-                'name' => 'Developer',
+                'name'  => 'Developer',
                 'roles' => [
-                    'ROLE_DEVELOPER'
-                ]
+                    'ROLE_DEVELOPER',
+                ],
             ],
-            7 => [
-                'name' => 'Donator',
+            7  => [
+                'name'  => 'Donator',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
-            3 => [
-                'name' => 'Members',
+            3  => [
+                'name'  => 'Members',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
-            6 => [
-                'name' => 'Moderator',
+            6  => [
+                'name'  => 'Moderator',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
             20 => [
-                'name' => 'Premium script',
+                'name'  => 'Premium script',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
-            9 => [
-                'name' => 'Script writer',
+            9  => [
+                'name'  => 'Script writer',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
             19 => [
-                'name' => 'Section mod',
+                'name'  => 'Section mod',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
             22 => [
-                'name' => 'Server developer',
+                'name'  => 'Server developer',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
-            8 => [
-                'name' => 'Sponsor',
+            8  => [
+                'name'  => 'Sponsor',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
             17 => [
-                'name' => 'Supporter',
+                'name'  => 'Supporter',
                 'roles' => [
-                    'ROLE_USER'
-                ]
+                    'ROLE_USER',
+                ],
             ],
         ];
-        
-        foreach($groups as $id => $group){
-            $group = new Group($group['name'], $group['roles']);
+
+        foreach($groups as $id => $group) {
+            $group = new Group($group[ 'name' ], $group[ 'roles' ]);
             $group->setCommunityId($id);
-            
+
             $manager->persist($group);
         }
 

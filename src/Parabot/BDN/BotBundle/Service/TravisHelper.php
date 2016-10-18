@@ -24,7 +24,7 @@ class TravisHelper {
      *
      * @return Client\Entity\Repository
      */
-    public function getRepository($slug){
+    public function getRepository($slug) {
         return $this->client->fetchRepository($slug);
     }
 

@@ -34,17 +34,7 @@ class TypeListener implements EventSubscriber {
         $this->setTypePath($args);
     }
 
-    public function postUpdate(LifecycleEventArgs $args)
-    {
-        $this->setTypePath($args);
-    }
-
-    public function postPersist(LifecycleEventArgs $args)
-    {
-        $this->setTypePath($args);
-    }
-
-    private function setTypePath(LifecycleEventArgs $args){
+    private function setTypePath(LifecycleEventArgs $args) {
         $entity = $args->getEntity();
 
         if( ! ($entity instanceof Type)) {
@@ -52,6 +42,14 @@ class TypeListener implements EventSubscriber {
         }
 
         $entity->setPath($this->kernel->getRootDir());
+    }
+
+    public function postUpdate(LifecycleEventArgs $args) {
+        $this->setTypePath($args);
+    }
+
+    public function postPersist(LifecycleEventArgs $args) {
+        $this->setTypePath($args);
     }
 
     /**
@@ -63,7 +61,7 @@ class TypeListener implements EventSubscriber {
         return [
             'postPersist',
             'postUpdate',
-            'postLoad'
+            'postLoad',
         ];
     }
 }

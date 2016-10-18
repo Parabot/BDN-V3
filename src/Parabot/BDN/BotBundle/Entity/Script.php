@@ -32,7 +32,7 @@ class Script {
 
     /**
      * @var User[]
-     * 
+     *
      * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User")
      * @ORM\JoinTable(name="script_authors",
      *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
@@ -118,7 +118,7 @@ class Script {
 
     /**
      * @var User
-     * 
+     *
      * @ORM\OneToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User")
      */
     private $creator;
@@ -367,7 +367,7 @@ class Script {
      */
     public function setGit($git) {
         $this->git = $git;
-        
+
         return $this;
     }
 }

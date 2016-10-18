@@ -63,7 +63,7 @@ abstract class Type {
      * @Groups({"default"})
      */
     private $build;
-    
+
     /**
      * @var bool
      *
@@ -141,7 +141,7 @@ abstract class Type {
      *
      * @return int
      */
-    public function getReleaseTimestamp(){
+    public function getReleaseTimestamp() {
         return $this->releaseDate->getTimestamp();
     }
 
@@ -176,6 +176,13 @@ abstract class Type {
             mkdir($this->path, 0755, true);
         }
     }
+
+    /**
+     * @Groups({"default"})
+     *
+     * @return string
+     */
+    public abstract function getType();
 
     /**
      * Get stability
@@ -226,18 +233,11 @@ abstract class Type {
      *
      * @return string
      */
-    public abstract function getType();
+    public abstract function getTravisRepository();
 
     /**
      * @Groups({"default"})
      *
-     * @return string
-     */
-    public abstract function getTravisRepository();
-    
-    /**
-     * @Groups({"default"})
-     * 
      * @return string
      */
     public abstract function getName();

@@ -17,12 +17,12 @@ class ClientRepository extends EntityRepository {
     public function redirectUrisAvailable($redirectUris) {
         /**
          * @var $clientInstance Client
-         * @var $client Client
+         * @var $client         Client
          */
         $clientRepository = $this->getEntityManager()->getRepository('BDNUserBundle:OAuth\\Client');
 
-        foreach($clientRepository->findAll() as $clientInstance){
-            if (count(array_intersect($clientInstance->getRedirectUris(), $redirectUris)) > 0){
+        foreach($clientRepository->findAll() as $clientInstance) {
+            if(count(array_intersect($clientInstance->getRedirectUris(), $redirectUris)) > 0) {
                 return false;
             }
         }

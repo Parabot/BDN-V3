@@ -28,17 +28,18 @@ class ApiKeyUserProvider implements UserProviderInterface {
 
     public function getUsernameForApiKey($apiKey) {
         $repository = $this->manager->getRepository('BDNUserBundle:User');
-        $user = $repository->findOneBy(['apiKey' => $apiKey]);
-        if ($user != null){
+        $user       = $repository->findOneBy([ 'apiKey' => $apiKey ]);
+        if($user != null) {
             return $user->getUsername();
-        }else{
+        } else {
             return null;
         }
     }
 
     public function loadUserByUsername($username) {
         $repository = $this->manager->getRepository('BDNUserBundle:User');
-        return $repository->findOneBy(['username' => $username]);
+
+        return $repository->findOneBy([ 'username' => $username ]);
     }
 
     public function refreshUser(UserInterface $user) {

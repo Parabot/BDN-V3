@@ -48,7 +48,7 @@ class DefaultController extends Controller {
         $context = $this->container->get('router')->getContext();
 
         $key = $this->get('login_request_manager')->insertRequest();
-        $url = $this->get('router')->generate('open_login', array('key' => $key));
+        $url = $this->get('router')->generate('open_login', [ 'key' => $key ]);
 
         $url = $context->getScheme() . '://' . $context->getHost() . ($context->getHttpPort(
             ) !== 80 ? ':' . $context->getHttpPort() : '') . $url;
@@ -64,11 +64,11 @@ class DefaultController extends Controller {
      * @Route("/open/login/{key}", name="open_login")
      *
      * @param Request $request
-     * @param string $key
+     * @param string  $key
      *
      * @return RedirectResponse
      */
-    public function openLoginAction(Request $request, $key){
+    public function openLoginAction(Request $request, $key) {
         $response = $this->redirect(
             $this->generateUrl('hwi_oauth_service_redirect', [ 'service' => 'forums' ])
         );

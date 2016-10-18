@@ -12,8 +12,7 @@ use Parabot\BDN\StoreBundle\Entity\Order;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends Controller
-{
+class DefaultController extends Controller {
 
     const STATE_BEGIN    = 'begin';
     const STATE_COMPLETE = 'complete';
@@ -22,9 +21,8 @@ class DefaultController extends Controller
      * @Route("/hello/{name}")
      * @Template()
      */
-    public function indexAction($name)
-    {
-        return array('name' => $name);
+    public function indexAction($name) {
+        return [ 'name' => $name ];
     }
 
     /**
@@ -32,12 +30,12 @@ class DefaultController extends Controller
      */
     public function beginOrderForDownloadAction(Request $request, $id) {
 
-        $script = $this->getDoctrine()->getRepository(Script::class)->findOneBy(['id' => $id]);
+        $script = $this->getDoctrine()->getRepository(Script::class)->findOneBy([ 'id' => $id ]);
 
         $order = new Order();
-        $form = $this->createForm(new OrderType(), $order);
+        $form  = $this->createForm(new OrderType(), $order);
 
-        if ('POST' === $request->getMethod()) {
+        if('POST' === $request->getMethod()) {
             $order->setState(self::STATE_BEGIN);
 
             $orderItem = new OrderItem();
@@ -52,22 +50,28 @@ class DefaultController extends Controller
 
             $em = $this->getDoctrine()->getManager();
 
-            if ($form->isValid()) {
+            if($form->isValid()) {
                 $order->setState(self::STATE_COMPLETE);
                 $this->addFlash('order.state', self::STATE_COMPLETE);
 
                 $em->persist($order);
                 $em->flush();
 
-                return $this->redirectToRoute('complete_order', [
-                    'id' => $order->getId(),
-                ]);
+                return $this->redirectToRoute(
+                    'complete_order',
+                    [
+                        'id' => $order->getId(),
+                    ]
+                );
             }
         }
 
-        return $this->render('AppBundle::begin_order_for_download.html.twig', [
-            'form'     => $form->createView(),
-            'download' => $script,
-        ]);
+        return $this->render(
+            'AppBundle::begin_order_for_download.html.twig',
+            [
+                'form'     => $form->createView(),
+                'download' => $script,
+            ]
+        );
     }
 }

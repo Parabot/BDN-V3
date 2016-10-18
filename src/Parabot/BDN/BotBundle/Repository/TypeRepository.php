@@ -15,7 +15,7 @@ interface TypeRepository {
      * @return Type[]
      */
     public function findAllByStability($stable);
-    
+
     /**
      * @param boolean     $stable
      *

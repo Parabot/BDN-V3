@@ -21,28 +21,28 @@ class CronTask {
 
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(type="string")
      */
     private $name;
 
     /**
      * @var array
-     * 
+     *
      * @ORM\Column(type="array")
      */
     private $commands;
 
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(name="`interval`", type="integer")
      */
     private $interval;
 
     /**
      * @var \DateTime
-     * 
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastrun;

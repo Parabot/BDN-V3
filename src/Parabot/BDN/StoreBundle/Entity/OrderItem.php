@@ -14,20 +14,20 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class OrderItem extends SyliusOrderItem {
 
-//    /**
-//     * @var Script
-//     *
-//     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Dependencies\Script")
-//     * @ORM\JoinColumn(nullable=false)
-//     */
-//    private $script;
-//
-//    public function setScript($script) {
-//        $this->script = $script;
-//    }
-//
-//    public function getScript() {
-//        return $this->script;
-//    }
+    //    /**
+    //     * @var Script
+    //     *
+    //     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Dependencies\Script")
+    //     * @ORM\JoinColumn(nullable=false)
+    //     */
+    //    private $script;
+    //
+    //    public function setScript($script) {
+    //        $this->script = $script;
+    //    }
+    //
+    //    public function getScript() {
+    //        return $this->script;
+    //    }
 
 }

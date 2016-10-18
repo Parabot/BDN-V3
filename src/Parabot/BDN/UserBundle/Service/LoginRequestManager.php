@@ -28,16 +28,16 @@ class LoginRequestManager {
     /**
      * @return bool|string
      */
-    public function insertRequest(){
+    public function insertRequest() {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
 
-        $key = StringUtils::generateRandomString(20, false);
+        $key   = StringUtils::generateRandomString(20, false);
         $tries = 0;
-        while (($result = $repository->findOneBy(['key' => $key])) != null && $tries < 20){
+        while(($result = $repository->findOneBy([ 'key' => $key ])) != null && $tries < 20) {
             $key = StringUtils::generateRandomString(20, false);
             $tries++;
         }
-        if ($tries >= 20){
+        if($tries >= 20) {
             return false;
         }
 
@@ -50,11 +50,11 @@ class LoginRequestManager {
         return $key;
     }
 
-    public function assignUserToKey($key, $user){
+    public function assignUserToKey($key, $user) {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
-        $token = $repository->findOneBy(['key' => $key]);
+        $token      = $repository->findOneBy([ 'key' => $key ]);
 
-        if ($token !== null && $token->getUser() === null){
+        if($token !== null && $token->getUser() === null) {
             $token->setUser($user);
 
             $this->entityManager->persist($user);
@@ -67,16 +67,17 @@ class LoginRequestManager {
      *
      * @return bool|string
      */
-    public function retrieveUserApiFromKey($key){
+    public function retrieveUserApiFromKey($key) {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
-        $token = $repository->findOneBy(['key' => $key]);
+        $token      = $repository->findOneBy([ 'key' => $key ]);
 
-        if ($token !== null){
+        if($token !== null) {
             $user = $token->getUser();
-            if ($user !== null){
+            if($user !== null) {
                 return $user->getApiKey();
             }
         }
+
         return false;
     }
 }

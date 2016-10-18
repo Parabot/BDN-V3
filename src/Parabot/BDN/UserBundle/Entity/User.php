@@ -121,15 +121,8 @@ class User extends BaseUser implements TwoFactorInterface {
      *
      * @param integer $googleAuthenticatorSecret
      */
-    public function setGoogleAuthenticatorSecret( $googleAuthenticatorSecret ) {
+    public function setGoogleAuthenticatorSecret($googleAuthenticatorSecret) {
         $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
-    }
-
-    /**
-     * @param int $forumsId
-     */
-    public function setForumsId($forumsId) {
-        $this->forumsId = $forumsId;
     }
 
     /**
@@ -140,10 +133,10 @@ class User extends BaseUser implements TwoFactorInterface {
     }
 
     /**
-     * @param int $forumsAccessToken
+     * @param int $forumsId
      */
-    public function setForumsAccessToken($forumsAccessToken) {
-        $this->forumsAccessToken = $forumsAccessToken;
+    public function setForumsId($forumsId) {
+        $this->forumsId = $forumsId;
     }
 
     /**
@@ -165,5 +158,12 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     public function getForumsAccessToken() {
         return $this->forumsAccessToken;
+    }
+
+    /**
+     * @param int $forumsAccessToken
+     */
+    public function setForumsAccessToken($forumsAccessToken) {
+        $this->forumsAccessToken = $forumsAccessToken;
     }
 }
