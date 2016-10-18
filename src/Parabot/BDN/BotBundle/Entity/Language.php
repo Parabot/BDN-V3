@@ -25,12 +25,12 @@ class Language {
      *
      * @ORM\Column(name="active", type="boolean")
      */
-    private $active;
+    private $active = true;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="language_key", type="string", length=15)
+     * @ORM\Column(name="language_key", type="string", length=15, unique=true)
      */
     private $languageKey;
 

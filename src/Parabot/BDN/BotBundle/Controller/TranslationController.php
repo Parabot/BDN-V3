@@ -9,7 +9,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +28,7 @@ class TranslationController extends Controller {
      *  }
      * )
      *
-     * @Route("/get/{lang}", name="language_download")
+     * @Route("/get/{lang}", name="translation_get")
      * @Template()
      * @Method({"GET"})
      *
@@ -38,8 +37,16 @@ class TranslationController extends Controller {
      *
      * @return JsonResponse
      */
-    public function downloadAction(Request $request, $lang) {
-        return new JsonResponse($this->get('bot.translation_helper')->returnTranslation($lang));
+    public function getAction(Request $request, $lang) {
+        $manager    = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository('BDNBotBundle:Language');
+        if(($language = $repository->findOneBy([ 'languageKey' => $lang ]))) {
+            return new JsonResponse(
+                $this->get('bot.translation_helper')->returnTranslation($language->getLanguageKey())
+            );
+        } else {
+            return new JsonResponse([ 'result' => 'Unknown language requested' ], 404);
+        }
     }
 
     /**
@@ -51,7 +58,7 @@ class TranslationController extends Controller {
      *  }
      * )
      *
-     * @Route("/list", name="language_list")
+     * @Route("/list", name="translations_list")
      * @Template()
      * @Method({"GET"})
      *
@@ -60,17 +67,55 @@ class TranslationController extends Controller {
      * @return JsonResponse
      */
     public function listAction(Request $request) {
-        $manager = $this->getDoctrine()->getManager();
-        $repository = $manager->getRepository('BDNBotBundle:Language');
+        $manager       = $this->getDoctrine()->getManager();
+        $repository    = $manager->getRepository('BDNBotBundle:Language');
         $jsonLanguages = [];
 
-        $languages = $repository->findBy(['active' => true]);
-        if ($languages != null && count($languages) > 0) {
-            foreach($languages as $language){
-                $jsonLanguages['languages'][$language->getLanguageKey()] = $language->getLanguage();
+        $languages = $repository->findBy([ 'active' => true ]);
+        if($languages != null && count($languages) > 0) {
+            foreach($languages as $language) {
+                $jsonLanguages[ 'languages' ][ $language->getLanguageKey() ] = $language->getLanguage();
             }
         }
 
         return new JsonResponse($jsonLanguages);
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Downloads and creates all translations",
+     *  requirements={
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/create", name="translations_create")
+     * @Template()
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createAction(Request $request) {
+        $manager    = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository('BDNBotBundle:Language');
+
+        $translations = $this->get('bot.translation_helper')->listAPITranslations();
+        foreach($translations as $translation) {
+            if($repository->findOneBy([ 'languageKey' => $translation->getLanguageKey() ]) == null) {
+                $manager->persist($translation);
+            }
+        }
+        $manager->flush();
+
+        foreach($repository->findAll() as $language) {
+            if($language->getActive()) {
+                $this->get('bot.translation_helper')->getDownloadTranslation($language);
+            }
+        }
+
+        return new JsonResponse([ 'result' => 'ok' ]);
     }
 }

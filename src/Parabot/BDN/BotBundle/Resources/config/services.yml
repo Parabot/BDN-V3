@@ -18,4 +18,4 @@ services:
         arguments: ['@doctrine.orm.entity_manager', %groups%]
     bot.translation_helper:
         class: Parabot\BDN\BotBundle\Service\TranslationHelper
-        arguments: ['@doctrine.orm.entity_manager', '@kernel']
+        arguments: ['@doctrine.orm.entity_manager', '@kernel', '%transifex_username%', '%transifex_password%']
