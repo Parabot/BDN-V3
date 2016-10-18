@@ -17,8 +17,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class TranslationHelper {
 
-    const PATH = '/data/Translations/';
-    const HOST = 'http://www.transifex.com';
+    const PATH             = '/data/Translations/';
+    const HOST             = 'http://www.transifex.com';
+    const DEFAULT_LANGUAGE = 'en';
 
     /**
      * @var EntityManager
@@ -94,11 +95,24 @@ class TranslationHelper {
 
         $json = json_decode($response->getContent(), true);
 
-        $languages = [];
+        $languages     = [];
+        $englishPassed = false;
         foreach($json as $lang) {
             $language = new Language();
             $language->setLanguageKey($lang[ 'language_code' ]);
             $language->setLanguage(\Locale::getDisplayName($language->getLanguageKey()));
+
+            $languages[] = $language;
+
+            if($language->getLanguageKey() == self::DEFAULT_LANGUAGE) {
+                $englishPassed = true;
+            }
+        }
+
+        if($englishPassed === false) {
+            $language = new Language();
+            $language->setLanguageKey('en');
+            $language->setLanguage('English');
 
             $languages[] = $language;
         }
