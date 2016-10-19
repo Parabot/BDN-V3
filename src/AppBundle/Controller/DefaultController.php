@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\Role\Role;
 class DefaultController extends Controller {
     /**
      * @Route("/a", name="homepage")
+     * @Method({"GET"})
      *
      * @PreAuthorize("hasRole('ROLE_USER')")
      */
