@@ -1,16 +1,38 @@
 <?php
-/**
- * @author JKetelaar
- */
 
-namespace AppBundle\DataFixtures\ORM;
+namespace BDN\Migrations;
 
-use Doctrine\Common\DataFixtures\FixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\DBAL\Schema\Schema;
 use Parabot\BDN\UserBundle\Entity\Group;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadUserGroupData implements FixtureInterface {
-    public function load(ObjectManager $manager) {
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+class Version20161020011902 extends AbstractMigration implements ContainerAwareInterface {
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * Sets the container.
+     *
+     * @param ContainerInterface|null $container A ContainerInterface instance or null
+     */
+    public function setContainer(ContainerInterface $container = null) {
+        $this->container = $container;
+    }
+
+    /**
+     * @param Schema $schema
+     */
+    public function up(Schema $schema) {
+        $doctrine = $this->container->get('doctrine');
+        $manager = $doctrine->getManager();
 
         $groups = [
             4  => [
@@ -101,5 +123,13 @@ class LoadUserGroupData implements FixtureInterface {
         }
 
         $manager->flush();
+    }
+
+    /**
+     * @param Schema $schema
+     */
+    public function down(Schema $schema) {
+        // this down() migration is auto-generated, please modify it to your needs
+
     }
 }

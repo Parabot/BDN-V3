@@ -44,6 +44,7 @@ class AppKernel extends Kernel
 
             new DZunke\SlackBundle\DZunkeSlackBundle(),
 
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
 
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),

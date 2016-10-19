@@ -133,3 +133,9 @@ hwi_oauth:
                 realname: fullname
                 email: email
             scope: user.profile user.email user.groups
+
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/Migrations"
+    namespace: BDN\Migrations
+    table_name: migration_versions
+    name: BDN Migrations
