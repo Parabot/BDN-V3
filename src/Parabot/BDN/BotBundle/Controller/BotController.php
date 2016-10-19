@@ -314,7 +314,12 @@ class BotController extends Controller {
                     );
                 }
             } else {
-                return new JsonResponse([ 'result' => 'Unknown version requested' ], 404);
+                return new JsonResponse(
+                    [
+                        'result'  => true,
+                        'message' => 'There is a new release',
+                    ]
+                );
             }
         } else {
             return new JsonResponse([ 'result' => 'Unknown type requested' ], 404);
