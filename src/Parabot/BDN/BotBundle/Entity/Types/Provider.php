@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Provider
  *
  * @ORM\Table(name="type_provider")
- * @ORM\Entity(repositoryClass="Parabot\BDN\BotBundle\Repository\ClientRepository")
+ * @ORM\Entity(repositoryClass="Parabot\BDN\BotBundle\Repository\ProviderRepository")
  */
 class Provider extends Type {
 
