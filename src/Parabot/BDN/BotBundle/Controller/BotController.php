@@ -213,7 +213,7 @@ class BotController extends Controller {
 
                         $this->get('slack_manager')->sendSuccessMessage(
                             'New release available',
-                            'Created new *' . $typeObject->getType() . '* from latest ' . ($typeObject->getStable(
+                            'Created new ' . $typeObject->getType() . ' from latest ' . ($typeObject->getStable(
                             ) ? '' : 'nightly ') . 'build.',
                             $request->getSchemeAndHttpHost() . $this->generateUrl(
                                 'bot_download',
