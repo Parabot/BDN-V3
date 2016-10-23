@@ -5,9 +5,9 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Slack\MessageAttachment;
 use DZunke\SlackBundle\Slack\Client;
 use DZunke\SlackBundle\Slack\Client\Actions;
-use DZunke\SlackBundle\Slack\Entity\MessageAttachment;
 use DZunke\SlackBundle\Slack\Messaging;
 use DZunke\SlackBundle\Slack\Messaging\IdentityBag;
 
