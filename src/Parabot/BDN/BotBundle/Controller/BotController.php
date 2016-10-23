@@ -304,7 +304,7 @@ class BotController extends Controller {
 
                     return new JsonResponse(
                         [
-                            'result'  => $latest,
+                            'result'  => boolval($latest),
                             'message' => 'There is ' . ($latest === 'true' ? 'no' : 'a') . ' new release',
                         ]
                     );
