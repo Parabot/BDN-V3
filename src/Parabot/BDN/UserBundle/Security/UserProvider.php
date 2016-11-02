@@ -152,6 +152,11 @@ class UserProvider extends BaseClass {
             $user->$setter($response->getAccessToken());
         }
 
+        if($user->getApiKey() == null || strlen($user->getApiKey()) < 128) {
+            $apiKey = hash('sha512', StringUtils::generateRandomString(25));
+            $user->setApiKey($apiKey);
+        }
+
         return $user;
     }
 
