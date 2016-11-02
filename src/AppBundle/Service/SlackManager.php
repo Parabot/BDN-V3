@@ -145,7 +145,7 @@ class SlackManager {
         $url      = sprintf(
             $url,
             $this->connection->getToken(),
-            $user->getEmail(),
+            urlencode($user->getEmail()),
             count($previousRegistrations) <= 0 ? 'false' : 'true'
         );
 
