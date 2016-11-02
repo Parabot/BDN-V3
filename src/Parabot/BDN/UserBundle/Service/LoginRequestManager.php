@@ -6,6 +6,7 @@
 namespace Parabot\BDN\UserBundle\Service;
 
 use AppBundle\Service\StringUtils;
+use AppBundle\Service\UrlUtils;
 use Doctrine\ORM\EntityManager;
 use Parabot\BDN\UserBundle\Entity\Login\RequestToken;
 
@@ -18,17 +19,25 @@ class LoginRequestManager {
      */
     private $entityManager;
 
+    private $urlUtils;
+
     /**
      * LoginRequestManager constructor.
      *
      * @param EntityManager $entityManager
+     * @param UrlUtils      $urlUtils
      */
-    public function __construct(EntityManager $entityManager) { $this->entityManager = $entityManager; }
+    public function __construct(EntityManager $entityManager, UrlUtils $urlUtils) {
+        $this->entityManager = $entityManager;
+        $this->urlUtils      = $urlUtils;
+    }
 
     /**
+     * @param string|null $redirect
+     *
      * @return bool|string
      */
-    public function insertRequest() {
+    public function insertRequest($redirect = null) {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
 
         $key   = StringUtils::generateRandomString(20, false);
@@ -44,6 +53,10 @@ class LoginRequestManager {
         $token = new RequestToken();
         $token->setKey($key);
         $token->setDate(new \DateTime());
+
+        if($redirect != null && ! $this->urlUtils->isValidHostWithTLD($redirect)) {
+            $token->setRedirect($redirect);
+        }
 
         $this->entityManager->persist($token);
         $this->entityManager->flush();
@@ -72,7 +85,9 @@ class LoginRequestManager {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
         $token      = $repository->findOneBy([ 'key' => $key ]);
 
-        if($token !== null && $token->isExpired() !== true && $token->getDate() !== null && $token->getDate()->getTimestamp() > time() - 60 * 5) {
+        if($token !== null && $token->isExpired() !== true && $token->getDate() !== null && $token->getDate(
+            )->getTimestamp() > time() - 60 * 5
+        ) {
             $user = $token->getUser();
             if($user !== null) {
                 $token->setExpired(true);

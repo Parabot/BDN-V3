@@ -60,6 +60,7 @@ security:
         main:
             pattern: ^/
             oauth:
+                remember_me: true
                 failure_path: /api/users/connect
                 login_path: /api/users/connect/service/forums
                 check_path: /api/users/connect
@@ -68,6 +69,7 @@ security:
                     forums: "/api/users/connect/service/forums"
                 oauth_user_provider:
                     service: oauth_user_provider
+                default_target_path: /api/users/loggedin
             anonymous: true
             logout:
                 path: /api/users/logout

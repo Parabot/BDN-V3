@@ -15,6 +15,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    valid_domain: parabot.org
 
 framework:
     #esi:             ~

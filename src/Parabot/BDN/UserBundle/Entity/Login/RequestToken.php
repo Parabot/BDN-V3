@@ -49,6 +49,13 @@ class RequestToken {
     private $date;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="redirect", type="string", length=255)
+     */
+    private $redirect;
+
+    /**
      * RequestToken constructor.
      */
     public function __construct() { }
@@ -121,5 +128,19 @@ class RequestToken {
      */
     public function setDate($date) {
         $this->date = $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirect() {
+        return $this->redirect;
+    }
+
+    /**
+     * @param string $redirect
+     */
+    public function setRedirect($redirect) {
+        $this->redirect = $redirect;
     }
 }

@@ -16,6 +16,33 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller {
 
     /**
+     * @Route("/loggedin", name="logged_in")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function loggedInAction(Request $request) {
+        $redirect = $request->cookies->get($this->getParameter('redirect_url_cookie'));
+
+        $response = new JsonResponse([ 'result' => 'You are now logged in' ]);
+
+        if($redirect != null) {
+            if( ! $this->get('url_utils')->isValidHostWithTLD($redirect)) {
+                $redirect = null;
+            }
+
+            if($redirect != null) {
+                $response = new RedirectResponse($redirect);
+            }
+        }
+
+        $response->headers->clearCookie($this->getParameter('redirect_url_cookie'));
+
+        return $response;
+    }
+
+    /**
      * @Route("/unauthorised", name="unauthorised_notice")
      *
      * @param Request $request
@@ -47,19 +74,22 @@ class DefaultController extends Controller {
      * @return JsonResponse
      */
     public function createLoginAction(Request $request) {
-        $context = $this->container->get('router')->getContext();
+        $redirect = $request->request->get('redirect');
+        $context  = $this->container->get('router')->getContext();
 
-        $key = $this->get('login_request_manager')->insertRequest();
+        $key = $this->get('login_request_manager')->insertRequest($redirect);
         $url = $this->get('router')->generate('open_login', [ 'key' => $key ]);
 
         $url = $context->getScheme() . '://' . $context->getHost() . ($context->getHttpPort(
             ) !== 80 ? ':' . $context->getHttpPort() : '') . $url;
 
         if($key === false) {
-            return new JsonResponse([ 'error' => 'Couldn\'t generate a new key' ], 500);
+            $response = new JsonResponse([ 'error' => 'Could not generate a new key' ], 500);
+        } else {
+            $response = new JsonResponse([ 'url' => $url, 'key' => $key ]);
         }
 
-        return new JsonResponse([ 'url' => $url, 'key' => $key ]);
+        return $response;
     }
 
     /**
@@ -68,17 +98,25 @@ class DefaultController extends Controller {
      * @param Request $request
      * @param string  $key
      *
-     * @return RedirectResponse
+     * @return JsonResponse|RedirectResponse
      */
     public function openLoginAction(Request $request, $key) {
-        $response = $this->redirect(
-            $this->generateUrl('hwi_oauth_service_redirect', [ 'service' => 'forums' ])
-        );
+        $repository = $this->getDoctrine()->getRepository('BDNUserBundle:Login\RequestToken');
+        $result = $repository->findOneBy(['key' => $key]);
 
-        $cookie = new Cookie(LoginRequestManager::KEY_COOKIE, $key, time() + 5 * 60);
-        $response->headers->setCookie($cookie);
+        if ($result != null) {
 
-        return $response;
+            $response = $this->redirect(
+                $this->generateUrl('hwi_oauth_service_redirect', [ 'service' => 'forums' ])
+            );
+
+            $response->headers->setCookie(new Cookie(LoginRequestManager::KEY_COOKIE, $key, time() + 5 * 60));
+            $response->headers->setCookie(new Cookie($this->getParameter('redirect_url_cookie'), $result->getRedirect()));
+
+            return $response;
+        }
+
+        return new JsonResponse(['error' => 'Unknown key given', 'message' => 'If you came from the client, please contact an administrator']);
     }
 
     /**
