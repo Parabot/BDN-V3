@@ -68,6 +68,7 @@ class DefaultController extends Controller {
 
     /**
      * @Route("/create/login", name="create_login")
+     * @Method({"POST"})
      *
      * @param Request $request
      *

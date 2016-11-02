@@ -24,7 +24,7 @@ services:
 
     login_request_manager:
         class: Parabot\BDN\UserBundle\Service\LoginRequestManager
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '@url_utils']
 
     oauth_user_provider:
         class: Parabot\BDN\UserBundle\Security\UserProvider
