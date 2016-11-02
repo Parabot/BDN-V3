@@ -39,7 +39,7 @@ class RequestToken {
      *
      * @ORM\Column(type="boolean", name="expired")
      */
-    private $expired;
+    private $expired = false;
 
     /**
      * @var \DateTime
