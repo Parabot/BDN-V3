@@ -166,4 +166,22 @@ class User extends BaseUser implements TwoFactorInterface {
     public function setForumsAccessToken($forumsAccessToken) {
         $this->forumsAccessToken = $forumsAccessToken;
     }
+
+    /**
+     * @param int $communityId
+     *
+     * @return bool
+     */
+    public function hasGroupId($communityId) {
+        /**
+         * @var Group $group
+         */
+        foreach($this->getGroups() as $group) {
+            if($group->getCommunityId() == $communityId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -43,6 +43,20 @@ class DefaultController extends Controller {
     }
 
     /**
+     * @Route("/b", name="sponsorpage")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     *
+     * @PreAuthorize("isSponsor()")
+     */
+    public function sponsorAction(Request $request) {
+        return new JsonResponse([ 'result' => 'Logged in as sponsor' ]);
+    }
+
+    /**
      * @Route("/api/client/build", name="nightly_build")
      * @Method({"POST"})
      */
@@ -113,8 +127,8 @@ class DefaultController extends Controller {
         $git->setUrl('asd');
 
         $script->setName('asd')->setActive(true)->setAuthors([ $uRepository->findAll()[ 1 ] ])->setCategories(
-                []
-            )->setDescription('')->setForum(1)//            ->setGit($git)
+            []
+        )->setDescription('')->setForum(1)//            ->setGit($git)
                ->setProduct(null)->setVersion(1.0);
 
         //        $this->getDoctrine()->getManager()->persist($script);

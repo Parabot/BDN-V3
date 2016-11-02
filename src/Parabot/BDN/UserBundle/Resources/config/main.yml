@@ -30,3 +30,8 @@ fos_oauth_server:
 
 jms_security_extra:
     expressions: true
+
+jms_di_extra:
+    locations:
+        all_bundles: true
+        directories: ["%kernel.root_dir%/../src"]

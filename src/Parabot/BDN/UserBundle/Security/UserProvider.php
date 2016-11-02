@@ -137,32 +137,20 @@ class UserProvider extends BaseClass {
             $user = $this->setGroups($user, $userInfo[ 'groups' ]);
 
             $this->userManager->updateUser($user);
+            $this->assignCookie($user);
 
-            if($this->request->cookies->has(LoginRequestManager::KEY_COOKIE)) {
-                $this->loginRequestManager->assignUserToKey(
-                    $this->request->cookies->get(LoginRequestManager::KEY_COOKIE),
-                    $user
-                );
-            }
-
-            return $user;
         } else {
             $user->setUsername($userInfo[ 'username' ]);
             $user->setEmail($userInfo[ 'email' ]);
 
             $user = $this->setGroups($user, $userInfo[ 'groups' ]);
 
-            if($this->request->cookies->has(LoginRequestManager::KEY_COOKIE)) {
-                $this->loginRequestManager->assignUserToKey(
-                    $this->request->cookies->get(LoginRequestManager::KEY_COOKIE),
-                    $user
-                );
-            }
-        }
+            $this->assignCookie($user);
 
-        $serviceName = $response->getResourceOwner()->getName();
-        $setter      = 'set' . ucfirst($serviceName) . 'AccessToken';
-        $user->$setter($response->getAccessToken());
+            $serviceName = $response->getResourceOwner()->getName();
+            $setter      = 'set' . ucfirst($serviceName) . 'AccessToken';
+            $user->$setter($response->getAccessToken());
+        }
 
         return $user;
     }
@@ -187,5 +175,17 @@ class UserProvider extends BaseClass {
         }
 
         return $user;
+    }
+
+    /**
+     * @param UserInterface $user
+     */
+    private function assignCookie($user) {
+        if($this->request->cookies->has(LoginRequestManager::KEY_COOKIE)) {
+            $this->loginRequestManager->assignUserToKey(
+                $this->request->cookies->get(LoginRequestManager::KEY_COOKIE),
+                $user
+            );
+        }
     }
 }
