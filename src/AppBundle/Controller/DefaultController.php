@@ -55,7 +55,24 @@ class DefaultController extends Controller {
     public function sponsorAction(Request $request) {
         return new JsonResponse([ 'result' => 'Logged in as sponsor' ]);
     }
-    
+
+    /**
+     * @Route("/c", name="testpage")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * 
+     * @PreAuthorize("isNotBanned()")
+     */
+    public function testAction(Request $request) {
+        $result = $this->get('slack_manager')->inviteToChannel($this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[0]);
+        return new JsonResponse($result, $result['code']);
+    }
+
+
+
     /**
      * @return JsonResponse
      */
