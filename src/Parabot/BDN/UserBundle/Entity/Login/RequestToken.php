@@ -42,6 +42,13 @@ class RequestToken {
     private $expired;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
      * RequestToken constructor.
      */
     public function __construct() { }
@@ -100,5 +107,19 @@ class RequestToken {
      */
     public function setExpired($expired) {
         $this->expired = $expired;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDate() {
+        return $this->date;
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    public function setDate($date) {
+        $this->date = $date;
     }
 }

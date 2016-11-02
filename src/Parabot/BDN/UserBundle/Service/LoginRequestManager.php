@@ -43,6 +43,7 @@ class LoginRequestManager {
 
         $token = new RequestToken();
         $token->setKey($key);
+        $token->setDate(new \DateTime());
 
         $this->entityManager->persist($token);
         $this->entityManager->flush();
@@ -71,7 +72,7 @@ class LoginRequestManager {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
         $token      = $repository->findOneBy([ 'key' => $key ]);
 
-        if($token !== null && $token->isExpired() !== true) {
+        if($token !== null && $token->isExpired() !== true && $token->getDate() !== null && $token->getDate()->getTimestamp() > time() - 60 * 5) {
             $user = $token->getUser();
             if($user !== null) {
                 $token->setExpired(true);
