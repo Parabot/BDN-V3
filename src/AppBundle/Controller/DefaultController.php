@@ -63,15 +63,13 @@ class DefaultController extends Controller {
      * @param Request $request
      *
      * @return JsonResponse
-     * 
+     *
      * @PreAuthorize("isNotBanned()")
      */
     public function testAction(Request $request) {
-        $result = $this->get('slack_manager')->inviteToChannel($this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[0]);
+        $result = $this->get('slack_manager')->inviteToChannel($this->container->get('security.token_storage')->getToken()->getUser());
         return new JsonResponse($result, $result['code']);
     }
-
-
 
     /**
      * @return JsonResponse

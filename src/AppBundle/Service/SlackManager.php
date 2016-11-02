@@ -13,6 +13,7 @@ use DZunke\SlackBundle\Slack\Messaging;
 use DZunke\SlackBundle\Slack\Messaging\IdentityBag;
 use Guzzle\Common\Event;
 use Parabot\BDN\UserBundle\Entity\User;
+use Parabot\BDN\UserBundle\Entity\Users\SlackInvite;
 
 class SlackManager {
 
@@ -141,7 +142,12 @@ class SlackManager {
 
         $endpoint = $this->connection->getEndpoint();
         $url      = 'https://' . $endpoint . 'users.admin.invite?token=%s&email=%s&resend=%s';
-        $url      = sprintf($url, $this->connection->getToken(), '$email', count($previousRegistrations) <= 0 ? 'false' : 'true');
+        $url      = sprintf(
+            $url,
+            $this->connection->getToken(),
+            $user->getEmail(),
+            count($previousRegistrations) <= 0 ? 'false' : 'true'
+        );
 
         $response = $this->executeRequest($url);
 
@@ -159,14 +165,21 @@ class SlackManager {
 
         if($status === false) {
             return [
-                'result' => false,
-                'error'  => 'Status is not true, please contact an administrator',
-                'slack_error' => $responseArray['error'],
-                'code'   => 500,
+                'result'      => false,
+                'error'       => 'Status is not true, please contact an administrator',
+                'slack_error' => $responseArray[ 'error' ],
+                'code'        => 500,
             ];
         }
 
-        return [ 'result' => true, 'message' => 'You\'re invited to Slack, please check your email', 'code' => 200 ];
+        $slackInvite = new SlackInvite();
+        $slackInvite->setDate(new \DateTime());
+        $slackInvite->setUser($user);
+
+        $this->entityManager->persist($slackInvite);
+        $this->entityManager->flush();
+
+        return [ 'result' => true, 'message' => 'You are invited to Slack, please check your email', 'code' => 200 ];
     }
 
     private function executeRequest($url) {
