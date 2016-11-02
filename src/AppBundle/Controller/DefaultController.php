@@ -2,9 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use Parabot\BDN\BotBundle\Entity\Script;
-use Parabot\BDN\BotBundle\Entity\Scripts\Git;
-use Parabot\BDN\BotBundle\Repository\ScriptRepository;
 use Parabot\BDN\UserBundle\Entity\User;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -68,7 +65,8 @@ class DefaultController extends Controller {
      */
     public function testAction(Request $request) {
         $result = $this->get('slack_manager')->inviteToChannel($this->getUser());
-        return new JsonResponse($result, $result['code']);
+
+        return new JsonResponse($result, $result[ 'code' ]);
     }
 
     /**
