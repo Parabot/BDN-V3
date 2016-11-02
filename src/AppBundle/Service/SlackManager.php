@@ -11,6 +11,7 @@ use DZunke\SlackBundle\Slack\Client;
 use DZunke\SlackBundle\Slack\Client\Actions;
 use DZunke\SlackBundle\Slack\Messaging;
 use DZunke\SlackBundle\Slack\Messaging\IdentityBag;
+use DZunke\SlackBundle\Slack\Users;
 use Guzzle\Common\Event;
 use Parabot\BDN\UserBundle\Entity\User;
 use Parabot\BDN\UserBundle\Entity\Users\SlackInvite;

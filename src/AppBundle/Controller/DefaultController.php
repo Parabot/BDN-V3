@@ -67,7 +67,7 @@ class DefaultController extends Controller {
      * @PreAuthorize("isNotBanned()")
      */
     public function testAction(Request $request) {
-        $result = $this->get('slack_manager')->inviteToChannel($this->container->get('security.token_storage')->getToken()->getUser());
+        $result = $this->get('slack_manager')->inviteToChannel($this->getUser());
         return new JsonResponse($result, $result['code']);
     }
 
