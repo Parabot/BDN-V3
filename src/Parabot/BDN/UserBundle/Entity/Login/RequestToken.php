@@ -35,6 +35,13 @@ class RequestToken {
     private $user = null;
 
     /**
+     * @var bool $expired
+     *
+     * @ORM\Column(type="boolean", name="expired")
+     */
+    private $expired;
+
+    /**
      * RequestToken constructor.
      */
     public function __construct() { }
@@ -79,5 +86,19 @@ class RequestToken {
      */
     public function setUser($user = null) {
         $this->user = $user;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExpired() {
+        return $this->expired;
+    }
+
+    /**
+     * @param boolean $expired
+     */
+    public function setExpired($expired) {
+        $this->expired = $expired;
     }
 }

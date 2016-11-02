@@ -71,9 +71,13 @@ class LoginRequestManager {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
         $token      = $repository->findOneBy([ 'key' => $key ]);
 
-        if($token !== null) {
+        if($token !== null && $token->isExpired() !== true) {
             $user = $token->getUser();
             if($user !== null) {
+                $token->setExpired(true);
+                $this->entityManager->persist($token);
+                $this->entityManager->flush();
+
                 return $user->getApiKey();
             }
         }
