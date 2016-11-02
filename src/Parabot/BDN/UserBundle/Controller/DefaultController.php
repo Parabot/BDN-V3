@@ -2,9 +2,11 @@
 
 namespace Parabot\BDN\UserBundle\Controller;
 
-use Parabot\BDN\UserBundle\Service\LoginRequestManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Parabot\BDN\UserBundle\Service\LoginRequestManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -96,5 +98,29 @@ class DefaultController extends Controller {
         } else {
             return new JsonResponse([ 'api' => $api ]);
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Sends an invite to the logged in user",
+     *  requirements={
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/slack", name="slack_invite")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     *
+     * @PreAuthorize("isNotBanned()")
+     */
+    public function inviteToSlackAction(Request $request) {
+        $result = $this->get('slack_manager')->inviteToChannel($this->getUser());
+
+        return new JsonResponse($result, $result[ 'code' ]);
     }
 }
