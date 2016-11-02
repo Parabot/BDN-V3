@@ -51,7 +51,7 @@ class RequestToken {
     /**
      * @var string
      *
-     * @ORM\Column(name="redirect", type="string", length=255)
+     * @ORM\Column(name="redirect", type="string", length=255, nullable=true)
      */
     private $redirect;
 

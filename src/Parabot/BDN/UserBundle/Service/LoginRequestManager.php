@@ -54,7 +54,7 @@ class LoginRequestManager {
         $token->setKey($key);
         $token->setDate(new \DateTime());
 
-        if($redirect != null && ! $this->urlUtils->isValidHostWithTLD($redirect)) {
+        if($redirect != null && $this->urlUtils->isValidHostWithTLD($redirect)) {
             $token->setRedirect($redirect);
         }
 

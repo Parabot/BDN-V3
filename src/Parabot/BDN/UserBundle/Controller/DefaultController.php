@@ -112,7 +112,7 @@ class DefaultController extends Controller {
             );
 
             $response->headers->setCookie(new Cookie(LoginRequestManager::KEY_COOKIE, $key, time() + 5 * 60));
-            $response->headers->setCookie(new Cookie($this->getParameter('redirect_url_cookie'), $result->getRedirect()));
+            $response->headers->setCookie(new Cookie($this->getParameter('redirect_url_cookie'), $result->getRedirect(), time() + 5 * 60));
 
             return $response;
         }
