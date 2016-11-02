@@ -31,23 +31,25 @@ class RequestAccessEvaluator {
 
     /** @DI\SecurityFunction("isSponsor") */
     public function isSponsor() {
-        return $this->getUser()->hasGroupId(12);
+        return ($user = $this->getUser()) != null && $user->hasGroupId(12);
     }
 
     /**
      * @return User|null
      */
     public function getUser() {
-        return $this->container->get('security.token_storage')->getToken()->getUser();
+        return ($user = $this->container->get('security.token_storage')->getToken()->getUser(
+        )) != null && $user != 'anon.' ? $user : null;
     }
 
     /** @DI\SecurityFunction("isAdministrator") */
     public function isAdministrator() {
-        return $this->getUser()->hasGroupId(4);
+        return ($user = $this->getUser()) != null && $user->hasGroupId(4);
     }
 
+    /** @DI\SecurityFunction("isNotBanned") */
     public function isNotBanned() {
-        return ! $this->getUser()->hasGroupId(23);
+        return ($user = $this->getUser()) != null && ! $user->hasGroupId(23);
     }
 
     /**
