@@ -2,11 +2,11 @@
 
 namespace Parabot\BDN\UserBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Parabot\BDN\UserBundle\Service\LoginRequestManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -103,21 +103,28 @@ class DefaultController extends Controller {
      */
     public function openLoginAction(Request $request, $key) {
         $repository = $this->getDoctrine()->getRepository('BDNUserBundle:Login\RequestToken');
-        $result = $repository->findOneBy(['key' => $key]);
+        $result     = $repository->findOneBy([ 'key' => $key ]);
 
-        if ($result != null) {
+        if($result != null) {
 
             $response = $this->redirect(
                 $this->generateUrl('hwi_oauth_service_redirect', [ 'service' => 'forums' ])
             );
 
             $response->headers->setCookie(new Cookie(LoginRequestManager::KEY_COOKIE, $key, time() + 5 * 60));
-            $response->headers->setCookie(new Cookie($this->getParameter('redirect_url_cookie'), $result->getRedirect(), time() + 5 * 60));
+            $response->headers->setCookie(
+                new Cookie($this->getParameter('redirect_url_cookie'), $result->getRedirect(), time() + 5 * 60)
+            );
 
             return $response;
         }
 
-        return new JsonResponse(['error' => 'Unknown key given', 'message' => 'If you came from the client, please contact an administrator']);
+        return new JsonResponse(
+            [
+                'error'   => 'Unknown key given',
+                'message' => 'If you came from the client, please contact an administrator',
+            ]
+        );
     }
 
     /**

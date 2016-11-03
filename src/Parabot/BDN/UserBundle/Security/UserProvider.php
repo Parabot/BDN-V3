@@ -8,7 +8,6 @@ namespace Parabot\BDN\UserBundle\Security;
 use AppBundle\Service\StringUtils;
 use Doctrine\ORM\EntityManager;
 use FOS\UserBundle\Model\UserManagerInterface;
-use HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
 use Parabot\BDN\UserBundle\Entity\Group;

@@ -3,7 +3,6 @@ namespace Parabot\BDN\UserBundle\Entity\OAuth;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\OAuthServerBundle\Entity\Client as BaseClient;
-use Parabot\BDN\UserBundle\Entity\OAuth;
 
 /**
  * Client

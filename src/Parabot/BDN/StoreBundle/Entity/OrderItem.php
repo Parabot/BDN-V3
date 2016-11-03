@@ -5,8 +5,8 @@
 namespace Parabot\BDN\StoreBundle\Entity;
 
 use AppBundle\Entity\Dependencies\Script;
-use Sylius\Component\Order\Model\OrderItem as SyliusOrderItem;
 use Doctrine\ORM\Mapping as ORM;
+use Sylius\Component\Order\Model\OrderItem as SyliusOrderItem;
 
 /**
  * @ORM\Table("order_items")

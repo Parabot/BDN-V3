@@ -5,10 +5,9 @@
 namespace Parabot\BDN\UserBundle\Controller;
 
 use FOS\UserBundle\Controller\SecurityController as BaseController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class SecurityController extends BaseController {
 

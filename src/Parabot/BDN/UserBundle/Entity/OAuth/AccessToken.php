@@ -6,7 +6,6 @@ namespace Parabot\BDN\UserBundle\Entity\OAuth;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\OAuthServerBundle\Entity\AccessToken as BaseAccessToken;
-use Parabot\BDN\UserBundle\Entity\OAuth;
 use Parabot\BDN\UserBundle\Entity\User;
 
 /**

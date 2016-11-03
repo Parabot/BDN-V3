@@ -16,7 +16,7 @@ class SlackInviteRepository extends EntityRepository {
      *
      * @return SlackInvite[]
      */
-    public function findByUser(User $user){
+    public function findByUser(User $user) {
         $query = $this->getEntityManager()->createQuery(
             'SELECT s FROM BDNUserBundle:Users\SlackInvite s JOIN s.user a WHERE a.id = :id'
         )->setParameter('id', $user->getId());

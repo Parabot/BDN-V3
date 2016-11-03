@@ -8,7 +8,6 @@ namespace AppBundle\Service\Normalizers;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 use UnexpectedValueException;
 
 class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {

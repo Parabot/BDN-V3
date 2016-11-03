@@ -7,7 +7,6 @@ namespace Parabot\BDN\BotBundle\Service;
 
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class DownloadProvider {
 

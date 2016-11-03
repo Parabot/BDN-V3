@@ -5,7 +5,6 @@
 
 namespace Parabot\BDN\BotBundle\Service;
 
-use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Listener\BasicAuthListener;
 use Buzz\Message\Request;

@@ -6,7 +6,6 @@
 namespace Parabot\BDN\BotBundle\Service\Repository;
 
 use Doctrine\ORM\EntityManager;
-use Parabot\BDN\BotBundle\Repository\ScriptRepository;
 
 class ScriptRepositoryService {
 

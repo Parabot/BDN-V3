@@ -4,8 +4,8 @@
  */
 namespace Parabot\BDN\StoreBundle\Entity;
 
-use Sylius\Component\Order\Model\Order as SyliusOrder;
 use Doctrine\ORM\Mapping as ORM;
+use Sylius\Component\Order\Model\Order as SyliusOrder;
 
 /**
  * @ORM\Table("orders")

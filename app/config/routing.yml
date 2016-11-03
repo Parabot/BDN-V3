@@ -8,6 +8,11 @@ bdn_bot_translations:
     type:     annotation
     prefix:   /api/bot/translations
 
+bdn_servers:
+    resource: "@BDNBotBundle/Controller/ServerController.php"
+    type:     annotation
+    prefix:   /api/servers
+
 bdn_script:
     resource: "@BDNBotBundle/Controller/ScriptController.php"
     type:     annotation

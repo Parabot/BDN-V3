@@ -6,7 +6,6 @@
 namespace Parabot\BDN\BotBundle\Entity\Types;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**

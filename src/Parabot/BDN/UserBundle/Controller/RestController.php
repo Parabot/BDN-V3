@@ -8,10 +8,8 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Parabot\BDN\UserBundle\Entity\OAuth\Client;
 use Parabot\BDN\UserBundle\Repository\ClientRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 
 class RestController extends FOSRestController {
 

@@ -6,7 +6,6 @@
 namespace Parabot\BDN\UserBundle\Listener;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;

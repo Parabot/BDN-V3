@@ -5,10 +5,10 @@
 
 namespace Parabot\BDN\UserBundle\Security;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Parabot\BDN\UserBundle\Entity\User;
 use Parabot\BDN\UserBundle\Repository\UserRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /** @DI\Service */
 class RequestAccessEvaluator {

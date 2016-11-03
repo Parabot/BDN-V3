@@ -3,26 +3,22 @@
 namespace Parabot\BDN\BotBundle\Controller;
 
 use AppBundle\Service\SerializerManager;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Aws\S3\Exception\NoSuchKeyException;
 use Aws\S3\S3Client;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
-use Parabot\BDN\BotBundle\BDNBotBundle;
-use Parabot\BDN\BotBundle\Entity\Types\Client;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
-use Parabot\BDN\BotBundle\Repository\ClientRepository;
 use Parabot\BDN\BotBundle\Repository\TypeRepository;
 use Parabot\BDN\BotBundle\Service\ParameterParser;
 use Parabot\BDN\BotBundle\Service\TravisHelper;
 use Parabot\BDN\BotBundle\Service\TypeHelper;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Validator\Constraints\DateTime;
 use Travis\Client\Entity\Build;
 
 class BotController extends Controller {

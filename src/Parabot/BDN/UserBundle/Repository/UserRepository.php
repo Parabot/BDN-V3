@@ -5,7 +5,6 @@
 
 namespace Parabot\BDN\UserBundle\Repository;
 
-use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Parabot\BDN\UserBundle\Entity\User;
 
@@ -18,8 +17,8 @@ class UserRepository extends EntityRepository {
      */
     public function getUserByCommunityMemberId($id) {
         $result = $this->createQueryBuilder('u')->leftJoin('u.communityUser', 'uc')->where(
-                'uc.member_id = :id'
-            )->setMaxResults(1)->setParameter('id', $id);
+            'uc.member_id = :id'
+        )->setMaxResults(1)->setParameter('id', $id);
 
         /**
          * @var User[] $users

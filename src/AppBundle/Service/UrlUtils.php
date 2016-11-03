@@ -5,8 +5,6 @@
 
 namespace AppBundle\Service;
 
-use Symfony\Component\DependencyInjection\Container;
-
 class UrlUtils {
 
     /**

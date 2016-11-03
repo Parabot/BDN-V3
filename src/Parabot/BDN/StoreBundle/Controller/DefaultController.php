@@ -2,13 +2,13 @@
 
 namespace Parabot\BDN\StoreBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\Dependencies\Script;
+use Parabot\BDN\StoreBundle\Entity\Order;
 use Parabot\BDN\StoreBundle\Entity\OrderItem;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Framework;
-use Parabot\BDN\StoreBundle\Entity\Order;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 
