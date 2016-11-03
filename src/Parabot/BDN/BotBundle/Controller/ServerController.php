@@ -16,7 +16,7 @@ class ServerController extends Controller {
 
     /**
      * @ApiDoc(
-     *  description="Returns the requested download file",
+     *  description="Returns the requested server information",
      *  requirements={
      *      {
      *          "name"="key",
@@ -28,7 +28,7 @@ class ServerController extends Controller {
      *  }
      * )
      *
-     * @Route("/download/{key}", name="get_server_information")
+     * @Route("/get/{key}", name="get_server_information")
      * @Method({"GET"})
      *
      * @param Request $request
