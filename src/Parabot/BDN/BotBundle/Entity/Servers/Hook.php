@@ -3,6 +3,8 @@
 namespace Parabot\BDN\BotBundle\Entity\Servers;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Parabot\BDN\BotBundle\Entity\Servers\Hooks\CallbackHook;
 use Parabot\BDN\BotBundle\Entity\Servers\Hooks\GetterHook;
 use Parabot\BDN\BotBundle\Entity\Servers\Hooks\InterfaceHook;
@@ -136,6 +138,12 @@ class Hook implements CallbackHook, GetterHook, InterfaceHook, InvokerHook, Sett
      * @ORM\Column(name="type", type="string", length=255)
      */
     private $type;
+
+    /**
+     * @ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\Server", inversedBy="hooks")
+     * @JoinColumn(name="server_id", referencedColumnName="id")
+     */
+    private $server;
 
     /**
      * @return string
@@ -557,6 +565,24 @@ class Hook implements CallbackHook, GetterHook, InterfaceHook, InvokerHook, Sett
         }
 
         return $array;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getServer() {
+        return $this->server;
+    }
+
+    /**
+     * @param mixed $server
+     *
+     * @return Hook
+     */
+    public function setServer($server) {
+        $this->server = $server;
+
+        return $this;
     }
 
     /**

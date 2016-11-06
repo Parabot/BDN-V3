@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\OneToMany;
 use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -94,6 +95,56 @@ class Server {
      */
     private $description;
 
+    /**
+     * @var Hook[]
+     *
+     * @OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\Hook", mappedBy="server")
+     */
+    private $hooks;
+
+    /**
+     * @return Hook[]
+     */
+    public function getHooks() {
+        return $this->hooks;
+    }
+
+    /**
+     * @param Hook[] $hooks
+     *
+     * @return $this
+     */
+    public function setHooks($hooks) {
+        $this->hooks = $hooks;
+
+        return $this;
+    }
+
+    /**
+     * @param Hook $hook
+     *
+     * @return Server
+     */
+    public function addHook($hook) {
+        if(is_array($hook)) {
+            $this->addHooks($hook);
+        } else {
+            $this->hooks[] = $hook;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $hooks
+     *
+     * @return Server
+     */
+    public function addHooks($hooks) {
+        $this->hooks = array_merge($this->hooks, $hooks);
+
+        return $this;
+    }
 
     /**
      * Get id
