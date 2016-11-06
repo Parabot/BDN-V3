@@ -5,8 +5,14 @@
 
 namespace Parabot\BDN\BotBundle\Controller;
 
+use AppBundle\Service\SerializerManager;
 use FOS\RestBundle\Controller\Annotations\Route;
+use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Parabot\BDN\BotBundle\Entity\Servers\Server;
+use Parabot\BDN\BotBundle\Entity\Servers\ServerDetail;
+use Parabot\BDN\UserBundle\Entity\Group;
+use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,10 +22,153 @@ class ServerController extends Controller {
 
     /**
      * @ApiDoc(
+     *  description="Inserts a server into the database",
+     *  requirements={
+     *      {
+     *          "name"="name",
+     *          "dataType"="string",
+     *          "description"="Name of the server"
+     *      },
+     *      {
+     *          "name"="active",
+     *          "dataType"="boolean",
+     *          "description"="Define if the server should be active"
+     *      },
+     *      {
+     *          "name"="groups",
+     *          "dataType"="array",
+     *          "description"="Array of the group ids that may access the server, delimited with a comma"
+     *      },
+     *      {
+     *          "name"="authors",
+     *          "dataType"="array",
+     *          "description"="Array of the usernames that have made this server possible, delimited with a comma"
+     *      },
+     *      {
+     *          "name"="details",
+     *          "dataType"="string",
+     *          "description"="JSON object of the server details"
+     *      },
+     *      {
+     *          "name"="version",
+     *          "dataType"="float",
+     *          "description"="Version of the server"
+     *      },
+     *      {
+     *          "name"="description",
+     *          "dataType"="string",
+     *          "description"="Description of the server"
+     *      }
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/insert", name="insert_server")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isServerDeveloper()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function insertServerAction(Request $request) {
+        $response         = new JsonResponse();
+        $groupRepository  = $this->getDoctrine()->getRepository('BDNUserBundle:Group');
+        $userRepository   = $this->getDoctrine()->getRepository('BDNUserBundle:User');
+        $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
+
+        $server = [
+            'name'        => '',
+            'active'      => '',
+            'groups'      => '',
+            'authors'     => '',
+            'details'     => '',
+            'version'     => '',
+            'description' => '',
+        ];
+        foreach($server as $key => $value) {
+            if(($value = $request->request->get($key)) != null && strlen($value) > 0) {
+                $server[ $key ] = $value;
+            } else {
+                $response->setData([ 'result' => 'Missing value for ' . $key ])->setStatusCode(400);
+
+                return $response;
+            }
+
+            switch($key) {
+                case 'name':
+                    if($serverRepository->findOneBy([ 'name' => $value ]) != null) {
+                        return $response->setData(
+                            [ 'result' => 'There is already a server that is named like this' ]
+                        )->setStatusCode(400);
+                    }
+                    break;
+                case 'details':
+                    $details = json_decode($value, true);
+                    foreach(ServerDetail::DEFAULT_DETAILS as $detail) {
+                        if( ! isset($details[ $detail ]) || $details[ $detail ] == null) {
+                            $response->setData([ 'result' => 'Missing value for detail ' . $detail ])->setStatusCode(
+                                400
+                            );
+
+                            return $response;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        $serverObject = new Server();
+        $serverObject->setName($server[ 'name' ]);
+        $serverObject->setActive(boolval($server[ 'active' ]));
+        $serverObject->setDescription($server[ 'description' ]);
+        $serverObject->setVersion(floatval($server[ 'version' ]));
+
+        $groups = [];
+        foreach(explode(',', $server[ 'groups' ]) as $item) {
+            $result = $groupRepository->findOneBy([ 'id' => $item ]);
+            if($result != null) {
+                $groups[] = $result;
+            }
+        }
+        $serverObject->setGroups($groups);
+
+        $authors = [];
+        foreach(explode(',', $server[ 'authors' ]) as $item) {
+            $result = $userRepository->findOneBy([ 'username' => $item ]);
+            if($result != null) {
+                $authors[] = $result;
+            }
+        }
+        $serverObject->setAuthors($authors);
+
+        $details = [];
+        $json    = json_decode($server[ 'details' ], true);
+        foreach($json as $key => $value) {
+            $detail = new ServerDetail();
+
+            $detail->setName($key);
+            $detail->setValue($value);
+            $details[] = $detail;
+
+            $this->getDoctrine()->getManager()->persist($detail);
+        }
+        $serverObject->setDetails($details);
+
+        $this->getDoctrine()->getManager()->persist($serverObject);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $response->setData([ 'result' => 'Server inserted' ]);
+    }
+
+    /**
+     * @ApiDoc(
      *  description="Returns the requested server information",
      *  requirements={
      *      {
-     *          "name"="key",
+     *          "name"="id",
      *          "dataType"="int",
      *          "description"="ID of the server"
      *      }
@@ -28,16 +177,52 @@ class ServerController extends Controller {
      *  }
      * )
      *
-     * @Route("/get/{key}", name="get_server_information")
+     * @Route("/get/{id}", name="get_server_information")
      * @Method({"GET"})
      *
+     * @PreAuthorize("isNotBanned()")
+     *
      * @param Request $request
-     * @param string  $key
+     * @param int     $id
      *
      * @return JsonResponse
      */
-    public function getInformationAction(Request $request, $key) {
-        return new JSONResponse([ $key ]);
+    public function getInformationAction(Request $request, $id) {
+        $response = new JsonResponse();
+
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+        $id   = intval($id);
+
+        $repository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
+        $server     = $repository->findById($id);
+
+        if($server != null) {
+            $allowed = false;
+            if($server->getGroups() == null || count($server->getGroups()) <= 0) {
+                $allowed = true;
+            } else {
+                foreach($server->getGroups() as $group) {
+                    if($user->hasGroupId($group->getId())) {
+                        $allowed = true;
+                    }
+                }
+            }
+
+            if($allowed !== true) {
+                $response->setData([ 'result' => 'User does not have enough permission to access this page' ]);
+                $response->setStatusCode(403);
+            } else {
+                $response->setData([ 'result' => SerializerManager::normalize($server) ]);
+            }
+        } else {
+            $response->setData([ 'result' => 'Unknown server ID requested' ]);
+            $response->setStatusCode(404);
+        }
+
+        return $response;
     }
 
 }

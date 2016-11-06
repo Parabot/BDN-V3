@@ -31,7 +31,7 @@ class RequestAccessEvaluator {
 
     /** @DI\SecurityFunction("isSponsor") */
     public function isSponsor() {
-        return ($user = $this->getUser()) != null && $user->hasGroupId(12);
+        return ($user = $this->getUser()) != null && $user->hasGroupId(12, true);
     }
 
     /**
@@ -44,12 +44,16 @@ class RequestAccessEvaluator {
 
     /** @DI\SecurityFunction("isAdministrator") */
     public function isAdministrator() {
-        return ($user = $this->getUser()) != null && $user->hasGroupId(4);
+        return ($user = $this->getUser()) != null && $user->hasGroupId(4, true);
     }
 
     /** @DI\SecurityFunction("isNotBanned") */
     public function isNotBanned() {
-        return ($user = $this->getUser()) != null && ! $user->hasGroupId(23);
+        return ($user = $this->getUser()) != null && ! $user->hasGroupId(23, true);
+    }
+
+    public function isServerDeveloper() {
+        return ($user = $this->getUser()) != null && ! $user->hasGroupId(22, true);
     }
 
     /**

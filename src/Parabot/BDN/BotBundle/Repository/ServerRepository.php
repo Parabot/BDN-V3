@@ -3,6 +3,7 @@
 namespace Parabot\BDN\BotBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Parabot\BDN\BotBundle\Entity\Servers\Server;
 
 /**
  * ServerRepository
@@ -11,5 +12,17 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class ServerRepository extends EntityRepository {
-    
+    /**
+     * @param $id
+     *
+     * @return Server
+     */
+    public function findById($id){
+        /**
+         * @var Server|null $server
+         */
+        $server = $this->findOneBy(['id' => $id]);
+
+        return $server;
+    }
 }

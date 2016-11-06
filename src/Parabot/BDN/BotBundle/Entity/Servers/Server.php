@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Server
@@ -22,6 +24,7 @@ class Server {
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"default"})
      */
     private $id;
 
@@ -29,6 +32,7 @@ class Server {
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Groups({"default"})
      */
     private $name;
 
@@ -37,7 +41,7 @@ class Server {
      *
      * @ORM\Column(name="active", type="boolean")
      */
-    private $active;
+    private $active = true;
 
     /**
      * @var Group[]
@@ -58,24 +62,27 @@ class Server {
      *      joinColumns={@ORM\JoinColumn(name="server_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
      * )
+     * @Groups({"default"})
      */
     private $authors;
 
     /**
-     * @var ServerUse[]
+     * @var ServerDetail[]
      *
-     * @ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\ServerUse")
-     * @JoinTable(name="server_uses",
+     * @ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\ServerDetail")
+     * @JoinTable(name="server_details",
      *      joinColumns={@JoinColumn(name="server_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="serveruse_id", referencedColumnName="id")}
+     *      inverseJoinColumns={@JoinColumn(name="serverdetail_id", referencedColumnName="id")}
      * )
+     * @Groups({"default"})
      */
-    private $uses;
+    private $details;
 
     /**
      * @var float
      *
      * @ORM\Column(name="version", type="float")
+     * @Groups({"default"})
      */
     private $version;
 
@@ -83,6 +90,7 @@ class Server {
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     * @Groups({"default"})
      */
     private $description;
 
@@ -143,7 +151,7 @@ class Server {
     /**
      * Get groups
      *
-     * @return array
+     * @return Group[]
      */
     public function getGroups() {
         return $this->groups;
@@ -242,6 +250,37 @@ class Server {
      */
     public function setUses($uses) {
         $this->uses = $uses;
+
+        return $this;
+    }
+
+    /**
+     * @return ServerDetail[]
+     */
+    public function getDetails() {
+        return $this->details;
+    }
+
+    /**
+     * @param ServerDetail[] $details
+     *
+     * @return Server
+     */
+    public function setDetails($details) {
+        $this->details = $details;
+
+        $matches = 0;
+        foreach($this->details as $detail) {
+            foreach(ServerDetail::DEFAULT_DETAILS as $item) {
+                if($detail->getName() == $item) {
+                    $matches++;
+                }
+            }
+        }
+
+        if($matches != count(ServerDetail::DEFAULT_DETAILS)) {
+            throw new Exception('Amount of details does not match the required amount of details');
+        }
 
         return $this;
     }

@@ -36,6 +36,17 @@ class ServerUse {
     private $user;
 
     /**
+     * @var Server
+     *
+     * @ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\Server")
+     * @JoinTable(name="server_serveruse",
+     *      joinColumns={@JoinColumn(name="serveruse_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="server_id", referencedColumnName="id")}
+     * )
+     */
+    private $server;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="datetime", type="datetime")
@@ -91,6 +102,24 @@ class ServerUse {
      */
     public function setDatetime($datetime) {
         $this->datetime = $datetime;
+
+        return $this;
+    }
+
+    /**
+     * @return Server
+     */
+    public function getServer() {
+        return $this->server;
+    }
+
+    /**
+     * @param Server $server
+     *
+     * @return ServerUse
+     */
+    public function setServer($server) {
+        $this->server = $server;
 
         return $this;
     }

@@ -168,16 +168,18 @@ class User extends BaseUser implements TwoFactorInterface {
     }
 
     /**
-     * @param int $communityId
+     * @param int  $id
+     *
+     * @param bool $community
      *
      * @return bool
      */
-    public function hasGroupId($communityId) {
+    public function hasGroupId($id, $community = false) {
         /**
          * @var Group $group
          */
         foreach($this->getGroups() as $group) {
-            if($group->getCommunityId() == $communityId) {
+            if(($community === true ? $group->getCommunityId() : $group->getId()) == $id) {
                 return true;
             }
         }
