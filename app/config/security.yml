@@ -35,6 +35,7 @@ security:
         login:
             pattern: ^/api/users/login$
             security: false
+            anonymous: true
 
         scripts_area:
             pattern: ^/api_dev/scripts/
@@ -44,14 +45,14 @@ security:
             provider: api_key_user_provider
 
         servers_area:
-            pattern: ^/api_dev/servers/
+            pattern: ^/api/servers/
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator
             provider: api_key_user_provider
 
         user_area:
-            pattern: ^/api/user/
+            pattern: ^/api/users(?!/connect.*)(?!/loggedin)
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator

@@ -165,6 +165,40 @@ class ServerController extends Controller {
 
     /**
      * @ApiDoc(
+     *  description="Lists all possible servers for the logged in user",
+     *  requirements={
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/list", name="list_servers")
+     * @Method({"GET"})
+     *
+     * @PreAuthorize("isNotBanned()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function listServersAction(Request $request) {
+        $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
+        $servers          = $serverRepository->findForUser($this->getUser());
+
+        return new JsonResponse(SerializerManager::normalize($servers));
+    }
+
+    /**
+     * @PreAuthorize("isNotBanned()")
+     *
+     * @param Request $request
+     */
+    public function getHooksAction(Request $request) {
+
+    }
+
+    /**
+     * @ApiDoc(
      *  description="Returns the requested server information",
      *  requirements={
      *      {

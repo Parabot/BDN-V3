@@ -15,3 +15,4 @@ parameters:
         - hwi_oauth_service_redirect
     block_count: 5
     redirect_url_cookie: 'after_login_redirect'
+    api_key_cookie: 'api_key'

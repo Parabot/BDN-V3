@@ -52,6 +52,7 @@ class RequestAccessEvaluator {
         return ($user = $this->getUser()) != null && ! $user->hasGroupId(23, true);
     }
 
+    /** @DI\SecurityFunction("isServerDeveloper") */
     public function isServerDeveloper() {
         return ($user = $this->getUser()) != null && ! $user->hasGroupId(22, true);
     }

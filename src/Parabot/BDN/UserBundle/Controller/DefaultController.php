@@ -38,6 +38,13 @@ class DefaultController extends Controller {
         }
 
         $response->headers->clearCookie($this->getParameter('redirect_url_cookie'));
+        $response->headers->setCookie(
+            new Cookie(
+                $this->getParameter('api_key_cookie'),
+                $this->getUser()->getApiKey(),
+                time() + (60 * 60 * 24 * 31)
+            )
+        );
 
         return $response;
     }
@@ -121,7 +128,7 @@ class DefaultController extends Controller {
 
         return new JsonResponse(
             [
-                'error'   => 'Unknown key given',
+                'error' => 'Unknown key given',
                 'message' => 'If you came from the client, please contact an administrator',
             ]
         );

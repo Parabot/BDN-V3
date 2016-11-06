@@ -11,6 +11,7 @@ services:
     apikey_authenticator:
         class:  Parabot\BDN\UserBundle\Listener\ApiKeyAuthenticator
         public: false
+        arguments: ['%api_key_cookie%']
 
     bdn_authenticator:
         class:     Parabot\BDN\UserBundle\Security\BDNAuthenticator

@@ -4,6 +4,7 @@ namespace Parabot\BDN\BotBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Parabot\BDN\BotBundle\Entity\Servers\Server;
+use Parabot\BDN\UserBundle\Entity\User;
 
 /**
  * ServerRepository
@@ -17,12 +18,40 @@ class ServerRepository extends EntityRepository {
      *
      * @return Server
      */
-    public function findById($id){
+    public function findById($id) {
         /**
          * @var Server|null $server
          */
-        $server = $this->findOneBy(['id' => $id]);
+        $server = $this->findOneBy([ 'id' => $id ]);
 
         return $server;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Server[]
+     */
+    public function findForUser(User $user) {
+        /**
+         * @var Server[] $result
+         */
+        $result  = $this->findAll();
+        $servers = [];
+
+        foreach($result as $server) {
+            if (count($server->getGroups()) > 0) {
+                foreach($server->getGroups() as $group) {
+                    if($user->hasGroupId($group->getId())) {
+                        $servers[] = $server;
+                        break;
+                    }
+                }
+            }else{
+                $servers[] = $server;
+            }
+        }
+
+        return $servers;
     }
 }

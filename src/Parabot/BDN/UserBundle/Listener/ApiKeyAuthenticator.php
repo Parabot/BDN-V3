@@ -16,6 +16,21 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
 
 class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface {
 
+    /**
+     * @var string
+     */
+    private $apiKeyCookieKey;
+
+    /**
+     * ApiKeyAuthenticator constructor.
+     *
+     * @param string $apiKeyCookieKey
+     */
+    public function __construct($apiKeyCookieKey) {
+        $this->apiKeyCookieKey = $apiKeyCookieKey;
+    }
+
+
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey) {
         if( ! $userProvider instanceof ApiKeyUserProvider) {
             return new JsonResponse(
@@ -49,12 +64,17 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface {
     }
 
     public function createToken(Request $request, $providerKey) {
-        $apiKey = $request->query->get('apikey');
+        $apiKey = $request->query->get($this->apiKeyCookieKey);
+
         if( ! $apiKey) {
-            $apiKey = $request->cookies->get('apikey');
+            $apiKey = $request->request->get($this->apiKeyCookieKey);
         }
 
         if( ! $apiKey) {
+            $apiKey = $request->cookies->get($this->apiKeyCookieKey);
+        }
+
+        if($apiKey === null) {
             throw new BadCredentialsException('No API key found');
         }
 
