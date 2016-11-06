@@ -29,6 +29,31 @@ class ServerRepository extends EntityRepository {
 
     /**
      * @param User $user
+     * @param int  $id
+     *
+     * @return bool
+     */
+    public function hasAccess(User $user, $id) {
+        /**
+         * @var Server $result
+         */
+        $result = $this->findOneBy([ 'id' => $id ]);
+
+        if(count($result->getGroups()) > 0) {
+            foreach($result->getGroups() as $group) {
+                if($user->hasGroupId($group->getId())) {
+                    return true;
+                }
+            }
+        } else {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param User $user
      *
      * @return Server[]
      */
@@ -40,14 +65,14 @@ class ServerRepository extends EntityRepository {
         $servers = [];
 
         foreach($result as $server) {
-            if (count($server->getGroups()) > 0) {
+            if(count($server->getGroups()) > 0) {
                 foreach($server->getGroups() as $group) {
                     if($user->hasGroupId($group->getId())) {
                         $servers[] = $server;
                         break;
                     }
                 }
-            }else{
+            } else {
                 $servers[] = $server;
             }
         }

@@ -189,12 +189,26 @@ class ServerController extends Controller {
     }
 
     /**
+     * @Route("/hooks/{id}", name="list_servers")
+     * @Method({"GET"})
+     *
      * @PreAuthorize("isNotBanned()")
      *
      * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
      */
-    public function getHooksAction(Request $request) {
+    public function getHooksAction(Request $request, $id) {
+        $response         = new JsonResponse();
+        $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
+        if($serverRepository->hasAccess($this->getUser(), $id)) {
 
+        } else {
+            $response->setData([ 'result' => 'User does not have access to this server', 403 ]);
+        }
+
+        return $response;
     }
 
     /**
