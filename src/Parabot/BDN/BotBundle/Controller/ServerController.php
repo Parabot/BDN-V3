@@ -17,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ServerController extends Controller {
 
@@ -202,10 +203,25 @@ class ServerController extends Controller {
     public function getHooksAction(Request $request, $id) {
         $response         = new JsonResponse();
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        if($serverRepository->hasAccess($this->getUser(), $id)) {
+        $xmlFormat        = (($format = $request->query->get('format')) != null && $format == 'xml') ? true : false;
 
-        } else {
-            $response->setData([ 'result' => 'User does not have access to this server', 403 ]);
+        /**
+         * @var Server $server
+         */
+        $server = $serverRepository->findOneBy([ 'id' => $id ]);
+        if($server != null) {
+            if($serverRepository->hasAccess($this->getUser(), $server->getId())) {
+                $hooks = $this->get('bot.servers.hook_manager')->createHookArray($server);
+                if ($xmlFormat !== true) {
+                    $response->setData([ 'hooks' => $hooks ]);
+                }else{
+                    $response = new Response();
+                    $response->headers->set('Content-Type', 'xml');
+                    $response->setContent($this->get('bot.servers.hook_manager')->hookArrayToXML($hooks));
+                }
+            } else {
+                $response->setData([ 'result' => 'User does not have access to this server', 403 ]);
+            }
         }
 
         return $response;

@@ -3,6 +3,8 @@
 namespace Parabot\BDN\BotBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Parabot\BDN\BotBundle\Entity\Servers\Hook;
+use Parabot\BDN\BotBundle\Entity\Servers\Server;
 
 /**
  * HookRepository
@@ -11,4 +13,17 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class HookRepository extends EntityRepository {
+
+    /**
+     * @param Server $server
+     *
+     * @return Hook[]
+     */
+    public function findHooksByServer(Server $server){
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s FROM BDNBotBundle:Servers\Hook s JOIN s.server a WHERE a.id = :id'
+        )->setParameter('id', $server->getId());
+
+        return $query->getResult();
+    }
 }

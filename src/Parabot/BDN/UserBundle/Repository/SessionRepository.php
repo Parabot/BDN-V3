@@ -15,7 +15,7 @@ class SessionRepository extends EntityRepository {
      * @param string $ip   IP of the user trying to access the page
      * @param int    $span Amount of minutes since now, default 5
      *
-     * @return array
+     * @return int
      */
     public function getSessionCount($ip, $span = 5) {
         $query = $this->createQueryBuilder('s')->where('s.ip = :ip')->andWhere('s.date > :dt')->setParameter(
