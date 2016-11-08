@@ -8,9 +8,9 @@ namespace Parabot\BDN\UserBundle\Listener;
 use Parabot\BDN\UserBundle\Provider\ApiKeyUserProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
@@ -75,7 +75,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface {
         }
 
         if($apiKey === null) {
-            throw new BadCredentialsException('No API key found');
+            throw new AccessDeniedHttpException('No API key found');
         }
 
         return new PreAuthenticatedToken(
