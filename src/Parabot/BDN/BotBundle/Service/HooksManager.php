@@ -25,7 +25,7 @@ class HooksManager {
         $this->entityManager = $entityManager;
     }
 
-    public function createHookArray(Server $server, $version = null) {
+    public function createHookArray(Server $server, $version = null, $detailed = false) {
         $repository = $this->entityManager->getRepository('BDNBotBundle:Servers\Hook');
         $result     = $repository->findHooksByServer($server, $version);
 
@@ -38,21 +38,25 @@ class HooksManager {
         ];
 
         foreach($result as $item) {
+            $value = [];
+            if ($detailed === true) {
+                $value['id'] = $item->getId();
+            }
             switch($item->getType()) {
                 case Hook::INTERFACE_TYPE:
-                    $hooks[ Hook::INTERFACE_TYPE ][] = $item->toInterfaceArray();
+                    $hooks[ Hook::INTERFACE_TYPE ][] = array_merge($value, $item->toInterfaceArray());
                     break;
                 case Hook::GETTER_TYPE:
-                    $hooks[ Hook::GETTER_TYPE ][] = $item->toGetterArray();
+                    $hooks[ Hook::GETTER_TYPE ][] = array_merge($value, $item->toGetterArray());
                     break;
                 case Hook::SETTER_TYPE:
-                    $hooks[ Hook::SETTER_TYPE ][] = $item->toSetterArray();
+                    $hooks[ Hook::SETTER_TYPE ][] = array_merge($value, $item->toSetterArray());
                     break;
                 case Hook::CALLBACK_TYPE:
-                    $hooks[ Hook::CALLBACK_TYPE ][] = $item->toCallbackArray();
+                    $hooks[ Hook::CALLBACK_TYPE ][] = array_merge($value, $item->toCallbackArray());
                     break;
                 case Hook::INVOKER_TYPE:
-                    $hooks[ Hook::INVOKER_TYPE ][] = $item->toInvokerArray();
+                    $hooks[ Hook::INVOKER_TYPE ][] = array_merge($value, $item->toInvokerArray());
                     break;
             }
         }
@@ -119,6 +123,7 @@ class HooksManager {
                             break;
                     }
                     foreach($hook as $key => $value) {
+                        /* TODO: Make a switch out of this */
                         if($key == 'classname') {
                             $hookObject->setClassname($value);
                         } elseif($key == 'interface') {

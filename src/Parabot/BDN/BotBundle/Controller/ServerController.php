@@ -215,6 +215,7 @@ class ServerController extends Controller {
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
         $xmlFormat        = (($format = $request->query->get('format')) != null && $format == 'xml') ? true : false;
         $version          = ($version = $request->query->get('version')) != null ? floatval($version) : null;
+        $detailed         = ($d = $request->query->get('detailed')) != null && $d == 'true' ? true : false;
 
         /**
          * @var Server $server
@@ -222,7 +223,7 @@ class ServerController extends Controller {
         $server = $serverRepository->findOneBy([ 'id' => $id ]);
         if($server != null) {
             if($serverRepository->hasAccess($this->getUser(), $server->getId())) {
-                $hooks = $this->get('bot.servers.hook_manager')->createHookArray($server, $version);
+                $hooks = $this->get('bot.servers.hook_manager')->createHookArray($server, $version, $detailed);
                 if($xmlFormat !== true) {
                     $response->setData([ 'hooks' => $hooks ]);
                 } else {
