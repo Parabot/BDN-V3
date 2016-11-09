@@ -191,7 +191,7 @@ class ServerController extends Controller {
     }
 
     /**
-     * @Route("/hooks/{id}", name="list_servers")
+     * @Route("/hooks/{id}", name="get_hooks")
      * @Method({"GET"})
      *
      * @PreAuthorize("isNotBanned()")
