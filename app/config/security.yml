@@ -52,7 +52,7 @@ security:
             provider: api_key_user_provider
 
         user_area:
-            pattern: ^/api/users(?!/connect.*)(?!/loggedin)
+            pattern: ^/api/users(?!/connect.*)(?!/loggedin)(?!/is/loggedin)
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator

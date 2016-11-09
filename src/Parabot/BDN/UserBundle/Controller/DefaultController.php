@@ -16,6 +16,17 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller {
 
     /**
+     * @Route("/is/loggedin", name="is_logged_in")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function isLoggedInAction(Request $request) {
+        return new JsonResponse(['result' => ($this->get('parabot.b_d_n.user_bundle.security.request_access_evaluator')->isNotBanned()) === true]);
+    }
+
+    /**
      * @Route("/loggedin", name="logged_in")
      *
      * @param Request $request
