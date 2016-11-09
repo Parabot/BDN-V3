@@ -67,6 +67,16 @@ DirectoryIndex app.php
     </IfModule>
 </IfModule>
 
-Header add Access-Control-Allow-Origin "*"
-Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
-Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+<IfModule mod_rewrite.c>
+<IfModule mod_headers.c>
+    # Define the root domain that is allowed
+    SetEnvIf Origin ^(https?://.+\.parabot\.org(?::\d{1,5})?)$   CORS_ALLOW_ORIGIN=$1
+
+    Header set Access-Control-Allow-Origin %{CORS_ALLOW_ORIGIN}e env=CORS_ALLOW_ORIGIN
+    Header set Access-Control-Allow-Credentials true
+
+    # Set the response header to the captured value if there was a match
+    Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+    Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+</IfModule>
+</IfModule>

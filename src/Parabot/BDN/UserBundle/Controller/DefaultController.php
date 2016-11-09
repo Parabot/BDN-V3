@@ -23,7 +23,7 @@ class DefaultController extends Controller {
      * @return JsonResponse
      */
     public function isLoggedInAction(Request $request) {
-        return new JsonResponse(['result' => ($this->get('parabot.b_d_n.user_bundle.security.request_access_evaluator')->isNotBanned()) === true]);
+        return new JsonResponse(['result' => ($this->get('request_access_evaluator')->isNotBanned()) === true]);
     }
 
     /**
@@ -51,7 +51,7 @@ class DefaultController extends Controller {
         $response->headers->clearCookie($this->getParameter('redirect_url_cookie'));
         $response->headers->setCookie(
             new Cookie(
-                $this->getParameter('api_key_cookie'), $this->getUser()->getApiKey(), time() + (60 * 60 * 24 * 31)
+                $this->getParameter('api_key_cookie'), $this->getUser()->getApiKey(), time() + (60 * 60 * 24 * 31), '/', $this->getParameter('valid_domain')
             )
         );
 
