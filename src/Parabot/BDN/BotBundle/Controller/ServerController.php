@@ -84,7 +84,7 @@ class ServerController extends Controller {
         $server = [
             'name'        => '',
             'active'      => '',
-            'groups'      => $groupRepository->findAll(),
+            'groups'      => $groupRepository->findAllNotBanned(),
             'authors'     => '',
             'details'     => '',
             'version'     => '',
@@ -92,7 +92,8 @@ class ServerController extends Controller {
         ];
         foreach($server as $key => $value) {
             if(($requestValue = $request->request->get($key)) != null && strlen($requestValue) > 0) {
-                $server[ $key ] = $requestValue;
+                $value          = $requestValue;
+                $server[ $key ] = $value;
             } else {
                 if($value != null) {
                     $server[ $key ] = $value;

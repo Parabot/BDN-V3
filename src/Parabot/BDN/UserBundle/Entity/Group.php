@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\Group as BaseGroup;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Parabot\BDN\UserBundle\Repository\Users\GroupRepository")
  * @ORM\Table(name="user_group")
  */
 class Group extends BaseGroup {
