@@ -5,6 +5,7 @@ namespace Parabot\BDN\BotBundle\Entity\Servers;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use JMS\Serializer\Annotation\Groups;
 use Parabot\BDN\BotBundle\Entity\Servers\Hooks\CallbackHook;
 use Parabot\BDN\BotBundle\Entity\Servers\Hooks\GetterHook;
 use Parabot\BDN\BotBundle\Entity\Servers\Hooks\InterfaceHook;
@@ -144,6 +145,32 @@ class Hook implements CallbackHook, GetterHook, InterfaceHook, InvokerHook, Sett
      * @JoinColumn(name="server_id", referencedColumnName="id")
      */
     private $server;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="version", type="float")
+     * @Groups({"default"})
+     */
+    private $version;
+
+    /**
+     * @return float
+     */
+    public function getVersion() {
+        return $this->version;
+    }
+
+    /**
+     * @param float $version
+     *
+     * @return Hook
+     */
+    public function setVersion($version) {
+        $this->version = $version;
+
+        return $this;
+    }
 
     /**
      * @return string
@@ -589,13 +616,61 @@ class Hook implements CallbackHook, GetterHook, InterfaceHook, InvokerHook, Sett
      * @return array
      */
     public function toInvokerArray() {
-        // TODO: Implement toInvokerArray() method.
+        $array = [];
+
+        if($this->accessor != null) {
+            $array[ 'accessor' ] = $this->accessor;
+        }
+
+        if($this->methodname != null) {
+            $array[ 'methodname' ] = $this->methodname;
+        }
+
+        if($this->invokemethod != null) {
+            $array[ 'invokemethod' ] = $this->invokemethod;
+        }
+
+        if($this->desctype != null) {
+            $array[ 'desc' ] = $this->desctype;
+        }
+
+        if($this->argsdesc != null) {
+            $array[ 'argsdesc' ] = $this->argsdesc;
+        }
+
+        return $array;
     }
 
     /**
      * @return array
      */
     public function toSetterArray() {
-        // TODO: Implement toSetterArray() method.
+        $array = [];
+
+        if($this->accessor != null) {
+            $array[ 'accessor' ] = $this->accessor;
+        }
+
+        if($this->field != null) {
+            $array[ 'field' ] = $this->field;
+        }
+
+        if($this->methodname != null) {
+            $array[ 'methodname' ] = $this->methodname;
+        }
+
+        if($this->desctype != null) {
+            $array[ 'desc' ] = $this->desctype;
+        }
+
+        if($this->descfield != null) {
+            $array[ 'descfield' ] = $this->descfield;
+        }
+
+        if($this->intoclass != null) {
+            $array[ 'into' ] = $this->intoclass;
+        }
+
+        return $array;
     }
 }

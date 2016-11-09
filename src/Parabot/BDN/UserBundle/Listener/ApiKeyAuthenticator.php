@@ -30,7 +30,6 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface {
         $this->apiKeyCookieKey = $apiKeyCookieKey;
     }
 
-
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey) {
         if( ! $userProvider instanceof ApiKeyUserProvider) {
             return new JsonResponse(

@@ -204,6 +204,7 @@ class ServerController extends Controller {
         $response         = new JsonResponse();
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
         $xmlFormat        = (($format = $request->query->get('format')) != null && $format == 'xml') ? true : false;
+        $version          = ($version = $request->query->get('version')) != null ? floatval($version) : null;
 
         /**
          * @var Server $server
@@ -211,10 +212,10 @@ class ServerController extends Controller {
         $server = $serverRepository->findOneBy([ 'id' => $id ]);
         if($server != null) {
             if($serverRepository->hasAccess($this->getUser(), $server->getId())) {
-                $hooks = $this->get('bot.servers.hook_manager')->createHookArray($server);
-                if ($xmlFormat !== true) {
+                $hooks = $this->get('bot.servers.hook_manager')->createHookArray($server, $version);
+                if($xmlFormat !== true) {
                     $response->setData([ 'hooks' => $hooks ]);
-                }else{
+                } else {
                     $response = new Response();
                     $response->headers->set('Content-Type', 'xml');
                     $response->setContent($this->get('bot.servers.hook_manager')->hookArrayToXML($hooks));
@@ -222,6 +223,86 @@ class ServerController extends Controller {
             } else {
                 $response->setData([ 'result' => 'User does not have access to this server', 403 ]);
             }
+        }
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Inserts the hooks file content into the database",
+     *  requirements={
+     *      {
+     *          "name"="xml",
+     *          "dataType"="string",
+     *          "description"="XML content of the hooks"
+     *      },
+     *      {
+     *          "name"="id",
+     *          "dataType"="int",
+     *          "description"="ID of the server"
+     *      }
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/process/hooks", name="process_server_hooks")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isServerDeveloper()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function hooksFileToDatabaseAction(Request $request) {
+        /**
+         * @var Server $server
+         */
+        $server          = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findOneBy(
+            [ 'id' => $request->request->get('id') ]
+        );
+        $response        = new JsonResponse();
+        $hooksRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Hook');
+
+        if($server != null) {
+            if(count($hooksRepository->findHooksByServer($server)) < 15) {
+                if($request->request->get('xml') != null) {
+                    if(substr($request->request->get('xml'), 0, 5) === '<?xml') {
+                        $xml   = str_replace([ "\t", "\n" ], '', $request->request->get('xml'));
+                        $xml   = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+                        $array = json_decode(json_encode($xml), true);
+
+                        $hooks = $this->get('bot.servers.hook_manager')->toHookType($array);
+
+                        foreach($hooks as $hook) {
+                            $hook->setVersion($server->getVersion());
+                            $hook->setServer($server);
+
+                            $this->getDoctrine()->getManager()->persist($hook);
+                        }
+
+                        $this->getDoctrine()->getManager()->flush();
+
+                        $response->setData([ 'result' => 'Hooks inserted' ]);
+                    } else {
+                        $response->setData(
+                            [ 'result' => 'Incorrect XML data given, does not seem to be an XML data type' ]
+                        );
+                        $response->setStatusCode(500);
+                    }
+                } else {
+                    $response->setData([ 'result' => 'XML parameter not filled' ]);
+                    $response->setStatusCode(500);
+                }
+            } else {
+                $response->setData([ 'result' => 'Latest server version already has more than 15 hooks' ]);
+                $response->setStatusCode(401);
+            }
+        } else {
+            $response->setData([ 'result' => 'Server ID given is not a valid server ID' ]);
+            $response->setStatusCode(404);
         }
 
         return $response;
