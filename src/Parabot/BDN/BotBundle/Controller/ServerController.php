@@ -9,6 +9,7 @@ use AppBundle\Service\SerializerManager;
 use FOS\RestBundle\Controller\Annotations\Route;
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Parabot\BDN\BotBundle\Entity\Servers\Hook;
 use Parabot\BDN\BotBundle\Entity\Servers\Server;
 use Parabot\BDN\BotBundle\Entity\Servers\ServerDetail;
 use Parabot\BDN\UserBundle\Entity\Group;
@@ -244,6 +245,11 @@ class ServerController extends Controller {
      *      }
      *  },
      *  parameters={
+     *      {
+     *          "name"="version",
+     *          "dataType"="float",
+     *          "description"="Version of the hooks"
+     *      }
      *  }
      * )
      *
@@ -302,6 +308,65 @@ class ServerController extends Controller {
             }
         } else {
             $response->setData([ 'result' => 'Server ID given is not a valid server ID' ]);
+            $response->setStatusCode(404);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Sets an hook for a server, for a version",
+     *  requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="int",
+     *          "description"="ID of the hook"
+     *      },
+     *      {
+     *          "name"="fields",
+     *          "dataType"="json",
+     *          "description"="JSON array of the hooks"
+     *      }
+     *
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/update/hook/{id}", name="update_server_hook")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isServerDeveloper()")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function setHookAction(Request $request, $id) {
+        $response        = new JsonResponse();
+        $hooksRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Hook');
+        $fields          = json_decode($request->request->get('fields'), true);
+
+        if($fields != null) {
+            $arguments = [ 'id' => $id ];
+            $hook      = $hooksRepository->findOneBy($arguments);
+            if($hook != null) {
+                $hook->setFromFields($fields);
+
+                $this->getDoctrine()->getManager()->persist($hook);
+                $this->getDoctrine()->getManager()->flush();
+
+                $response->setData([ 'result' => 'Hook fields adjusted for hook ' . $hook->getId() ]);
+            } else {
+                $response->setData([ 'result' => 'Hook ID given is not a valid hook ID' ]);
+                $response->setStatusCode(404);
+            }
+        } else {
+            $response->setData(
+                [ 'result' => 'Fields parameter is not filled correctly' ]
+            );
             $response->setStatusCode(404);
         }
 

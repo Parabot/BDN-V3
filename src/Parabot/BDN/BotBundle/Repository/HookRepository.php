@@ -14,7 +14,7 @@ use Parabot\BDN\BotBundle\Entity\Servers\Server;
 class HookRepository extends EntityRepository {
 
     /**
-     * @param Server $server
+     * @param Server     $server
      *
      * @param float|null $version
      *

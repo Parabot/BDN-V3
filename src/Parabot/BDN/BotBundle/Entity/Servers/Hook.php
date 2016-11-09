@@ -673,4 +673,13 @@ class Hook implements CallbackHook, GetterHook, InterfaceHook, InvokerHook, Sett
 
         return $array;
     }
+
+    /**
+     * @param array $fields
+     */
+    public function setFromFields($fields) {
+        foreach($fields as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
 }
