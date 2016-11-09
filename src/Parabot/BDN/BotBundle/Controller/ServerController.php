@@ -84,19 +84,23 @@ class ServerController extends Controller {
         $server = [
             'name'        => '',
             'active'      => '',
-            'groups'      => '',
+            'groups'      => $groupRepository->findAll(),
             'authors'     => '',
             'details'     => '',
             'version'     => '',
             'description' => '',
         ];
         foreach($server as $key => $value) {
-            if(($value = $request->request->get($key)) != null && strlen($value) > 0) {
-                $server[ $key ] = $value;
+            if(($requestValue = $request->request->get($key)) != null && strlen($requestValue) > 0) {
+                $server[ $key ] = $requestValue;
             } else {
-                $response->setData([ 'result' => 'Missing value for ' . $key ])->setStatusCode(400);
+                if($value != null) {
+                    $server[ $key ] = $value;
+                } else {
+                    $response->setData([ 'result' => 'Missing value for ' . $key ])->setStatusCode(400);
 
-                return $response;
+                    return $response;
+                }
             }
 
             switch($key) {
@@ -129,11 +133,15 @@ class ServerController extends Controller {
         $serverObject->setVersion(floatval($server[ 'version' ]));
 
         $groups = [];
-        foreach(explode(',', $server[ 'groups' ]) as $item) {
-            $result = $groupRepository->findOneBy([ 'id' => $item ]);
-            if($result != null) {
-                $groups[] = $result;
+        if( ! is_array($server[ 'groups' ])) {
+            foreach(explode(',', $server[ 'groups' ]) as $item) {
+                $result = $groupRepository->findOneBy([ 'id' => $item ]);
+                if($result != null) {
+                    $groups[] = $result;
+                }
             }
+        } else {
+            $groups = $server[ 'groups' ];
         }
         $serverObject->setGroups($groups);
 
