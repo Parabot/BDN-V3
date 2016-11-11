@@ -53,6 +53,8 @@ class AppKernel extends Kernel
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\AopBundle\JMSAopBundle(),
 
+            new Nelmio\CorsBundle\NelmioCorsBundle(),
+
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

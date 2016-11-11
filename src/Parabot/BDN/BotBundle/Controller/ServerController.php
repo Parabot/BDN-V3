@@ -176,6 +176,210 @@ class ServerController extends Controller {
 
     /**
      * @ApiDoc(
+     *  description="Inserts a server into the database",
+     *  requirements={
+     *     {
+     *          "name"="id",
+     *          "dataType"="int",
+     *          "description"="ID of the server to be changed"
+     *      }
+     *  },
+     *  parameters={
+     *     {
+     *          "name"="name",
+     *          "dataType"="string",
+     *          "description"="Name of the server"
+     *      },
+     *      {
+     *          "name"="active",
+     *          "dataType"="boolean",
+     *          "description"="Define if the server should be active"
+     *      },
+     *      {
+     *          "name"="groups",
+     *          "dataType"="array",
+     *          "description"="Array of the group ids that may access the server, delimited with a comma"
+     *      },
+     *      {
+     *          "name"="authors",
+     *          "dataType"="array",
+     *          "description"="Array of the usernames that have made this server possible, delimited with a comma"
+     *      },
+     *      {
+     *          "name"="details",
+     *          "dataType"="string",
+     *          "description"="JSON object of the server details"
+     *      },
+     *      {
+     *          "name"="version",
+     *          "dataType"="float",
+     *          "description"="Version of the server"
+     *      },
+     *      {
+     *          "name"="description",
+     *          "dataType"="string",
+     *          "description"="Description of the server"
+     *      }
+     *  }
+     * )
+     *
+     * @Route("/update", name="update_server")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isServerDeveloper()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function updateServerAction(Request $request) {
+        $response         = new JsonResponse();
+        $groupRepository  = $this->getDoctrine()->getRepository('BDNUserBundle:Group');
+        $userRepository   = $this->getDoctrine()->getRepository('BDNUserBundle:User');
+        $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
+        $serverID         = $request->request->get('id');
+
+        if(($serverObject = $serverRepository->findById($serverID)) != null) {
+            $server = [
+                'name'        => '',
+                'active'      => '',
+                'groups'      => '',
+                'authors'     => '',
+                'details'     => '',
+                'version'     => '',
+                'description' => '',
+            ];
+            foreach($server as $key => $value) {
+                if(($requestValue = $request->request->get($key)) != null && (is_array($requestValue) || strlen(
+                                                                                                             $requestValue
+                                                                                                         ) > 0)
+                ) {
+                    $value          = $requestValue;
+                    $server[ $key ] = $value;
+                }
+
+                switch($key) {
+                    case 'name':
+                        if($requestValue != null && $serverRepository->notExistingNameWithoutID(
+                                $serverID,
+                                $value
+                            ) !== true
+                        ) {
+                            return $response->setData(
+                                [ 'result' => 'There is already a server that is named like this' ]
+                            )->setStatusCode(400);
+                        }
+                        break;
+                    case 'details':
+                        if($requestValue != null) {
+                            $details = $value;
+                            $matches = 0;
+                            foreach(ServerDetail::DEFAULT_DETAILS as $detail) {
+                                foreach($details as $item) {
+                                    if($item[ 'name' ] == $detail) {
+                                        $matches++;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if($matches != count(ServerDetail::DEFAULT_DETAILS)) {
+                                $response->setData(
+                                    [
+                                        'result' => 'Missing values for default details: [' . implode(
+                                                ', ',
+                                                ServerDetail::DEFAULT_DETAILS
+                                            ) . ']',
+                                    ]
+                                )->setStatusCode(
+                                    400
+                                );
+
+                                return $response;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            if($server[ 'name' ] != null) {
+                $serverObject->setName($server[ 'name' ]);
+            }
+
+            if($server[ 'active' ] != null) {
+                $serverObject->setActive(boolval($server[ 'active' ]));
+            }
+
+            if($server[ 'description' ] != null) {
+                $serverObject->setDescription($server[ 'description' ]);
+            }
+
+            if($server[ 'version' ] != null) {
+                $serverObject->setVersion(floatval($server[ 'version' ]));
+            }
+
+            if($server[ 'groups' ] != null) {
+                $groups = [];
+                if( ! is_array($server[ 'groups' ])) {
+                    foreach(explode(',', $server[ 'groups' ]) as $item) {
+                        $result = $groupRepository->findOneBy([ 'id' => $item ]);
+                        if($result != null) {
+                            $groups[] = $result;
+                        }
+                    }
+                } else {
+                    $groups = $server[ 'groups' ];
+                }
+                $serverObject->setGroups($groups);
+            }
+
+            if($server[ 'authors' ] != null) {
+                $authors = [];
+                foreach(explode(',', $server[ 'authors' ]) as $item) {
+                    $result = $userRepository->findOneBy([ 'username' => $item ]);
+                    if($result != null) {
+                        $authors[] = $result;
+                    }
+                }
+                $serverObject->setAuthors($authors);
+            }
+
+            if($server[ 'details' ] != null) {
+                $details = [];
+                foreach($server[ 'details' ] as $value) {
+                    $detail = new ServerDetail();
+
+                    $detail->setName($value[ 'name' ]);
+                    $detail->setValue($value[ 'value' ]);
+                    $details[] = $detail;
+
+                    $this->getDoctrine()->getManager()->persist($detail);
+                }
+
+                if(count($details) >= count(ServerDetail::DEFAULT_DETAILS)) {
+                    foreach($serverObject->getDetails() as $d) {
+                        $this->getDoctrine()->getManager()->remove($d);
+                    }
+
+                    $serverObject->setDetails($details);
+                }
+            }
+
+            $this->getDoctrine()->getManager()->persist($serverObject);
+            $this->getDoctrine()->getManager()->flush();
+
+            $response->setData([ 'result' => 'Server saved!' ]);
+
+        } else {
+            $response->setData([ 'result' => 'Could not find server' ]);
+            $response->setStatusCode(404);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
      *  description="Lists all possible servers for the logged in user",
      *  requirements={
      *  },
@@ -234,6 +438,9 @@ class ServerController extends Controller {
             } else {
                 $response->setData([ 'result' => 'User does not have access to this server', 403 ]);
             }
+        } else {
+            $response->setData([ 'result' => 'Given server ID does not exist' ]);
+            $response->setStatusCode(404);
         }
 
         return $response;
@@ -409,7 +616,6 @@ class ServerController extends Controller {
      */
     public function getInformationAction(Request $request, $id) {
         $response = new JsonResponse();
-
         /**
          * @var User $user
          */

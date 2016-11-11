@@ -21,7 +21,7 @@ class SerializerManager {
      * @param string $format
      * @param array  $groups
      *
-     * @return object
+     * @return array|object
      */
     public static function normalize($object, $format = 'json', $groups = [ 'default' ]) {
         return SerializerManager::getSerializers()->normalize($object, $format, [ 'groups' => $groups ]);

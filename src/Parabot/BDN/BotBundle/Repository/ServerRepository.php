@@ -27,6 +27,23 @@ class ServerRepository extends EntityRepository {
         return $server;
     }
 
+    public function notExistingNameWithoutID($id, $name) {
+        $result = $this->findBy([ 'name' => $name ]);
+
+        /**
+         * @var Server $item
+         */
+        foreach($result as $item) {
+            if($item->getId() == $id) {
+                if ($name != $item->getName()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @param User $user
      * @param int  $id

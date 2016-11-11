@@ -288,24 +288,6 @@ class Server {
     }
 
     /**
-     * @return ServerUse[]
-     */
-    public function getUses() {
-        return $this->uses;
-    }
-
-    /**
-     * @param ServerUse[] $uses
-     *
-     * @return Server
-     */
-    public function setUses($uses) {
-        $this->uses = $uses;
-
-        return $this;
-    }
-
-    /**
      * @return ServerDetail[]
      */
     public function getDetails() {
