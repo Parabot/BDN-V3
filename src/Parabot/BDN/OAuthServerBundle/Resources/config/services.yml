@@ -1,0 +1,8 @@
+services:
+    oauth_client_creator:
+        class: Parabot\BDN\OAuthServerBundle\Service\ClientCreator
+        arguments: ['@fos_oauth_server.client_manager', '@doctrine.orm.entity_manager']
+
+    oauth_manager:
+        class: Parabot\BDN\OAuthServerBundle\Service\OAuthManager
+        arguments: ['@fos_oauth_server.server']

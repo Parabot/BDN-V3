@@ -30,7 +30,19 @@ home:
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
-    prefix: /asd
+    prefix: /
+
+bdn_oauth_server:
+    resource: "@BDNOAuthServerBundle/Resources/config/routing.yml"
+    prefix:   /api/users/oauth/v2
+
+fos_oauth_server_token:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+    prefix: /
+
+fos_oauth_server_authorize:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
+    prefix: /
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
@@ -43,16 +55,6 @@ user:
 fos_user_group:
     resource: "@FOSUserBundle/Resources/config/routing/group.xml"
     prefix: /api/group
-
-NelmioApiDocBundle:
-    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
-    prefix:   /api/doc
-
-fos_oauth_server_token:
-    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
-
-fos_oauth_server_authorize:
-    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
 
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"

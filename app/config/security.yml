@@ -16,12 +16,10 @@ security:
             memory: ~
         fos_userbundle:
             id: fos_user.user_provider.username
-        api_key_user_provider:
-            id: api_key_user_provider
 
         chain_provider:
             chain:
-                providers: [in_memory, fos_userbundle, api_key_user_provider]
+                providers: [in_memory, fos_userbundle]
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -32,34 +30,24 @@ security:
             logout:       true
             anonymous:    true
 
-        login:
-            pattern: ^/api/users/login$
-            security: false
+        internal_routes:
+            pattern: ^/internal/route/
             anonymous: true
 
-        scripts_area:
-            pattern: ^/api_dev/scripts/
-            stateless: true
-            simple_preauth:
-                authenticator: apikey_authenticator
-            provider: api_key_user_provider
+        oauth_token:
+            pattern:    ^/oauth/v2/token
+            security:   false
 
-        servers_area:
-            pattern: ^/api/servers/
-            stateless: true
-            simple_preauth:
-                authenticator: apikey_authenticator
-            provider: api_key_user_provider
-
-        user_area:
-            pattern: ^/api/users(?!/connect.*)(?!/loggedin)(?!/is/loggedin)
-            stateless: true
-            simple_preauth:
-                authenticator: apikey_authenticator
-            provider: api_key_user_provider
+        oauth_authorize:
+            pattern:    ^/oauth/v2/auth
+            form_login:
+                 provider: fos_userbundle
+                 check_path: /oauth/v2/auth_login_check
+                 login_path: /oauth/v2/auth_login
+            anonymous: true
 
         main:
-            pattern: ^/
+            pattern:    ^/api/users/(connect|loggedin|is/loggedin|log_in)
             oauth:
                 remember_me: true
                 failure_path: /api/users/connect
@@ -76,13 +64,19 @@ security:
                 path: /api/users/logout
                 target: /
 
-    access_control:
-        - { path: ^/api/users/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: ROLE_ADMIN }
-        - { path: ^/scripts/admin/, role: ROLE_SCRIPTER }
-        - { path: ^/scripts/, role: ROLE_USER }
+        api:
+            pattern:    ^/api
+            fos_oauth:  true
+            stateless:  true
+            anonymous:  true
 
     access_denied_url: unauthorised_notice
+
+    access_control:
+        - { path: ^/oauth/v2/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/is/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/log_in, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/internal/route/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

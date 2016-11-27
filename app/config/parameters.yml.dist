@@ -32,3 +32,5 @@ parameters:
 
     transifex_username: ~
     transifex_password: ~
+
+    internal_oauth_secret: ~

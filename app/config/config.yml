@@ -142,7 +142,7 @@ doctrine_migrations:
 
 nelmio_cors:
     paths:
-        '^/api/':
+        '^/':
             allow_credentials: true
             allow_origin: ['*']
             allow_headers: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']

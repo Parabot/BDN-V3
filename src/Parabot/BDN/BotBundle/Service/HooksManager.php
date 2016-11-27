@@ -39,8 +39,8 @@ class HooksManager {
 
         foreach($result as $item) {
             $value = [];
-            if ($detailed === true) {
-                $value['id'] = $item->getId();
+            if($detailed === true) {
+                $value[ 'id' ] = $item->getId();
             }
             switch($item->getType()) {
                 case Hook::INTERFACE_TYPE:

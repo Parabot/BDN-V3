@@ -25,7 +25,6 @@
         "evolution7/bugsnag-bundle": "~1.4",
         "friendsofsymfony/rest-bundle": "~1.7",
         "jms/serializer-bundle": "~1.1",
-        "nelmio/api-doc-bundle": "~2.11",
         "friendsofsymfony/oauth-server-bundle": "~1.5",
         "sylius/cart-bundle": "0.17.*",
         "leaseweb/api-caller-bundle": "~1.2",
@@ -35,7 +34,8 @@
         "jms/security-extra-bundle": "^1.6",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^1.0",
-        "nelmio/cors-bundle": "^1.4"
+        "nelmio/cors-bundle": "^1.4",
+        "nelmio/api-doc-bundle": "^2.13"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

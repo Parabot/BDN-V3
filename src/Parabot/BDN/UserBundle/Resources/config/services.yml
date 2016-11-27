@@ -3,20 +3,6 @@ services:
         class: Parabot\BDN\UserBundle\Listener\AuthenticationListener
         arguments: ['@doctrine.orm.entity_manager']
 
-    api_key_user_provider:
-        class: Parabot\BDN\UserBundle\Provider\ApiKeyUserProvider
-        arguments:
-            entityManager: "@doctrine.orm.entity_manager"
-
-    apikey_authenticator:
-        class:  Parabot\BDN\UserBundle\Listener\ApiKeyAuthenticator
-        public: false
-        arguments: ['%api_key_cookie%']
-
-    bdn_authenticator:
-        class:     Parabot\BDN\UserBundle\Security\BDNAuthenticator
-        arguments: ["@security.password_encoder"]
-
     bdn_blocking_login_listener:
         class: Parabot\BDN\UserBundle\Listener\BlockingLoginListener
         tags:
@@ -34,3 +20,7 @@ services:
     request_access_evaluator:
         class: Parabot\BDN\UserBundle\Security\RequestAccessEvaluator
         arguments: ['@service_container']
+
+    internal_user_manager:
+        class: Parabot\BDN\UserBundle\Service\InternalUserManager
+        arguments: ['@doctrine.orm.entity_manager']

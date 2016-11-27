@@ -21,8 +21,29 @@ class Client extends BaseClient {
      */
     protected $id;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="name", length=255)
+     */
+    private $name;
+
     public function __construct() {
         parent::__construct();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name) {
+        $this->name = $name;
     }
 }
 

@@ -1,11 +1,3 @@
 user:
     resource: "@BDNUserBundle/Controller/"
     type:     annotation
-
-_security_login:
-    path:  /login
-    defaults: { _controller: BDNUserBundle:Security:login }
-
-_security_logout:
-    path:  /
-    defaults: { _controller: BDNUserBundle:Security:logout }

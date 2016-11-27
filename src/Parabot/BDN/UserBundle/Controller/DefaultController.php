@@ -4,7 +4,6 @@ namespace Parabot\BDN\UserBundle\Controller;
 
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Parabot\BDN\UserBundle\Service\LoginRequestManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -23,7 +22,7 @@ class DefaultController extends Controller {
      * @return JsonResponse
      */
     public function isLoggedInAction(Request $request) {
-        return new JsonResponse(['result' => ($this->get('request_access_evaluator')->isNotBanned()) === true]);
+        return new JsonResponse([ 'result' => ($this->get('request_access_evaluator')->isNotBanned()) === true ]);
     }
 
     /**
@@ -34,26 +33,34 @@ class DefaultController extends Controller {
      * @return JsonResponse
      */
     public function loggedInAction(Request $request) {
-        $redirect = $request->cookies->get($this->getParameter('redirect_url_cookie'));
+        if($this->getUser() != null) {
+            $redirect = $request->cookies->get($this->getParameter('redirect_url_cookie'));
 
-        $response = new JsonResponse([ 'result' => 'You are now logged in' ]);
-
-        if($redirect != null) {
-            if( ! $this->get('url_utils')->isValidHostWithTLD($redirect)) {
-                $redirect = null;
-            }
+            $response = new JsonResponse([ 'result' => 'You are now logged in' ]);
 
             if($redirect != null) {
-                $response = new RedirectResponse($redirect);
-            }
-        }
+                if( ! $this->get('url_utils')->isValidHostWithTLD($redirect)) {
+                    $redirect = null;
+                }
 
-        $response->headers->clearCookie($this->getParameter('redirect_url_cookie'));
-        $response->headers->setCookie(
-            new Cookie(
-                $this->getParameter('api_key_cookie'), $this->getUser()->getApiKey(), time() + (60 * 60 * 24 * 31), '/', $this->getParameter('valid_domain')
-            )
-        );
+                if($redirect != null) {
+                    $response = new RedirectResponse($redirect);
+                }
+            }
+
+            $response->headers->clearCookie($this->getParameter('redirect_url_cookie'));
+            $response->headers->setCookie(
+                new Cookie(
+                    $this->getParameter('api_key_cookie'),
+                    $this->getUser()->getApiKey(),
+                    time() + (60 * 60 * 24 * 31),
+                    '/',
+                    $this->getParameter('valid_domain')
+                )
+            );
+        } else {
+            $response = new JsonResponse([ 'result' => 'Failed to login' ]);
+        }
 
         return $response;
     }
@@ -83,83 +90,33 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/create/login", name="create_login")
-     * @Method({"POST"})
+     * @Route("/log_in", name="forums_users_login")
+     * @Method({"GET"})
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return RedirectResponse
      */
-    public function createLoginAction(Request $request) {
-        $redirect = $request->request->get('redirect');
-        $context  = $this->container->get('router')->getContext();
+    public function loginRedirectAction(Request $request) {
+        $redirect = $request->get($this->getParameter('redirect_url_cookie'));
 
-        $key = $this->get('login_request_manager')->insertRequest($redirect);
-        $url = $this->get('router')->generate('open_login', [ 'key' => $key ]);
+        $clientRepository = $this->getDoctrine()->getRepository('BDNUserBundle:OAuth\Client');
+        $response         = new RedirectResponse(
+            $this->generateUrl('hwi_oauth_service_redirect', [ 'service' => 'forums' ])
+        );
 
-        $url = $context->getScheme() . '://' . $context->getHost() . ($context->getHttpPort(
-            ) !== 80 ? ':' . $context->getHttpPort() : '') . $url;
-
-        if($key === false) {
-            $response = new JsonResponse([ 'error' => 'Could not generate a new key' ], 500);
-        } else {
-            $response = new JsonResponse([ 'url' => $url, 'key' => $key ]);
+        if($redirect != null && $clientRepository->isValidRedirectUri($redirect)) {
+            $cookie = new Cookie(
+                $this->getParameter('redirect_url_cookie'),
+                $redirect,
+                time() + (60 * 5),
+                '/',
+                $this->getParameter('valid_domain')
+            );
+            $response->headers->setCookie($cookie);
         }
 
         return $response;
-    }
-
-    /**
-     * @Route("/open/login/{key}", name="open_login")
-     *
-     * @param Request $request
-     * @param string  $key
-     *
-     * @return JsonResponse|RedirectResponse
-     */
-    public function openLoginAction(Request $request, $key) {
-        $repository = $this->getDoctrine()->getRepository('BDNUserBundle:Login\RequestToken');
-        $result     = $repository->findOneBy([ 'key' => $key ]);
-
-        if($result != null) {
-
-            $response = $this->redirect(
-                $this->generateUrl('hwi_oauth_service_redirect', [ 'service' => 'forums' ])
-            );
-
-            $response->headers->setCookie(new Cookie(LoginRequestManager::KEY_COOKIE, $key, time() + 5 * 60));
-            $response->headers->setCookie(
-                new Cookie($this->getParameter('redirect_url_cookie'), $result->getRedirect(), time() + 5 * 60)
-            );
-
-            return $response;
-        }
-
-        return new JsonResponse(
-            [
-                'error'   => 'Unknown key given',
-                'message' => 'If you came from the client, please contact an administrator',
-            ]
-        );
-    }
-
-    /**
-     * Returns the API key for the user, once he has signed in correctly
-     *
-     * @Route("/retrieve/login/{key}", name="gather_login_key")
-     *
-     * @param Request $request
-     * @param string  $key
-     *
-     * @return JsonResponse
-     */
-    public function retrieveApiLoginAction(Request $request, $key) {
-        $api = $this->get('login_request_manager')->retrieveUserApiFromKey($key);
-        if($api === false) {
-            return new JsonResponse([ 'error' => 'No user found for this key' ], 404);
-        } else {
-            return new JsonResponse([ 'api' => $api ]);
-        }
     }
 
     /**

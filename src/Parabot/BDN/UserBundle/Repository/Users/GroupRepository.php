@@ -15,7 +15,7 @@ class GroupRepository extends EntityRepository {
          * @var Group $group
          */
         foreach($this->findAll() as $group) {
-            if(!in_array($group->getCommunityId(), [ 23 ])) {
+            if( ! in_array($group->getCommunityId(), [ 23 ])) {
                 $groups[] = $group;
             }
         }

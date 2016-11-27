@@ -87,7 +87,9 @@ local.properties
 # Assets and user uploads
 /web/bundles/
 /web/uploads/
+/web/docs/
 
+/sami/
 # PHPUnit
 /app/phpunit.xml
 /phpunit.xml

@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller {
@@ -53,13 +54,17 @@ class DefaultController extends Controller {
      * @param Request $request
      *
      * @return JsonResponse
-     *
-     * @PreAuthorize("isNotBanned()")
      */
     public function testAction(Request $request) {
-        $result = $this->get('slack_manager')->inviteToChannel($this->getUser());
 
-        return new JsonResponse($result, $result[ 'code' ]);
+        return new JsonResponse([ '$result', $request->get('asd') ]);
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    public function docsAction() {
+        return new RedirectResponse('/docs/index.html', 301);
     }
 
     /**

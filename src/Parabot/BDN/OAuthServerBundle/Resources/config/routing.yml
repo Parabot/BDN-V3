@@ -1,0 +1,3 @@
+bdn_oauth:
+    resource: "@BDNOAuthServerBundle/Controller/"
+    type:     annotation

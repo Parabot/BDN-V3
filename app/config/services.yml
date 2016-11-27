@@ -2,6 +2,7 @@ imports:
     - { resource: @BDNStoreBundle/Resources/config/services.yml }
     - { resource: @BDNUserBundle/Resources/config/services.yml }
     - { resource: @BDNBotBundle/Resources/config/services.yml }
+    - { resource: @BDNOAuthServerBundle/Resources/config/services.yml }
 
 parameters:
 #    parameter_name: value

@@ -35,7 +35,7 @@ class ServerRepository extends EntityRepository {
          */
         foreach($result as $item) {
             if($item->getId() == $id) {
-                if ($name != $item->getName()) {
+                if($name != $item->getName()) {
                     return false;
                 }
             }
