@@ -31,4 +31,19 @@ class DefaultController extends Controller {
 
         return $clientCreator->createClient($values);
     }
+
+    /**
+     * @Route("/valid", name="valid_oauth")
+     *
+     * @param Request $request
+     *
+     * @Method({"GET"})
+     *
+     * @return JsonResponse
+     */
+    public function isValidOAuth(Request $request) {
+        return new JsonResponse(
+            [ 'result' => $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY') ]
+        );
+    }
 }
