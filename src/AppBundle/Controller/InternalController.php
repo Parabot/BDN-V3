@@ -26,6 +26,7 @@ class InternalController extends Controller {
         $clientId     = $request->get('client_id');
         $grantType    = $request->get('grant_type');
         $code         = $request->get('code');
+        $refreshToken         = $request->get('refresh_token');
         $redirectUri  = $request->get('redirect_uri');
         $clientSecret = $this->getParameter('internal_oauth_secret');
 
@@ -37,16 +38,25 @@ class InternalController extends Controller {
             )
         );
         curl_setopt($curl, CURLOPT_POST, true);
+
+        $args = [
+            'client_id'     => $clientId,
+            'redirect_uri'  => $redirectUri,
+            'client_secret' => $clientSecret,
+            'grant_type'    => $grantType,
+        ];
+
+        if ($code != null){
+            $args['code'] = $code;
+        }
+        if ($refreshToken != null){
+            $args['refresh_token'] = $refreshToken;
+        }
+
         curl_setopt(
             $curl,
             CURLOPT_POSTFIELDS,
-            [
-                'client_id'     => $clientId,
-                'redirect_uri'  => $redirectUri,
-                'client_secret' => $clientSecret,
-                'code'          => $code,
-                'grant_type'    => $grantType,
-            ]
+            $args
         );
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $auth = curl_exec($curl);
