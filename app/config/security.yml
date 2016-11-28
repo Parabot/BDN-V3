@@ -82,3 +82,7 @@ security:
         - { path: ^/internal/route/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/bot/download/randoms, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

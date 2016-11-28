@@ -19,10 +19,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class AuthorizeController extends BaseAuthorizeController {
 
     public function authorizeAction(Request $request) {
-        $key  = $request->cookies->get($this->container->getParameter('api_key_cookie'));
-        $user = $this->container->get('internal_user_manager')->getUser($key);
+        $user = $this->container->get('internal_user_manager')->getUser(
+            $request->cookies->get($this->container->getParameter('api_key_cookie'))
+        );
 
-        if($user != null) {
+        if($user !== null && is_object($user)) {
             if( ! $request->get('client_id')) {
                 throw new NotFoundHttpException("Client id parameter {$request->get('client_id')} is missing.");
             }

@@ -17,10 +17,11 @@ services:
         class: Parabot\BDN\UserBundle\Security\UserProvider
         arguments: ['@fos_user.user_manager',{forums: forums}, '@security.password_encoder', '@doctrine.orm.entity_manager', '@login_request_manager', '@request_stack']
 
-    request_access_evaluator:
-        class: Parabot\BDN\UserBundle\Security\RequestAccessEvaluator
-        arguments: ['@service_container']
 
     internal_user_manager:
         class: Parabot\BDN\UserBundle\Service\InternalUserManager
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
+
+    request_access_evaluator:
+        class: Parabot\BDN\UserBundle\Security\RequestAccessEvaluator
+        arguments: ['@service_container']
