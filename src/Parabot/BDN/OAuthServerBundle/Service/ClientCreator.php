@@ -46,7 +46,7 @@ class ClientCreator {
      * @return JsonResponse
      */
     public function createClient($values) {
-        if (($name = $values['name']) != null) {
+        if(($name = $values[ 'name' ]) != null) {
             if(($redirectUris = $values[ 'redirect-uri' ]) != null) {
                 if( ! is_array($redirectUris)) {
                     if(($exploded = explode(',', $redirectUris)) && count($exploded) >= 2) {
@@ -95,7 +95,7 @@ class ClientCreator {
             } else {
                 return new JsonResponse([ 'result' => 'Incorrect parameter \'redirect-uri\' given' ], 400);
             }
-        }else{
+        } else {
             return new JsonResponse([ 'result' => 'Incorrect parameter \'name\' given' ], 400);
         }
     }

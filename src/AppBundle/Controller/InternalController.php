@@ -26,7 +26,7 @@ class InternalController extends Controller {
         $clientId     = $request->get('client_id');
         $grantType    = $request->get('grant_type');
         $code         = $request->get('code');
-        $refreshToken         = $request->get('refresh_token');
+        $refreshToken = $request->get('refresh_token');
         $redirectUri  = $request->get('redirect_uri');
         $clientSecret = $this->getParameter('internal_oauth_secret');
 
@@ -46,11 +46,11 @@ class InternalController extends Controller {
             'grant_type'    => $grantType,
         ];
 
-        if ($code != null){
-            $args['code'] = $code;
+        if($code != null) {
+            $args[ 'code' ] = $code;
         }
-        if ($refreshToken != null){
-            $args['refresh_token'] = $refreshToken;
+        if($refreshToken != null) {
+            $args[ 'refresh_token' ] = $refreshToken;
         }
 
         curl_setopt(
