@@ -33,6 +33,14 @@ class ClientCreateCommand extends ContainerAwareCommand {
             null
         );
 
+        $this->addOption(
+            'name',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Name of the application',
+            null
+        );
+
         $this->addOption('interactive', 'i', InputOption::VALUE_NONE, 'Prompt every missed payment parameters');
     }
 
