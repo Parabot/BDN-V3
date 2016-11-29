@@ -7,6 +7,7 @@ namespace Parabot\BDN\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="Parabot\BDN\UserBundle\Repository\UserRepository")
@@ -17,6 +18,8 @@ class User extends BaseUser implements TwoFactorInterface {
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Groups({"administrators"})
      */
     protected $id;
 
@@ -26,6 +29,8 @@ class User extends BaseUser implements TwoFactorInterface {
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      * )
+     *
+     * @Groups({"administrators"})
      */
     protected $groups;
 
@@ -59,6 +64,8 @@ class User extends BaseUser implements TwoFactorInterface {
      * @var int
      *
      * @ORM\Column(type="integer", name="community_id")
+     *
+     * @Groups({"administrators"})
      */
     private $communityId;
 
@@ -185,5 +192,32 @@ class User extends BaseUser implements TwoFactorInterface {
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     *
+     * @Groups({"default"})
+     */
+    public function getUsername() {
+        return parent::getUsername();
+    }
+
+    /**
+     * @return \DateTime
+     *
+     * @Groups({"administrators"})
+     */
+    public function getLastLogin() {
+        return parent::getLastLogin();
+    }
+
+    /**
+     * @return string
+     *
+     * @Groups({"administrators"})
+     */
+    public function getEmail() {
+        return parent::getEmail();
     }
 }

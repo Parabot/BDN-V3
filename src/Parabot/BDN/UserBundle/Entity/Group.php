@@ -6,6 +6,7 @@ namespace Parabot\BDN\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\Group as BaseGroup;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="Parabot\BDN\UserBundle\Repository\Users\GroupRepository")
@@ -19,6 +20,8 @@ class Group extends BaseGroup {
      * @ORM\GeneratedValue(strategy="AUTO")
      *
      * @var int
+     *
+     * @Groups({"default"})
      */
     protected $id;
 
@@ -26,6 +29,8 @@ class Group extends BaseGroup {
      * @ORM\Column(name="community_id", type="integer")
      *
      * @var int
+     *
+     * @Groups({"default"})
      */
     private $communityId;
 
@@ -48,5 +53,14 @@ class Group extends BaseGroup {
      */
     public function setCommunityId($communityId) {
         $this->communityId = $communityId;
+    }
+
+    /**
+     * @return string
+     *
+     * @Groups({"default"})
+     */
+    public function getName() {
+        return parent::getName();
     }
 }
