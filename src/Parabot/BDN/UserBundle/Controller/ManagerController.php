@@ -35,24 +35,48 @@ class ManagerController extends Controller {
     }
 
     /**
-     * @Route("/search/{by}/{value}", name="search_user")
+     * @Route("/list/{page}", name="list_users")
      *
      * @param Request $request
-     * @param string  $by
+     * @param int     $page
+     *
+     * @return JsonResponse
+     *
+     * @PreAuthorize("isAdministrator()")
+     */
+    public function listAction(Request $request, $page = 1) {
+        $response       = new JsonResponse();
+        $userRepository = $this->getDoctrine()->getRepository('BDNUserBundle:User');
+        $users          = $userRepository->getForPage($page);
+
+        $pageResult  = SerializerManager::normalize($users, 'json', [ 'default', 'administrators' ]);
+        $totalResult = $userRepository->countTotal();
+        $response->setData([ 'result' => $pageResult, 'total' => $totalResult ]);
+
+        return $response;
+    }
+
+    /**
+     * @Route("/search/username/{value}", name="search_user")
+     *
+     * @param Request $request
      * @param string  $value
      *
      * @return JsonResponse
      *
      * @PreAuthorize("isAdministrator()")
      */
-    public function searchAction(Request $request, $by, $value) {
+    public function searchAction(Request $request, $value) {
         $response       = new JsonResponse();
         $userRepository = $this->getDoctrine()->getRepository('BDNUserBundle:User');
+        $page           = ($page = $request->get('page')) != null ? intval($page) : 1;
+        $totalResults   = $userRepository->countSearchByUsername($value);
 
-        if(($user = $userRepository->findOneBy([ $by => $value ])) != null) {
-            $response->setData(SerializerManager::normalize($user, 'json', [ 'default', 'administrators' ]));
+        if(($users = $userRepository->searchByUsername($value, $page)) != null) {
+            $pageResults = SerializerManager::normalize($users, 'json', [ 'default', 'administrators' ]);
+            $response->setData([ 'result' => $pageResults, 'total' => $totalResults ]);
         } else {
-            $response->setData([ 'result' => 'Could not find user' ]);
+            $response->setData([ 'result' => 'Could not find users', 'total' => $totalResults ]);
             $response->setStatusCode(404);
         }
 

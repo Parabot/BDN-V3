@@ -29,4 +29,42 @@ class UserRepository extends EntityRepository {
 
         return null;
     }
+
+    public function countTotal(){
+        $query = $this->createQueryBuilder('user')->select('count(user.id)');
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function getForPage($page = 1, $limit = 25){
+        $query = $this->createQueryBuilder('user')->setMaxResults($limit)->setFirstResult(($page - 1) * $limit);
+        return $query->getQuery()->getResult();
+    }
+
+    public function countSearchByUsername($username) {
+        $query = $this->createQueryBuilder('user')->select('count(user.id)');
+        $query = $query->where('user.username LIKE :username');
+
+        $query->setParameter(
+            'username',
+            '%' . $username . '%'
+        );
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function searchByUsername($username, $page = 1, $limit = 25) {
+        $query = $this->createQueryBuilder('user')->where('user.username LIKE :username');
+
+        $query->setParameter(
+            'username',
+            '%' . $username . '%'
+        );
+        $query->setMaxResults($limit);
+        $query->setFirstResult(($page - 1) * $limit);
+
+        $query = $query->getQuery();
+
+        return $query->getResult();
+    }
 }
