@@ -88,8 +88,7 @@ doctrine:
 d_zunke_slack:
     token: "%slack_token%"
     identities:
-        BDN:
-          icon_url: "http://v3.bdn.parabot.org/images/slack/icon.png"
+        BDN: ~
 
 # Swiftmailer Configuration
 swiftmailer:
