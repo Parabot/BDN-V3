@@ -79,8 +79,11 @@ security:
         - { path: ^/api/users/log_in, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/oauth/v2/valid, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
         - { path: ^/internal/route/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/bot/download/randoms, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/api/signatures/list, role: IS_AUTHENTICATED_ANONYMOUSLY }

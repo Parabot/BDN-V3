@@ -18,6 +18,11 @@ bdn_script:
     type:     annotation
     prefix:   /api/scripts
 
+bdn_signatures:
+    resource: "@BDNBotBundle/Controller/SignatureController.php"
+    type:     annotation
+    prefix:   /api/signatures
+
 bdn_store:
     resource: "@BDNStoreBundle/Controller/"
     type:     annotation
