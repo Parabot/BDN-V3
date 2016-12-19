@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * UserSignature
  *
- * @ORM\Table()
  * @ORM\Entity()
  */
 class UserSignature {

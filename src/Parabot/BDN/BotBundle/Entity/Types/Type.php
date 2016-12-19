@@ -105,7 +105,7 @@ abstract class Type {
      *
      * @param string $string
      *
-     * @return Client
+     * @return Type
      */
     public function setVersion($string) {
         $this->version = $string;
@@ -127,7 +127,7 @@ abstract class Type {
      *
      * @param \DateTime $releaseDate
      *
-     * @return Client
+     * @return Type
      */
     public function setReleaseDate($releaseDate) {
         $this->releaseDate = $releaseDate;
