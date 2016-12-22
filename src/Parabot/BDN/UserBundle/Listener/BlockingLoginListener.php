@@ -56,8 +56,8 @@ class BlockingLoginListener {
     private function shouldBlock($ip, $route) {
         if(in_array(strtolower($route), $this->blocks)) {
             return $this->entityManager->getRepository('BDNUserBundle:Session')->getSessionCount(
-                $ip
-            ) >= $this->blockCount;
+                    $ip
+                ) >= $this->blockCount;
         }
 
         return false;

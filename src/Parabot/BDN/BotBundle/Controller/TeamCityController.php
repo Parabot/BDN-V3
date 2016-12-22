@@ -29,7 +29,7 @@ class TeamCityController extends Controller {
      * @Method({"GET"})
      *
      * @param Request $request
-     * @param string $projectId
+     * @param string  $projectId
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */

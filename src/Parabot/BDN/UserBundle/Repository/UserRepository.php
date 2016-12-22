@@ -30,14 +30,15 @@ class UserRepository extends EntityRepository {
         return null;
     }
 
-    public function countTotal(){
+    public function countTotal() {
         $query = $this->createQueryBuilder('user')->select('count(user.id)');
 
         return $query->getQuery()->getSingleScalarResult();
     }
 
-    public function getForPage($page = 1, $limit = 25){
+    public function getForPage($page = 1, $limit = 25) {
         $query = $this->createQueryBuilder('user')->setMaxResults($limit)->setFirstResult(($page - 1) * $limit);
+
         return $query->getQuery()->getResult();
     }
 
