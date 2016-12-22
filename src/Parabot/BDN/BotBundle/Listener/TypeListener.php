@@ -40,7 +40,7 @@ class TypeListener implements EventSubscriber {
     private function setTypePath(LifecycleEventArgs $args) {
         $entity = $args->getEntity();
 
-        if( ! ($entity instanceof Type) || ! ($entity instanceof AbstractSignature)) {
+        if( ! ($entity instanceof Type) && ! ($entity instanceof AbstractSignature)) {
             return;
         }
 
