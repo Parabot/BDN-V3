@@ -5,20 +5,30 @@ services:
             - @kernel
         tags:
             - { name: doctrine.event_subscriber }
-    bot.download_manager:
-        class: Parabot\BDN\BotBundle\Service\DownloadProvider
-    bot.travis_helper:
-        class: Parabot\BDN\BotBundle\Service\TravisHelper
+
     bot.type_helper:
         class: Parabot\BDN\BotBundle\Service\TypeHelper
         arguments:
             entityManager: "@doctrine.orm.entity_manager"
+
+    bot.download_manager:
+        class: Parabot\BDN\BotBundle\Service\DownloadProvider
+
+    bot.travis_helper:
+        class: Parabot\BDN\BotBundle\Service\TravisHelper
+
     bot.script_repository_service:
         class: Parabot\BDN\BotBundle\Service\Repository\ScriptRepositoryService
         arguments: ['@doctrine.orm.entity_manager', %groups%]
+
     bot.translation_helper:
         class: Parabot\BDN\BotBundle\Service\TranslationHelper
         arguments: ['@doctrine.orm.entity_manager', '@kernel', '%transifex_username%', '%transifex_password%']
+
     bot.servers.hook_manager:
         class: Parabot\BDN\BotBundle\Service\HooksManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    bot.teamcity.api:
+        class: Parabot\BDN\BotBundle\Service\Library\TeamCity\TeamCityAPI
+        arguments: ['%teamcity_endpoint%', '%teamcity_username%', '%teamcity_password%']

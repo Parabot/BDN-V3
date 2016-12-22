@@ -16,6 +16,7 @@ imports:
 parameters:
     locale: en
     valid_domain: parabot.org
+    teamcity_endpoint: 'http://city.parabot.org:8111/app/rest/'
 
 framework:
     #esi:             ~

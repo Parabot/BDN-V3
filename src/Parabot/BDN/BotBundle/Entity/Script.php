@@ -123,6 +123,12 @@ class Script {
      */
     private $creator;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="build_type_id", type="string", length=255)
+     */
+    private $buildTypeId;
 
     /**
      * Get id

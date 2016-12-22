@@ -57,6 +57,9 @@ class DefaultController extends Controller {
      */
     public function testAction(Request $request) {
 
+        var_dump($this->get('bot.teamcity.api')->getBuilds('LordPeng'));
+        die();
+
         return new JsonResponse([ '$result', $request->get('asd') ]);
     }
 

@@ -23,6 +23,11 @@ bdn_signatures:
     type:     annotation
     prefix:   /api/signatures
 
+bdn_teamcity:
+    resource: "@BDNBotBundle/Controller/TeamCityController.php"
+    type:     annotation
+    prefix:   /api/city
+
 bdn_store:
     resource: "@BDNStoreBundle/Controller/"
     type:     annotation
