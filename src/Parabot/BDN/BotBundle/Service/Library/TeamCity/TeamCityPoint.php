@@ -12,6 +12,7 @@ use MyCLabs\Enum\Enum;
  * @method static TeamCityPoint BUILD_TYPES()
  * @method static TeamCityPoint BUILDS()
  * @method static TeamCityPoint PROJECTS()
+ * @method static TeamCityPoint BUILD_QUEUE()
  * @package Parabot\BDN\BotBundle\Service\Library\TeamCity
  */
 class TeamCityPoint extends Enum {
@@ -19,5 +20,6 @@ class TeamCityPoint extends Enum {
     const BUILD_TYPES = 'buildTypes';
     const PROJECTS    = 'projects';
     const BUILDS      = 'builds';
+    const BUILD_QUEUE = 'buildQueue';
 
 }

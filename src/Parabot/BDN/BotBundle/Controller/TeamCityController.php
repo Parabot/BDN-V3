@@ -3,6 +3,8 @@
 namespace Parabot\BDN\BotBundle\Controller;
 
 use AppBundle\Service\SerializerManager;
+use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
+use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,6 +15,8 @@ class TeamCityController extends Controller {
     /**
      * @Route("/build_types/list", name="list_build_types_teamcity")
      * @Method({"GET"})
+     *
+     * @PreAuthorize("isScriptWriter()")
      *
      * @param Request $request
      *
@@ -25,17 +29,79 @@ class TeamCityController extends Controller {
     }
 
     /**
-     * @Route("/builds/list/{projectId}", name="list_builds_teamcity")
+     * @Route("/builds/list/{scriptId}", name="list_builds_teamcity")
      * @Method({"GET"})
      *
+     * @PreAuthorize("isScriptWriter()")
+     *
      * @param Request $request
-     * @param string  $projectId
+     * @param string  $scriptId
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listBuildsAction(Request $request, $projectId) {
-        $builds = $this->get('bot.teamcity.api')->getBuilds($projectId);
+    public function listBuildsAction(Request $request, $scriptId) {
+        $access = $this->isValidScript($scriptId, 'id');
+        if($access !== true) {
+            return $access;
+        }
+
+        $builds = $this->get('bot.teamcity.api')->getBuilds($scriptId);
 
         return new JsonResponse(SerializerManager::normalize($builds));
+    }
+
+    private function isValidScript($id, $find = 'id') {
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ $find => $id ]);
+        $user   = $this->get('request_access_evaluator')->getUser();
+
+        if($script == null) {
+            return new JsonResponse([ 'result' => 'Unknown script requested' ], 404);
+        }
+
+        /**
+         * @var User $user
+         */
+        foreach($script->getUsers() as $u) {
+            if($u->getId() === $user->getId()) {
+                return true;
+            }
+        }
+
+        return new JsonResponse([ 'result' => 'User does not have access to script' ], 403);
+    }
+
+    /**
+     * @Route("/build_types/create/{buildTypeId}", name="create_build_type_teamcity")
+     * @Method({"GET"})
+     *
+     * @PreAuthorize("isScriptWriter()")
+     *
+     * @param Request $request
+     * @param         $buildTypeId
+     *
+     * @return JsonResponse
+     */
+    public function createBuild(Request $request, $buildTypeId) {
+        $access = $this->isValidScript($buildTypeId, 'buildTypeId');
+        if($access !== true) {
+            return $access;
+        }
+
+        $created = $this->get('bot.teamcity.api')->startBuild($buildTypeId);
+        $script  = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy(
+            [ 'buildTypeId' => $buildTypeId ]
+        );
+
+        if($created === true && $script != null) {
+            $this->get('slack_manager')->sendSuccessMessage(
+                'Script build created',
+                'Build created for script ' . $script->getName(),
+                '',
+                [],
+                '#depoyments'
+            );
+        }
+
+        return new JsonResponse([ 'result' => $created ]);
     }
 }

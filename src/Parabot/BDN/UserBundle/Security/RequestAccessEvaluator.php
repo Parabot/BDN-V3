@@ -57,6 +57,11 @@ class RequestAccessEvaluator {
         return ($user = $this->getUser()) != null && ! $user->hasGroupId(22, true);
     }
 
+    /** @DI\SecurityFunction("isScriptWriter") */
+    public function isScriptWriter() {
+        return ($user = $this->getUser()) != null && ! $user->hasGroupId(9, true);
+    }
+
     /**
      * @return UserRepository
      */
