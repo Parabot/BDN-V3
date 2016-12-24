@@ -11,7 +11,9 @@ use GuzzleHttp\Psr7\Response;
 use Parabot\BDN\BotBundle\Service\Library\TeamCity\Entity\TeamCityBuild;
 use Parabot\BDN\BotBundle\Service\Library\TeamCity\Entity\TeamCityBuildType;
 use Parabot\BDN\BotBundle\Service\Library\TeamCity\Entity\TeamCityEntity;
+use Parabot\BDN\BotBundle\Service\Library\TeamCity\Entity\TeamCityLog;
 use SimpleXMLElement;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 
 class TeamCityAPI {
 
@@ -78,31 +80,42 @@ class TeamCityAPI {
             $parameters = http_build_query($parameters);
         }
 
-        $defaultHeaders = [ 'Accept' => 'application/json' ];
-        if(count($headers) > 0) {
-            $headers = array_merge($defaultHeaders, $headers);
+        if($method === 'GET') {
+            $point .= '?' . $parameters;
         }
 
-        $request = new Request($method, $point, $headers, $parameters);
+        $defaultHeaders = [ 'Accept' => 'application/json', 'Cache-Control' => 'no-cache' ];
+        $headers        = array_merge($defaultHeaders, $headers);
+        $request        = new Request($method, $point, $headers, $parameters);
 
-        $promise       = $client->sendAsync($request)->then(
-            function ($response) use ($instance) {
-                /**
-                 * @var Response $response
-                 */
-                if($response->getStatusCode() === 200) {
-                    $result = json_decode($response->getBody()->getContents());
-                    if($instance !== null) {
-                        return $instance::parseResponse($result);
-                    } else {
-                        return $result;
+        try {
+            $promise       = $client->sendAsync($request)->then(
+                function ($response) use ($instance) {
+                    /**
+                     * @var Response $response
+                     */
+                    if($response->getStatusCode() === 200) {
+                        $content = $response->getBody()->getContents();
+
+                        if(($result = json_decode($content)) == null) {
+                            $result = $content;
+                        }
+
+                        if($instance !== null) {
+                            return $instance::parseResponse($result);
+                        } else {
+                            return $result;
+                        }
                     }
-                }
 
-                return false;
-            }
-        );
-        $promiseResult = $promise->wait();
+                    return false;
+                }
+            );
+            $promiseResult = $promise->wait();
+        } catch(AccountExpiredException $e) {
+            var_dump($e->getMessage());
+            throw new \Exception('Error occurred while retrieving TeamCity API');
+        }
 
         if($promiseResult !== false) {
             return $promiseResult;
@@ -129,11 +142,27 @@ class TeamCityAPI {
         return $result->state === 'queued';
     }
 
+    public function getBuild($buildId) {
+        return $this->callPoint(
+            TeamCityBuild::class,
+            'GET',
+            [ 'locator' => sprintf('id:%s', $buildId) ]
+        );
+    }
+
     public function getBuilds($projectId) {
         return $this->callPoint(
             TeamCityBuild::class,
             'GET',
             [ 'locator' => sprintf('affectedProject:(id:%s)', $projectId) ]
+        );
+    }
+
+    public function getBuildLog($buildId) {
+        return $this->callPoint(
+            TeamCityLog::class,
+            'GET',
+            [ 'buildId' => $buildId ]
         );
     }
 

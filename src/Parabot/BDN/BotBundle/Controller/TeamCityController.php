@@ -47,7 +47,7 @@ class TeamCityController extends Controller {
 
         $builds = $this->get('bot.teamcity.api')->getBuilds($scriptId);
 
-        return new JsonResponse(SerializerManager::normalize($builds));
+        return new JsonResponse([ 'builds' => SerializerManager::normalize($builds) ]);
     }
 
     private function isValidScript($id, $find = 'id') {
@@ -59,7 +59,7 @@ class TeamCityController extends Controller {
         }
 
         /**
-         * @var User $user
+         * @var User $u
          */
         foreach($script->getUsers() as $u) {
             if($u->getId() === $user->getId()) {
@@ -68,6 +68,24 @@ class TeamCityController extends Controller {
         }
 
         return new JsonResponse([ 'result' => 'User does not have access to script' ], 403);
+    }
+
+    /**
+     * @Route("/builds/get/{buildId}", name="get_build_teamcity")
+     * @Method({"GET"})
+     *
+     * @PreAuthorize("isScriptWriter()")
+     *
+     * @param Request $request
+     * @param int     $buildId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getBuildAction(Request $request, $buildId) {
+        $build = $this->get('bot.teamcity.api')->getBuild($buildId)[ 0 ];
+        $log   = $this->get('bot.teamcity.api')->getBuildLog($buildId);
+
+        return new JsonResponse([ 'build' => SerializerManager::normalize($build), 'log' => $log ]);
     }
 
     /**
