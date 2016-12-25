@@ -5,8 +5,10 @@
 
 namespace Parabot\BDN\BotBundle\Controller;
 
+use AppBundle\Service\SerializerManager;
+use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,8 +16,26 @@ use Symfony\Component\HttpFoundation\Request;
 class ScriptController extends Controller {
 
     /**
+     * @Route("/list/my", name="list_my_scripts")
+     * @Method({"GET"})
+     *
+     * @PreAuthorize("isScriptWriter()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function listMyAction(Request $request) {
+        $sRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Script');
+        $user        = $this->get('request_access_evaluator')->getUser();
+
+        $scripts = $sRepository->findByAuthor($user);
+
+        return new JsonResponse([ 'result' => SerializerManager::normalize($scripts) ]);
+    }
+
+    /**
      * @Route("/list/author/{username}")
-     * @Template()
      *
      * @param Request $request
      * @param string  $username

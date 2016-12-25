@@ -5,6 +5,7 @@ namespace Parabot\BDN\BotBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
 use Parabot\BDN\UserBundle\Entity\User;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Script
@@ -20,13 +21,17 @@ class Script {
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Groups({"default"})
      */
     private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     *
+     * @Groups({"default"})
      */
     private $name;
 
@@ -38,6 +43,8 @@ class Script {
      *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
      * )
+     *
+     * @Groups({"default"})
      */
     private $authors;
 
@@ -60,6 +67,8 @@ class Script {
      *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      * )
+     *
+     * @Groups({"default"})
      */
     private $groups;
 
@@ -78,6 +87,8 @@ class Script {
      *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
      * )
+     *
+     * @Groups({"default"})
      */
     private $categories;
 
@@ -85,13 +96,17 @@ class Script {
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     *
+     * @Groups({"default"})
      */
     private $description;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="forum", type="integer")
+     * @ORM\Column(name="forum", type="integer", nullable=true)
+     *
+     * @Groups({"default"})
      */
     private $forum;
 
@@ -99,6 +114,8 @@ class Script {
      * @var float
      *
      * @ORM\Column(name="version", type="float")
+     *
+     * @Groups({"default"})
      */
     private $version;
 
@@ -106,8 +123,10 @@ class Script {
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
+     *
+     * @Groups({"default"})
      */
-    private $active;
+    private $active = true;
 
     /**
      * @var Git
@@ -120,13 +139,15 @@ class Script {
      * @var User
      *
      * @ORM\OneToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User")
+     *
+     * @Groups({"default"})
      */
     private $creator;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="build_type_id", type="string", length=255)
+     * @ORM\Column(name="build_type_id", type="string", length=255, nullable=true)
      */
     private $buildTypeId;
 
@@ -375,5 +396,33 @@ class Script {
         $this->git = $git;
 
         return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getCreator() {
+        return $this->creator;
+    }
+
+    /**
+     * @param User $creator
+     */
+    public function setCreator($creator) {
+        $this->creator = $creator;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuildTypeId() {
+        return $this->buildTypeId;
+    }
+
+    /**
+     * @param string $buildTypeId
+     */
+    public function setBuildTypeId($buildTypeId) {
+        $this->buildTypeId = $buildTypeId;
     }
 }

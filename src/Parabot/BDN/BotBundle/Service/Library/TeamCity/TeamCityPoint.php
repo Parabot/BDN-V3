@@ -14,6 +14,7 @@ use MyCLabs\Enum\Enum;
  * @method static TeamCityPoint PROJECTS()
  * @method static TeamCityPoint BUILD_QUEUE()
  * @method static TeamCityPoint BUILD_LOG()
+ * @method static TeamCityPoint VSC_ROOTS()
  * @package Parabot\BDN\BotBundle\Service\Library\TeamCity
  */
 class TeamCityPoint extends Enum {
@@ -23,5 +24,6 @@ class TeamCityPoint extends Enum {
     const BUILDS      = 'builds';
     const BUILD_QUEUE = 'buildQueue';
     const BUILD_LOG   = '/httpAuth/downloadBuildLog.html';
+    const VSC_ROOTS   = 'vcs-roots';
 
 }

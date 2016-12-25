@@ -44,10 +44,11 @@ class TeamCityController extends Controller {
         if($access !== true) {
             return $access;
         }
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
 
-        $builds = $this->get('bot.teamcity.api')->getBuilds($scriptId);
+        $builds = $this->get('bot.teamcity.api')->getBuilds($script);
 
-        return new JsonResponse([ 'builds' => SerializerManager::normalize($builds) ]);
+        return new JsonResponse([ 'builds' => SerializerManager::normalize($builds), 'script' => $script->getName() ]);
     }
 
     private function isValidScript($id, $find = 'id') {
@@ -61,7 +62,7 @@ class TeamCityController extends Controller {
         /**
          * @var User $u
          */
-        foreach($script->getUsers() as $u) {
+        foreach($script->getAuthors() as $u) {
             if($u->getId() === $user->getId()) {
                 return true;
             }
@@ -119,6 +120,76 @@ class TeamCityController extends Controller {
                 '#depoyments'
             );
         }
+
+        return new JsonResponse([ 'result' => $created ]);
+    }
+
+    /**
+     * @Route("/projects/create/{scriptId}", name="create_project_teamcity")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isScriptWriter()")
+     *
+     * @param Request $request
+     * @param int     $scriptId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function createProjectAction(Request $request, $scriptId) {
+        $access = $this->isValidScript($scriptId, 'id');
+        if($access !== true) {
+            return $access;
+        }
+
+        $script  = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy(
+            [ 'id' => $scriptId ]
+        );
+        $manager = $this->getDoctrine()->getManager();
+
+        $created        = false;
+        $projectCreated = $this->get('bot.teamcity.api')->createProject($script);
+
+        if($projectCreated === true && $request->get('modules') == 'all') {
+            $VCSCreated   = $this->get('bot.teamcity.api')->createVSC($script);
+            $BuildCreated = ($buildTypeID = $this->get('bot.teamcity.api')->createBuildType($script)) !== null;
+            if($buildTypeID !== null) {
+                $script->setBuildTypeId($buildTypeID);
+                $manager->persist($script);
+                $manager->flush();
+            }
+
+            if($VCSCreated === true && $BuildCreated === true) {
+                $created = true;
+            }
+        } else {
+            $created = true;
+        }
+
+        return new JsonResponse([ 'result' => $created ]);
+    }
+
+    /**
+     * @Route("/vcs/create/{scriptId}", name="create_vcs_teamcity")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isScriptWriter()")
+     *
+     * @param Request $request
+     * @param int     $scriptId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function createVCSAction(Request $request, $scriptId) {
+        $access = $this->isValidScript($scriptId, 'id');
+        if($access !== true) {
+            return $access;
+        }
+
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy(
+            [ 'id' => $scriptId ]
+        );
+
+        $created = $this->get('bot.teamcity.api')->createVSC($script);
 
         return new JsonResponse([ 'result' => $created ]);
     }
