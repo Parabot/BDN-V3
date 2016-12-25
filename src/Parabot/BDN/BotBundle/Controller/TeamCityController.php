@@ -90,26 +90,27 @@ class TeamCityController extends Controller {
     }
 
     /**
-     * @Route("/build_types/create/{buildTypeId}", name="create_build_type_teamcity")
-     * @Method({"GET"})
+     * @Route("/build_types/create/{scriptId}", name="create_build_type_teamcity")
+     * @Method({"POST"})
      *
      * @PreAuthorize("isScriptWriter()")
      *
      * @param Request $request
-     * @param         $buildTypeId
+     * @param         $scriptId
      *
      * @return JsonResponse
      */
-    public function createBuild(Request $request, $buildTypeId) {
-        $access = $this->isValidScript($buildTypeId, 'buildTypeId');
+    public function createBuild(Request $request, $scriptId) {
+        $access = $this->isValidScript($scriptId, 'id');
         if($access !== true) {
             return $access;
         }
 
-        $created = $this->get('bot.teamcity.api')->startBuild($buildTypeId);
-        $script  = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy(
-            [ 'buildTypeId' => $buildTypeId ]
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy(
+            [ 'id' => $scriptId ]
         );
+
+        $created = $this->get('bot.teamcity.api')->startBuild($script->getBuildTypeId());
 
         if($created === true && $script != null) {
             $this->get('slack_manager')->sendSuccessMessage(
@@ -117,7 +118,7 @@ class TeamCityController extends Controller {
                 'Build created for script ' . $script->getName(),
                 '',
                 [],
-                '#depoyments'
+                '#deployments'
             );
         }
 
@@ -150,15 +151,16 @@ class TeamCityController extends Controller {
         $projectCreated = $this->get('bot.teamcity.api')->createProject($script);
 
         if($projectCreated === true && $request->get('modules') == 'all') {
-            $VCSCreated   = $this->get('bot.teamcity.api')->createVSC($script);
-            $BuildCreated = ($buildTypeID = $this->get('bot.teamcity.api')->createBuildType($script)) !== null;
+            $vcsCreated   = $this->get('bot.teamcity.api')->createVSC($script);
+            $buildCreated = ($buildTypeID = $this->get('bot.teamcity.api')->createBuildType($script)) !== null;
+
             if($buildTypeID !== null) {
                 $script->setBuildTypeId($buildTypeID);
                 $manager->persist($script);
                 $manager->flush();
             }
 
-            if($VCSCreated === true && $BuildCreated === true) {
+            if($vcsCreated === true && $buildCreated === true) {
                 $created = true;
             }
         } else {

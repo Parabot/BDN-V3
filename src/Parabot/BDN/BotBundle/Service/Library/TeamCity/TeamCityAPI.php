@@ -140,7 +140,7 @@ class TeamCityAPI {
             [ 'Content-Type' => 'application/xml' ]
         );
 
-        return $result->state === 'queued';
+        return $result->state == 'queued';
     }
 
     public function getBuild($buildId) {
@@ -288,7 +288,7 @@ class TeamCityAPI {
             [ 'Content-Type' => 'application/xml' ]
         );
 
-        return $result->name === $script->getId();
+        return $result->id === $this->getVCSID($script);
     }
 
 }

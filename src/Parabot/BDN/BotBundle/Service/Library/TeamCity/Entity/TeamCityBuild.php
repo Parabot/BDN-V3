@@ -51,13 +51,15 @@ class TeamCityBuild implements TeamCityEntity {
     public static function parseResponse($result) {
         $builds = [];
 
-        foreach($result->build as $build) {
-            $b = new TeamCityBuild();
-            $b->setId($build->id);
-            $b->setStatus($build->status);
-            $b->setState($build->state);
+        if(isset($result->build)) {
+            foreach($result->build as $build) {
+                $b = new TeamCityBuild();
+                $b->setId($build->id);
+                $b->setStatus($build->status);
+                $b->setState($build->state);
 
-            $builds[] = $b;
+                $builds[] = $b;
+            }
         }
 
         return $builds;

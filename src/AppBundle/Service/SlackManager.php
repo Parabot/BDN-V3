@@ -62,11 +62,13 @@ class SlackManager {
      * @param string   $link
      * @param string[] $fields
      * @param string   $channel
+     *
+     * @return bool|Client\Response
      */
     public function sendSuccessMessage($title, $message, $link = '', $fields = [], $channel = '') {
         $attachment = $this->createAttachment($title, $message, 'good', $link, $fields);
 
-        $this->sendMessage('', [ $attachment ], $channel);
+        return $this->sendMessage('', [ $attachment ], $channel);
     }
 
     /**
@@ -105,12 +107,14 @@ class SlackManager {
      * @param string                  $channel
      * @param string                  $user
      *
+     * @return bool|Client\Response
      */
     public function sendMessage($message, $attachments = [], $channel = '#releases', $user = 'BDN') {
         if($channel == null) {
             $channel = '#releases';
         }
-        $this->messenger->message(
+
+        return $this->messenger->message(
             $channel,
             $message,
             $user,

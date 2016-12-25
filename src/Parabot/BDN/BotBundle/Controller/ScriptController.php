@@ -31,7 +31,7 @@ class ScriptController extends Controller {
 
         $scripts = $sRepository->findByAuthor($user);
 
-        return new JsonResponse([ 'result' => SerializerManager::normalize($scripts) ]);
+        return new JsonResponse([ 'scripts' => SerializerManager::normalize($scripts) ]);
     }
 
     /**
