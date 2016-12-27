@@ -32,11 +32,13 @@ class ScriptRepository extends EntityRepository {
     /**
      * @param User $user
      *
+     * @param bool $includeActive
+     *
      * @return Script[]
      */
-    public function findByAuthor($user) {
+    public function findByAuthor($user, $includeActive = true) {
         $query = $this->getEntityManager()->createQuery(
-            'SELECT s FROM BDNBotBundle:Script s JOIN s.authors a WHERE a.id = :id AND s.active = 1'
+            'SELECT s FROM BDNBotBundle:Script s JOIN s.authors a WHERE a.id = :id' . ($includeActive ? 'AND s.active = :active' : '')
         )->setParameter('id', $user->getId());
 
         return $query->getResult();
