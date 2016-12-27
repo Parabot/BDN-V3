@@ -56,6 +56,8 @@ class Script {
      *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
      * )
+     *
+     * @Groups({"script_users"})
      */
     private $users;
 
@@ -132,6 +134,8 @@ class Script {
      * @var Git
      *
      * @ORM\OneToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Git")
+     *
+     * @Groups({"developer"})
      */
     private $git;
 
@@ -148,6 +152,8 @@ class Script {
      * @var string
      *
      * @ORM\Column(name="build_type_id", type="string", length=255, nullable=true)
+     *
+     * @Groups({"developer"})
      */
     private $buildTypeId;
 
@@ -424,5 +430,15 @@ class Script {
      */
     public function setBuildTypeId($buildTypeId) {
         $this->buildTypeId = $buildTypeId;
+    }
+
+    public function hasAuthor(User $author){
+        foreach($this->authors as $a){
+            if ($a->getId() == $author->getId()){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

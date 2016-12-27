@@ -1,3 +1,12 @@
 user:
-    resource: "@BDNUserBundle/Controller/"
+    resource: "@BDNUserBundle/Controller/DefaultController.php"
     type:     annotation
+
+manager:
+    resource: "@BDNUserBundle/Controller/ManagerController.php"
+    type:     annotation
+
+user_groups:
+    resource: "@BDNUserBundle/Controller/GroupController.php"
+    type:     annotation
+    prefix:   /groups

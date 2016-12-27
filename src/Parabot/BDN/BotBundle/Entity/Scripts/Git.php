@@ -3,6 +3,7 @@
 namespace Parabot\BDN\BotBundle\Entity\Scripts;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Git
@@ -24,6 +25,8 @@ class Git {
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255)
+     *
+     * @Groups({"developer"})
      */
     private $url;
 

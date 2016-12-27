@@ -3,6 +3,7 @@
 namespace Parabot\BDN\BotBundle\Entity\Scripts;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Category
@@ -17,6 +18,8 @@ class Category {
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Groups({"default"})
      */
     private $id;
 
@@ -24,15 +27,10 @@ class Category {
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Groups({"default"})
      */
     private $name;
-
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="scripts", type="array")
-     */
-    private $scripts;
 
 
     /**
@@ -62,28 +60,6 @@ class Category {
      */
     public function setName($name) {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get scripts
-     *
-     * @return array
-     */
-    public function getScripts() {
-        return $this->scripts;
-    }
-
-    /**
-     * Set scripts
-     *
-     * @param array $scripts
-     *
-     * @return Category
-     */
-    public function setScripts($scripts) {
-        $this->scripts = $scripts;
 
         return $this;
     }

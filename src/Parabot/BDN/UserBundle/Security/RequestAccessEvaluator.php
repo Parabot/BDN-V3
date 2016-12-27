@@ -54,12 +54,21 @@ class RequestAccessEvaluator {
 
     /** @DI\SecurityFunction("isServerDeveloper") */
     public function isServerDeveloper() {
-        return ($user = $this->getUser()) != null && ! $user->hasGroupId(22, true);
+        return ($user = $this->getUser()) != null && $user->hasGroupId(22, true);
     }
 
-    /** @DI\SecurityFunction("isScriptWriter") */
-    public function isScriptWriter() {
-        return ($user = $this->getUser()) != null && ! $user->hasGroupId(9, true);
+    /**
+     * @DI\SecurityFunction("isScriptWriter")
+     *
+     * @param User|null $user
+     *
+     * @return bool
+     */
+    public function isScriptWriter(User $user = null) {
+        if ($user === null){
+            $user = $this->getUser();
+        }
+        return $user != null && $user->hasGroupId(9, true);
     }
 
     /**
