@@ -8,15 +8,16 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20161102234002 extends AbstractMigration
-{
+class Version20161102234002 extends AbstractMigration {
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
-    {
+    public function up(Schema $schema) {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            $this->connection->getDatabasePlatform()->getName() != 'mysql',
+            'Migration can only be executed safely on \'mysql\'.'
+        );
 
         $this->addSql('ALTER TABLE login_access_tokens CHANGE redirect redirect VARCHAR(255) DEFAULT NULL');
     }
@@ -24,11 +25,15 @@ class Version20161102234002 extends AbstractMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
-    {
+    public function down(Schema $schema) {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            $this->connection->getDatabasePlatform()->getName() != 'mysql',
+            'Migration can only be executed safely on \'mysql\'.'
+        );
 
-        $this->addSql('ALTER TABLE login_access_tokens CHANGE redirect redirect VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci');
+        $this->addSql(
+            'ALTER TABLE login_access_tokens CHANGE redirect redirect VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci'
+        );
     }
 }

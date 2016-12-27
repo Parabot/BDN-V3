@@ -32,7 +32,7 @@ class Version20161020011902 extends AbstractMigration implements ContainerAwareI
      */
     public function up(Schema $schema) {
         $doctrine = $this->container->get('doctrine');
-        $manager = $doctrine->getManager();
+        $manager  = $doctrine->getManager();
 
         $groups = [
             4  => [
