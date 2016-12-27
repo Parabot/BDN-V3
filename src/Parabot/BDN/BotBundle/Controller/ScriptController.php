@@ -91,6 +91,7 @@ class ScriptController extends Controller {
             'authors'     => null,
             'groups'      => null,
             'active'      => null,
+            'categories'  => null,
         ];
 
         if($scriptId != null) {
@@ -196,6 +197,25 @@ class ScriptController extends Controller {
                         $script->setGroups($scriptGroups);
                     }
 
+                    if(($categories = $scriptAttributes[ 'categories' ]) !== null && count($categories) > 0) {
+                        $categoryRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Category');
+
+                        $scriptCategories = [];
+                        foreach($categories as $category) {
+                            $c = $categoryRepository->findOneBy([ 'id' => $category[ 'id' ] ]);
+
+                            if($c != null) {
+                                $scriptCategories[] = $c;
+                            } else {
+                                return new JsonResponse(
+                                    [ 'result' => 'Unknown category ID given (' . $category[ 'id' ] . ')', 404 ]
+                                );
+                            }
+                        }
+
+                        $script->setCategories($scriptCategories);
+                    }
+
                     $manager = $this->getDoctrine()->getManager();
                     $manager->persist($script);
                     $manager->flush();
@@ -226,7 +246,7 @@ class ScriptController extends Controller {
         $sRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Script');
         $user        = $this->get('request_access_evaluator')->getUser();
 
-        $scripts = $sRepository->findByAuthor($user);
+        $scripts = $sRepository->findByAuthor($user, false);
 
         return new JsonResponse([ 'scripts' => SerializerManager::normalize($scripts) ]);
     }
