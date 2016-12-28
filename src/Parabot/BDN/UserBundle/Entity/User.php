@@ -30,7 +30,7 @@ class User extends BaseUser implements TwoFactorInterface {
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      * )
      *
-     * @Groups({"administrators"})
+     * @Groups({"administrators", "owner"})
      */
     protected $groups;
 

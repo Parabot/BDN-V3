@@ -18,17 +18,22 @@ class ManagerController extends Controller {
      *
      * @return JsonResponse
      *
-     * @PreAuthorize("isAdministrator()")
+     * @PreAuthorize("isNotBanned()")
      */
     public function getAction(Request $request, $id) {
         $response       = new JsonResponse();
         $userRepository = $this->getDoctrine()->getRepository('BDNUserBundle:User');
 
-        if(($user = $userRepository->findOneBy([ 'id' => $id ])) != null) {
-            $response->setData(SerializerManager::normalize($user, 'json', [ 'default', 'administrators' ]));
+        $loggedUser = $this->get('request_access_evaluator')->getUser();
+        if($loggedUser != null && $loggedUser->getId() == $id) {
+            $response->setData(SerializerManager::normalize($loggedUser, 'json', [ 'default', 'owner' ]));
         } else {
-            $response->setData([ 'result' => 'Could not find user' ]);
-            $response->setStatusCode(404);
+            if(($user = $userRepository->findOneBy([ 'id' => $id ])) != null) {
+                $response->setData(SerializerManager::normalize($user, 'json', [ 'default', 'administrators' ]));
+            } else {
+                $response->setData([ 'result' => 'Could not find user' ]);
+                $response->setStatusCode(404);
+            }
         }
 
         return $response;

@@ -26,6 +26,34 @@ class DefaultController extends Controller {
     }
 
     /**
+     * @Route("/my/{param}", name="get_my_id")
+     *
+     * @PreAuthorize("isNotBanned()")
+     *
+     * @param Request $request
+     *
+     * @param string  $param
+     *
+     * @return JsonResponse
+     */
+    public function getMyUserIdAction(Request $request, $param) {
+        $user = $this->get('request_access_evaluator')->getUser();
+        switch($param) {
+            case 'username':
+                $response = [ 'username' => $user->getUsername() ];
+                break;
+            case 'id':
+                $response = [ 'id' => $user->getId() ];
+                break;
+            default:
+                $response = [ 'id' => $user->getId() ];
+                break;
+        }
+
+        return new JsonResponse([ 'result' => $response ]);
+    }
+
+    /**
      * @Route("/loggedin", name="logged_in")
      *
      * @param Request $request
