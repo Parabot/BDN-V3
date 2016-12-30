@@ -44,7 +44,6 @@ class BotController extends Controller {
      * )
      *
      * @Route("/download/{type}", name="bot_download")
-     * @Template()
      * @Method({"GET"})
      *
      * @param Request $request
@@ -100,7 +99,6 @@ class BotController extends Controller {
 
     /**
      * @Route("/create/{type}")
-     * @Template()
      * @Method({"POST"})
      *
      * @param Request $request
@@ -261,7 +259,6 @@ class BotController extends Controller {
      * )
      *
      * @Route("/compare/{type}/{current}")
-     * @Template()
      * @Method({"GET"})
      *
      * @param Request $request
@@ -340,7 +337,6 @@ class BotController extends Controller {
      * )
      *
      * @Route("/checksum/{type}/{version}")
-     * @Template()
      * @Method({"POST"})
      *
      * @param Request $request
@@ -412,7 +408,6 @@ class BotController extends Controller {
      * )
      *
      * @Route("/list/{type}")
-     * @Template()
      * @Method({"GET"})
      *
      * @param Request $request

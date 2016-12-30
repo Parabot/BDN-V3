@@ -114,7 +114,6 @@ class TeamCityAPI {
             );
             $promiseResult = $promise->wait();
         } catch(AccountExpiredException $e) {
-            var_dump($e->getMessage());
             throw new \Exception('Error occurred while retrieving TeamCity API');
         }
 
