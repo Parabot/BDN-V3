@@ -142,7 +142,8 @@ class Script {
     /**
      * @var User
      *
-     * @ORM\OneToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User", inversedBy="createdScripts")
+     * @ORM\JoinColumn(name="script_id", referencedColumnName="id")
      *
      * @Groups({"default"})
      */
@@ -432,9 +433,9 @@ class Script {
         $this->buildTypeId = $buildTypeId;
     }
 
-    public function hasAuthor(User $author){
-        foreach($this->authors as $a){
-            if ($a->getId() == $author->getId()){
+    public function hasAuthor(User $author) {
+        foreach($this->authors as $a) {
+            if($a->getId() == $author->getId()) {
                 return true;
             }
         }

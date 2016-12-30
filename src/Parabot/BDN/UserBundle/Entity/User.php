@@ -6,6 +6,7 @@ namespace Parabot\BDN\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
+use Parabot\BDN\BotBundle\Entity\Script;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -70,9 +71,18 @@ class User extends BaseUser implements TwoFactorInterface {
     private $communityId;
 
     /**
+     * @var Script[]
+     *
      * @ORM\ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Script", mappedBy="scripts")
      */
     private $scripts;
+
+    /**
+     * @var Script[]
+     *
+     * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Script", mappedBy="creator")
+     */
+    private $createdScripts;
 
     public function __construct() {
         parent::__construct();
@@ -219,5 +229,19 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     public function getEmail() {
         return parent::getEmail();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedScripts() {
+        return $this->createdScripts;
+    }
+
+    /**
+     * @param mixed $createdScripts
+     */
+    public function setCreatedScripts($createdScripts) {
+        $this->createdScripts = $createdScripts;
     }
 }
