@@ -65,9 +65,10 @@ class RequestAccessEvaluator {
      * @return bool
      */
     public function isScriptWriter(User $user = null) {
-        if ($user === null){
+        if($user === null) {
             $user = $this->getUser();
         }
+
         return $user != null && $user->hasGroupId(9, true);
     }
 

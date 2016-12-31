@@ -21,7 +21,7 @@ class GroupController extends Controller {
             [
                 'groups' => SerializerManager::normalize(
                     $this->getDoctrine()->getRepository('BDNUserBundle:Group')->findAllNotBanned()
-                )
+                ),
             ]
         );
     }
