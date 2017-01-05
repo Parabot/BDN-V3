@@ -580,4 +580,11 @@
     </div>
 </div>
 </body>
+{% if remembered == true %}
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#authorize_form_allowAccess').trigger('click');
+        });
+    </script>
+{% endif %}
 </html>

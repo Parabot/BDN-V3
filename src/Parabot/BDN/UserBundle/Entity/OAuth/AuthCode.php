@@ -10,7 +10,7 @@ use Parabot\BDN\UserBundle\Entity\User;
 
 /**
  * @ORM\Table("oauth2_auth_codes")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Parabot\BDN\UserBundle\Repository\OAuth\AuthCodeRepository")
  */
 class AuthCode extends BaseAuthCode {
     /**

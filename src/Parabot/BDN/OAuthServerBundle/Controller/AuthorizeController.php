@@ -66,6 +66,7 @@ class AuthorizeController extends BaseAuthorizeController {
                     [
                         'form'   => $form->createView(),
                         'client' => $client,
+                        'remembered' => $this->container->get('doctrine')->getRepository('BDNUserBundle:OAuth\AuthCode')->hasGivenAccess($user) === true
                     ]
                 )
             );
