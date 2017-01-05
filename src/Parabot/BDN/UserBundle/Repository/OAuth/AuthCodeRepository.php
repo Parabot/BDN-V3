@@ -24,7 +24,7 @@ class AuthCodeRepository extends EntityRepository {
          * @var User[] $users
          */
         if(($users = $result->getQuery()->getResult()) != null && is_array($users) && sizeof($users) > 0) {
-            return true;
+            return false; // Temp fix, as this doesn't have the ability to check the oauth client yet
         }
 
         return false;
