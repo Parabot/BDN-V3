@@ -143,7 +143,7 @@ class Script {
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User", inversedBy="createdScripts")
-     * @ORM\JoinColumn(name="script_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
      *
      * @Groups({"default"})
      */
