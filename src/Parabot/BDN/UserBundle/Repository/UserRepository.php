@@ -6,6 +6,7 @@
 namespace Parabot\BDN\UserBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Parabot\BDN\UserBundle\Entity\OAuth\Client;
 use Parabot\BDN\UserBundle\Entity\User;
 
 class UserRepository extends EntityRepository {
@@ -52,6 +53,15 @@ class UserRepository extends EntityRepository {
         );
 
         return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function hasGivenOauthClientAccess(User $user, Client $client){
+        foreach($user->getClientAccesses() as $c){
+            if ($c->getId() === $client->getId()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public function searchByUsername($username, $page = 1, $limit = 25) {

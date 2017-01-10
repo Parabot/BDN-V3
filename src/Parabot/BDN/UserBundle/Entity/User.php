@@ -7,6 +7,7 @@ namespace Parabot\BDN\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Parabot\BDN\BotBundle\Entity\Script;
+use Parabot\BDN\UserBundle\Entity\OAuth\Client;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -84,8 +85,42 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     private $createdScripts;
 
+    /**
+     * @var Client[]
+     *
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\OAuth\Client")
+     * @ORM\JoinTable(name="user_oauth_clients",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="client_id", referencedColumnName="id")}
+     * )
+     */
+    private $clientAccesses;
+
     public function __construct() {
         parent::__construct();
+    }
+
+    /**
+     * @return Client[]
+     */
+    public function getClientAccesses() {
+        return $this->clientAccesses;
+    }
+
+    /**
+     * @param Client[] $clientAccesses
+     */
+    public function setClientAccesses($clientAccesses) {
+        $this->clientAccesses = $clientAccesses;
+    }
+
+    public function addClientAccesses(Client $clientAccess){
+        foreach($this->clientAccesses as $client){
+            if ($client->getId() === $clientAccess->getId()){
+                return;
+            }
+        }
+        $this->clientAccesses[] = $clientAccess;
     }
 
     /**

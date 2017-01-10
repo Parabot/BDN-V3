@@ -48,12 +48,20 @@ class AuthorizeController extends BaseAuthorizeController {
 
                 try {
 
-                    return $this->container->get('fos_oauth_server.server')->finishClientAuthorization(
+                    $doctrine = $this->container->get('doctrine')->getManager();
+                    $response = $this->container->get('fos_oauth_server.server')->finishClientAuthorization(
                         true,
                         $user,
                         $request,
                         null
                     );
+
+                    $user->addClientAccesses($client);
+
+                    $doctrine->persist($user);
+                    $doctrine->flush();
+
+                    return $response;
                 } catch(OAuth2ServerException $e) {
                     return $e->getHttpResponse();
                 }
@@ -64,9 +72,11 @@ class AuthorizeController extends BaseAuthorizeController {
                 $this->container->get('twig')->render(
                     'BDNOAuthServerBundle:Authorize:authorize.html.twig',
                     [
-                        'form'   => $form->createView(),
-                        'client' => $client,
-                        'remembered' => $this->container->get('doctrine')->getRepository('BDNUserBundle:OAuth\AuthCode')->hasGivenAccess($user) === true
+                        'form'       => $form->createView(),
+                        'client'     => $client,
+                        'remembered' => $this->container->get('doctrine')->getRepository(
+                                'BDNUserBundle:User'
+                            )->hasGivenOauthClientAccess($user, $client) === true,
                     ]
                 )
             );
