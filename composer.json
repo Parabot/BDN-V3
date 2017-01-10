@@ -34,7 +34,7 @@
         "jms/security-extra-bundle": "^1.6",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^1.0",
-        "nelmio/cors-bundle": "^1.4",
+        "nelmio/cors-bundle": "^1.5",
         "nelmio/api-doc-bundle": "^2.13",
         "myclabs/php-enum": "^1.5",
         "guzzlehttp/guzzle": "^6.2"
