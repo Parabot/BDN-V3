@@ -140,7 +140,7 @@ doctrine_migrations:
     table_name: migration_versions
     name: BDN Migrations
 
-nelmio_cors:
+nelmio_cors
     paths:
         '^/':
             allow_credentials: true
