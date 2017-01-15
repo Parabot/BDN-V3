@@ -71,7 +71,7 @@ doctrine:
                 dbname:   "%database_default_name%"
                 user:     "%database_default_user%"
                 password: "%database_default_password%"
-                charset:  UTF8
+                charset:  utf8mb4
             community:
                 driver:   pdo_mysql
                 host:     "%database_community_host%"
@@ -79,7 +79,7 @@ doctrine:
                 dbname:   "%database_community_name%"
                 user:     "%database_community_user%"
                 password: "%database_community_password%"
-                charset:  UTF8
+                charset:  utf8mb4
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
