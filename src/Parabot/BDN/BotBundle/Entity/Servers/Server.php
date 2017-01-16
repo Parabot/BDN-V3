@@ -41,6 +41,7 @@ class Server {
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
+     * @Groups({"default"})
      */
     private $active = true;
 
