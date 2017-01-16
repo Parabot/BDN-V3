@@ -53,6 +53,74 @@ class ScriptController extends Controller {
         }
     }
 
+
+    /**
+     * @Route("/release/create", name="create_release")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isScriptWriter()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createReleaseAction(Request $request) {
+        $scriptId = $request->request->get('id');
+        $manager  = $this->getDoctrine()->getManager();
+
+        if($scriptId != null) {
+            $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+            if($script != null) {
+                if($script->hasAuthor($this->get('request_access_evaluator')->getUser())) {
+                    if(($version = $request->request->get('version')) != null) {
+
+                        $_fv = intval(trim(str_replace('.', '', $version)));
+                        $_sv = intval(trim(str_replace('.', '', $script->getVersion())));
+
+                        if(strlen($_fv) > strlen($_sv)) {
+                            $_sv = str_pad($_sv, strlen($_fv), 0);
+                        }
+
+                        if(strlen($_fv) < strlen($_sv)) {
+                            $_fv = str_pad($_fv, strlen($_sv), 0);
+                        }
+
+                        if(version_compare(( string ) $_fv, ( string ) $_sv, '>=') === false) {
+                            return new JsonResponse(
+                                [ 'result' => 'You seem to have provided a version lower or equal to the current version' ],
+                                400
+                            );
+                        }
+
+                        $script->setVersion($version);
+
+                        $releaseDownloaded = $this->get('bot.teamcity.api')->getLatestArtifact($script);
+
+                        if($releaseDownloaded === true) {
+                            $manager->persist($script);
+                            $manager->flush();
+
+                            return new JsonResponse([ 'result' => 'Release created' ]);
+                        } else {
+                            return new JsonResponse(
+                                [ 'result' => 'Server couldn\'t download an artifact, have you started a new build yet?' ],
+                                500
+                            );
+                        }
+                    } else {
+                        return new JsonResponse([ 'result' => 'Release version missing' ], 400);
+                    }
+                } else {
+                    return new JsonResponse([ 'result' => 'User does not have write access to script' ], 403);
+                }
+            } else {
+                return new JsonResponse([ 'result' => 'Unknown Script requested' ], 404);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Script ID not given' ], 400);
+        }
+    }
+
     /**
      * @Route("/categories/list", name="list_categories")
      * @Method({"GET"})
@@ -82,8 +150,8 @@ class ScriptController extends Controller {
      * @return JsonResponse
      */
     public function createAction(Request $request) {
-        $script           = new Script();
-        $manager          = $this->getDoctrine()->getManager();
+        $script  = new Script();
+        $manager = $this->getDoctrine()->getManager();
 
         $scriptAttributes = [
             'name'        => null,

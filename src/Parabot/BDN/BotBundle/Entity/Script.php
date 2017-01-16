@@ -159,6 +159,11 @@ class Script {
     private $buildTypeId;
 
     /**
+     * @var string
+     */
+    private $path;
+
+    /**
      * Get id
      *
      * @return integer
@@ -441,5 +446,23 @@ class Script {
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath() {
+        return $this->path;
+    }
+
+    /**
+     * @param string $path Directory locating to the app folder
+     */
+    public function setPath($path) {
+        $this->path = $path . '/data/Scripts/' . $this->id . '/';
+
+        if( ! file_exists($this->path)) {
+            mkdir($this->path, 0755, true);
+        }
     }
 }

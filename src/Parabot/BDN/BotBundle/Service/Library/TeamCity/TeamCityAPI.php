@@ -142,6 +142,50 @@ class TeamCityAPI {
         return $result->state == 'queued';
     }
 
+    public function getLatestArtifact(Script $script) {
+        $client = new Client([ 'base_uri' => $this->endpoint, 'auth' => [ $this->username, $this->password ] ]);
+
+        $headers = [ 'Accept' => ' application/octet-stream', 'Cache-Control' => 'no-cache' ];
+        $request = new Request(
+            'GET',
+            sprintf(TeamCityPoint::ARTIFACTS, $this->getProjectID($script), $this->getProjectID($script) . '.jar'),
+            $headers
+        );
+
+        try {
+            $promise       = $client->sendAsync($request)->then(
+                function ($response) {
+                    /**
+                     * @var Response $response
+                     */
+                    if($response->getStatusCode() === 200) {
+                        $content = $response->getBody()->getContents();
+
+                        return $content;
+                    }
+
+                    return false;
+                }
+            );
+            $promiseResult = $promise->wait();
+        } catch(AccountExpiredException $e) {
+            return false;
+        }
+
+        file_put_contents($script->getPath() . $script->getVersion() . '.jar', $promiseResult);
+
+        return true;
+    }
+
+    /**
+     * @param Script $script
+     *
+     * @return string
+     */
+    public function getProjectID(Script $script) {
+        return 'SCRIPT' . '_' . $script->getId();
+    }
+
     public function getBuild($buildId) {
         return $this->callPoint(
             TeamCityBuild::class,
@@ -156,15 +200,6 @@ class TeamCityAPI {
             'GET',
             [ 'locator' => sprintf('affectedProject:(id:%s)', $this->getProjectID($script)) ]
         );
-    }
-
-    /**
-     * @param Script $script
-     *
-     * @return string
-     */
-    public function getProjectID(Script $script) {
-        return 'SCRIPT' . '_' . $script->getId();
     }
 
     public function getBuildLog($buildId) {
