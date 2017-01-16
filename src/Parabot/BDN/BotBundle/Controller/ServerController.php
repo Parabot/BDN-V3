@@ -64,7 +64,7 @@ class ServerController extends Controller {
      *  }
      * )
      *
-     * @Route("/insert", name="insert_server")
+     * @Route("/create", name="create_server")
      * @Method({"POST"})
      *
      * @PreAuthorize("isServerDeveloper()")
@@ -78,95 +78,140 @@ class ServerController extends Controller {
         $groupRepository  = $this->getDoctrine()->getRepository('BDNUserBundle:Group');
         $userRepository   = $this->getDoctrine()->getRepository('BDNUserBundle:User');
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
+        $manager          = $this->getDoctrine()->getManager();
 
-        $server = [
-            'name'        => '',
-            'active'      => '',
-            'groups'      => $groupRepository->findAllNotBanned(),
-            'authors'     => '',
-            'details'     => '',
-            'version'     => '',
-            'description' => '',
+        $serverAttributes = [
+            'name'        => null,
+            'active'      => true,
+            'groups'      => [],
+            'authors'     => [ $this->get('request_access_evaluator')->getUser()->getUsername() ],
+            'details'     => null,
+            'version'     => 1.0,
+            'description' => null,
         ];
-        foreach($server as $key => $value) {
-            if(($requestValue = $request->request->get($key)) != null && strlen($requestValue) > 0) {
-                $value          = $requestValue;
-                $server[ $key ] = $value;
+
+        foreach($serverAttributes as $attribute => $value) {
+            $temp = $request->request->get($attribute);
+            if($temp !== null) {
+                $serverAttributes[ $attribute ] = $temp;
+            } elseif($value !== null) {
+                $serverAttributes[ $attribute ] = $value;
             } else {
-                if($value != null) {
-                    $server[ $key ] = $value;
-                } else {
-                    $response->setData([ 'result' => 'Missing value for ' . $key ])->setStatusCode(400);
+                return new JsonResponse([ 'result' => 'Missing attribute (' . $attribute . ')' ], 400);
+            }
+        }
 
-                    return $response;
+        $server = new Server();
+
+        if(($name = $serverAttributes[ 'name' ]) !== null) {
+            if($serverRepository->findOneBy([ 'name' => $name ]) != null) {
+                return $response->setData(
+                    [ 'result' => 'There is already a server that is named like this' ]
+                )->setStatusCode(400);
+            } else {
+                $server->setName($name);
+            }
+        }
+
+        $matching = 0;
+        foreach(ServerDetail::DEFAULT_DETAILS as $detail) {
+            foreach($serverAttributes[ 'details' ] as $serverAttributeDetail) {
+                if($serverAttributeDetail[ 'name' ] == $detail) {
+                    if($serverAttributeDetail[ 'value' ] != null) {
+                        $matching++;
+                    } else {
+                        $response->setData([ 'result' => 'Missing value for detail ' . $detail ])->setStatusCode(
+                            400
+                        );
+
+                        return $response;
+                    }
                 }
             }
-
-            switch($key) {
-                case 'name':
-                    if($serverRepository->findOneBy([ 'name' => $value ]) != null) {
-                        return $response->setData(
-                            [ 'result' => 'There is already a server that is named like this' ]
-                        )->setStatusCode(400);
-                    }
-                    break;
-                case 'details':
-                    $details = json_decode($value, true);
-                    foreach(ServerDetail::DEFAULT_DETAILS as $detail) {
-                        if( ! isset($details[ $detail ]) || $details[ $detail ] == null) {
-                            $response->setData([ 'result' => 'Missing value for detail ' . $detail ])->setStatusCode(
-                                400
-                            );
-
-                            return $response;
-                        }
-                    }
-                    break;
-            }
         }
 
-        $serverObject = new Server();
-        $serverObject->setName($server[ 'name' ]);
-        $serverObject->setActive(boolval($server[ 'active' ]));
-        $serverObject->setDescription($server[ 'description' ]);
-        $serverObject->setVersion(floatval($server[ 'version' ]));
-
-        $groups = [];
-        if( ! is_array($server[ 'groups' ])) {
-            foreach(explode(',', $server[ 'groups' ]) as $item) {
-                $result = $groupRepository->findOneBy([ 'id' => $item ]);
-                if($result != null) {
-                    $groups[] = $result;
-                }
-            }
-        } else {
-            $groups = $server[ 'groups' ];
+        if($matching !== count(ServerDetail::DEFAULT_DETAILS)) {
+            return new JsonResponse(
+                [
+                    'result' => 'There are missing required server details (' . implode(
+                            ', ',
+                            ServerDetail::DEFAULT_DETAILS
+                        ) . ')',
+                ], 400
+            );
         }
-        $serverObject->setGroups($groups);
-
-        $authors = [];
-        foreach(explode(',', $server[ 'authors' ]) as $item) {
-            $result = $userRepository->findOneBy([ 'username' => $item ]);
-            if($result != null) {
-                $authors[] = $result;
-            }
-        }
-        $serverObject->setAuthors($authors);
 
         $details = [];
-        $json    = json_decode($server[ 'details' ], true);
-        foreach($json as $key => $value) {
-            $detail = new ServerDetail();
+        foreach($serverAttributes[ 'details' ] as $serverAttributeDetail) {
+            $name  = $serverAttributeDetail[ 'name' ];
+            $value = $serverAttributeDetail[ 'value' ];
 
-            $detail->setName($key);
-            $detail->setValue($value);
-            $details[] = $detail;
+            $d = new ServerDetail();
+            $d->setName($name);
+            $d->setValue($value);
 
-            $this->getDoctrine()->getManager()->persist($detail);
+            $manager->persist($d);
+
+            $details[] = $d;
         }
-        $serverObject->setDetails($details);
 
-        $this->getDoctrine()->getManager()->persist($serverObject);
+        $server->setDetails($details);
+
+        if($serverAttributes[ 'active' ] !== null) {
+            $server->setActive(boolval($serverAttributes[ 'active' ]));
+        }
+
+        if($serverAttributes[ 'description' ] !== null) {
+            $server->setDescription($serverAttributes[ 'description' ]);
+        }
+
+        if($serverAttributes[ 'version' ] !== null) {
+            $server->setVersion($serverAttributes[ 'version' ]);
+        }
+
+        if(($authors = $serverAttributes[ 'authors' ]) !== null && count($authors) > 0) {
+            /**
+             * @var User[] $serverAuthors
+             */
+            $serverAuthors = [];
+            foreach($authors as $author) {
+                $a = $userRepository->findOneBy([ 'username' => $author[ 'username' ] ]);
+                if($a != null) {
+                    if($this->get('request_access_evaluator')->isServerDeveloper($a)) {
+                        $serverAuthors[] = $a;
+                    } else {
+                        return new JsonResponse(
+                            [ 'result' => 'Given user (' . $author[ 'username' ] . ') is not a server developer' ], 400
+                        );
+                    }
+                } else {
+                    return new JsonResponse(
+                        [ 'result' => 'Given user (' . $author[ 'username' ] . ') is unknown' ], 400
+                    );
+                }
+            }
+
+            $server->setAuthors($serverAuthors);
+        }
+
+        if(($groups = $serverAttributes[ 'groups' ]) !== null && count($groups) > 0) {
+            $serverGroups = [];
+            foreach($groups as $group) {
+                $g = $groupRepository->findOneBy([ 'id' => $group[ 'id' ] ]);
+
+                if($g != null) {
+                    $serverGroups[] = $g;
+                } else {
+                    return new JsonResponse(
+                        [ 'result' => 'Unknown group ID given (' . $group[ 'id' ] . ')', 404 ]
+                    );
+                }
+            }
+
+            $server->setGroups($serverGroups);
+        }
+
+        $this->getDoctrine()->getManager()->persist($server);
         $this->getDoctrine()->getManager()->flush();
 
         return $response->setData([ 'result' => 'Server inserted' ]);
@@ -174,7 +219,7 @@ class ServerController extends Controller {
 
     /**
      * @ApiDoc(
-     *  description="Inserts a server into the database",
+     *  description="Updates a server in the database",
      *  requirements={
      *     {
      *          "name"="id",

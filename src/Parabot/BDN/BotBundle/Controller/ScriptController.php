@@ -84,6 +84,7 @@ class ScriptController extends Controller {
     public function createAction(Request $request) {
         $script           = new Script();
         $manager          = $this->getDoctrine()->getManager();
+
         $scriptAttributes = [
             'name'        => null,
             'forum'       => 0,
