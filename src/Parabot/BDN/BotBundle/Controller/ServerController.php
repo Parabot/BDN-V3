@@ -441,7 +441,10 @@ class ServerController extends Controller {
      */
     public function listServersAction(Request $request) {
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        $servers          = $serverRepository->findForUser($this->getUser());
+        $servers          = $serverRepository->findForUser(
+            $this->getUser(),
+            $this->get('request_access_evaluator')->isServerDeveloper()
+        );
 
         return new JsonResponse(SerializerManager::normalize($servers));
     }
@@ -680,7 +683,7 @@ class ServerController extends Controller {
                 }
             }
 
-            if($allowed !== true) {
+            if($allowed !== true && $this->get('request_access_evaluator')->isServerDeveloper() !== true) {
                 $response->setData([ 'result' => 'User does not have enough permission to access this page' ]);
                 $response->setStatusCode(403);
             } else {

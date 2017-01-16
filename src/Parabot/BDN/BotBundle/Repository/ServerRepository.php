@@ -72,9 +72,11 @@ class ServerRepository extends EntityRepository {
     /**
      * @param User $user
      *
+     * @param bool $isDeveloper
+     *
      * @return Server[]
      */
-    public function findForUser(User $user) {
+    public function findForUser(User $user, $isDeveloper = false) {
         /**
          * @var Server[] $result
          */
@@ -84,7 +86,7 @@ class ServerRepository extends EntityRepository {
         foreach($result as $server) {
             if(count($server->getGroups()) > 0) {
                 foreach($server->getGroups() as $group) {
-                    if($user->hasGroupId($group->getId())) {
+                    if($user->hasGroupId($group->getId()) || $isDeveloper === true) {
                         $servers[] = $server;
                         break;
                     }
