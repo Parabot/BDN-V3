@@ -4,6 +4,8 @@ namespace Parabot\BDN\BotBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
+use Parabot\BDN\BotBundle\Entity\Scripts\Review;
+use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -22,7 +24,7 @@ class Script {
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      *
-     * @Groups({"default"})
+     * @Groups({"default", "review"})
      */
     private $id;
 
@@ -62,7 +64,7 @@ class Script {
     private $users;
 
     /**
-     * @var array
+     * @var Group
      *
      * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\Group")
      * @ORM\JoinTable(name="script_groups",
@@ -159,9 +161,36 @@ class Script {
     private $buildTypeId;
 
     /**
+     * @var Review[]
+     *
+     * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Review", mappedBy="script")
+     *
+     * @Groups({"default"})
+     */
+    private $reviews;
+
+    /**
      * @var string
      */
     private $path;
+
+    /**
+     * @return Review[]
+     */
+    public function getReviews() {
+        return $this->reviews;
+    }
+
+    /**
+     * @param Review[] $reviews
+     *
+     * @return Script
+     */
+    public function setReviews($reviews) {
+        $this->reviews = $reviews;
+
+        return $this;
+    }
 
     /**
      * Get id
@@ -236,6 +265,16 @@ class Script {
         $this->users = $users;
 
         return $this;
+    }
+
+    public function hasUser(User $user) {
+        foreach($this->users as $u) {
+            if($u->getId() === $user->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

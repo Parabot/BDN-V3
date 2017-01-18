@@ -5,6 +5,7 @@
 
 namespace Parabot\BDN\BotBundle\Service;
 
+use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -24,6 +25,17 @@ class DownloadProvider {
      */
     public function provideDownload($type) {
         $file = $type->getFile();
+
+        return $this->provideFileDownload($file, $type->getType());
+    }
+
+    /**
+     * @param string $file
+     * @param string $name
+     *
+     * @return bool|BinaryFileResponse
+     */
+    public function provideFileDownload($file, $name) {
         if(file_exists($file) && is_file($file)) {
             if(ini_get('zlib.output_compression')) {
                 ini_set('zlib.output_compression', 'Off');
@@ -40,7 +52,7 @@ class DownloadProvider {
             $response->headers->set('Content-Type', 'application/java-archive');
             $response->headers->set(
                 'Content-Disposition',
-                'attachment; filename="' . $type->getType() . '-' . basename($file) . '"'
+                'attachment; filename="' . $name . '-' . basename($file) . '"'
             );
 
             $response->headers->set('Content-Transfer-Encoding', 'binary');
@@ -51,5 +63,11 @@ class DownloadProvider {
         }
 
         return false;
+    }
+
+    public function provideScriptDownload(Script $script) {
+        $file = $script->getPath() . $script->getVersion() . '.jar';
+
+        return $this->provideFileDownload($file, $script->getName());
     }
 }

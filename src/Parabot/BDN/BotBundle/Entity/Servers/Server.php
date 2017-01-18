@@ -53,8 +53,6 @@ class Server {
      *      joinColumns={@ORM\JoinColumn(name="server_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      * )
-     *
-     * @Groups({"default"})
      */
     private $groups;
 

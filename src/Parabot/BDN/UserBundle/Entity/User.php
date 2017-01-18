@@ -7,6 +7,7 @@ namespace Parabot\BDN\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Parabot\BDN\BotBundle\Entity\Script;
+use Parabot\BDN\BotBundle\Entity\Scripts\Review;
 use Parabot\BDN\UserBundle\Entity\OAuth\Client;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -96,8 +97,33 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     private $clientAccesses;
 
+    /**
+     * @var Review[]
+     *
+     * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Review", mappedBy="user")
+     */
+    private $reviews;
+
     public function __construct() {
         parent::__construct();
+    }
+
+    /**
+     * @return Review[]
+     */
+    public function getReviews() {
+        return $this->reviews;
+    }
+
+    /**
+     * @param Review[] $reviews
+     *
+     * @return User
+     */
+    public function setReviews($reviews) {
+        $this->reviews = $reviews;
+
+        return $this;
     }
 
     /**
@@ -114,9 +140,9 @@ class User extends BaseUser implements TwoFactorInterface {
         $this->clientAccesses = $clientAccesses;
     }
 
-    public function addClientAccesses(Client $clientAccess){
-        foreach($this->clientAccesses as $client){
-            if ($client->getId() === $clientAccess->getId()){
+    public function addClientAccesses(Client $clientAccess) {
+        foreach($this->clientAccesses as $client) {
+            if($client->getId() === $clientAccess->getId()) {
                 return;
             }
         }
@@ -242,7 +268,7 @@ class User extends BaseUser implements TwoFactorInterface {
     /**
      * @return string
      *
-     * @Groups({"default"})
+     * @Groups({"default", "review"})
      */
     public function getUsername() {
         return parent::getUsername();

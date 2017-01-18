@@ -7,8 +7,10 @@ namespace Parabot\BDN\BotBundle\Controller;
 
 use AppBundle\Service\SerializerManager;
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
+use Parabot\BDN\BotBundle\Entity\Scripts\Review;
 use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -17,6 +19,194 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ScriptController extends Controller {
+
+    /**
+     * @Route("/run/{scriptId}", name="run_script")
+     * @Method({"GET"})
+     *
+     * @PreAuthorize("isNotBanned()")
+     *
+     * @param Request $request
+     *
+     * @param int     $scriptId
+     *
+     * @return JsonResponse
+     */
+    public function runAction(Request $request, $scriptId) {
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+        if($script != null) {
+            if($script->hasUser($this->get('request_access_evaluator')->getUser())) {
+                return $this->get('bot.download_manager')->provideScriptDownload($script);
+            } else {
+                return new JsonResponse([ 'result' => 'You do not have access to this script' ], 403);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Unknown script requested' ], 404);
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="List reviews of a script",
+     *  requirements={
+     *      {
+     *          "name"="scriptId",
+     *          "dataType"="integer",
+     *          "description"="ID of the script"
+     *      }
+     *  }
+     * )
+     *
+     * @Route("/reviews/{scriptId}/list")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @param int     $scriptId
+     *
+     * @return JsonResponse
+     */
+    public function listReviewsAction(Request $request, $scriptId) {
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+        if($script != null) {
+            return new JsonResponse(
+                [ 'result' => SerializerManager::normalize($script->getReviews(), 'json', [ 'review' ]) ]
+            );
+        } else {
+            return new JsonResponse([ 'result' => 'Unknown script requested' ], 404);
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Add review to a script",
+     *  requirements={
+     *      {
+     *          "name"="scriptId",
+     *          "dataType"="integer",
+     *          "description"="ID of the script"
+     *      }
+     *  }
+     * )
+     *
+     * @Route("/reviews/{scriptId}/add")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isNotBanned()")
+     *
+     * @param Request $request
+     *
+     * @param int     $scriptId
+     *
+     * @return JsonResponse
+     */
+    public function addReviewAction(Request $request, $scriptId) {
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+        if($script != null) {
+            if(($stars = $request->get('stars')) != null && ($review = $request->get('review')) != null) {
+                if(is_numeric($stars)) {
+                    if(strlen($review) <= 250) {
+                        $user = $this->get('request_access_evaluator')->getUser();
+                        if($this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->getReview(
+                                $script,
+                                $user
+                            ) == null
+                        ) {
+                            $reviewObject = new Review();
+                            $reviewObject->setReview($review);
+                            $reviewObject->setScript($script);
+                            $reviewObject->setStars($stars);
+                            $reviewObject->setUser($user);
+
+                            $manager = $this->getDoctrine()->getManager();
+                            $manager->persist($reviewObject);
+                            $manager->flush();
+
+                            return new JsonResponse([ 'result' => 'Review added' ]);
+                        } else {
+                            return new JsonResponse([ 'result' => 'User already has a review on this script' ], 400);
+                        }
+                    } else {
+                        return new JsonResponse([ 'result' => 'Review may only be 250 characters long' ], 400);
+                    }
+                } else {
+                    return new JsonResponse([ 'result' => 'Stars parameter has to be numeric' ], 400);
+                }
+            } else {
+                return new JsonResponse(
+                    [ 'result' => 'Missing ' . ($stars == null ? 'stars' : 'review') . ' parameter' ], 400
+                );
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Unknown script requested' ], 404);
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Add review to a script",
+     *  requirements={
+     *      {
+     *          "name"="scriptId",
+     *          "dataType"="integer",
+     *          "description"="ID of the script"
+     *      }
+     *  }
+     * )
+     *
+     * @Route("/reviews/{scriptId}/update")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isNotBanned()")
+     *
+     * @param Request $request
+     *
+     * @param int     $scriptId
+     *
+     * @return JsonResponse
+     */
+    public function updateReviewAction(Request $request, $scriptId) {
+        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+        if($script != null) {
+            $user = $this->get('request_access_evaluator')->getUser();
+
+            $reviewObject = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->getReview(
+                $script,
+                $user
+            );
+            if($reviewObject != null) {
+
+                if($reviewObject->getId() == $request->get('id')) {
+                    $stars  = $request->get('stars');
+                    $review = $request->get('review');
+                    if($stars == null || is_numeric($stars)) {
+                        if($review == null || strlen($review) <= 250) {
+                            $reviewObject->setReview($review);
+                            $reviewObject->setScript($script);
+                            $reviewObject->setStars($stars);
+                            $reviewObject->setUser($user);
+
+                            $manager = $this->getDoctrine()->getManager();
+                            $manager->persist($reviewObject);
+                            $manager->flush();
+
+                            return new JsonResponse([ 'result' => 'Review updated' ]);
+                        } else {
+                            return new JsonResponse([ 'result' => 'Review may only be 250 characters long' ], 400);
+                        }
+                    } else {
+                        return new JsonResponse([ 'result' => 'Stars parameter has to be numeric' ], 400);
+                    }
+                } else {
+                    return new JsonResponse([ 'result' => 'Review author doesn\'t match the the user' ], 404);
+                }
+            } else {
+                return new JsonResponse([ 'result' => 'Unknown review requested' ], 404);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Unknown script requested' ], 404);
+        }
+    }
 
     /**
      * @Route("/get/{scriptId}", name="get_script")
