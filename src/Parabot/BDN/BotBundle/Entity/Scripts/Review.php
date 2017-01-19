@@ -156,7 +156,7 @@ class Review {
      */
     public function setStars($stars) {
         if($stars > 10 || $stars < 1) {
-            throw new \Exception('Stars may not be less than 1 or more than 10.')
+            throw new \Exception('Stars may not be less than 1 or more than 10.');
         }
         $this->stars = round($stars);
 
