@@ -57,6 +57,46 @@ class ScriptController extends Controller {
      *  }
      * )
      *
+     * @Route("/reviews/accepted")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isAdministrator()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function acceptReviewAction(Request $request) {
+        $review = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->findOneBy(
+            [ 'id' => $request->get('id') ]
+        );
+        if($review != null) {
+            $manager  = $this->getDoctrine()->getManager();
+            $accepted = boolval($request->get('accepted'));
+
+            $review->setAccepted($accepted);
+
+            $manager->persist($review);
+            $manager->flush();
+
+            return new JsonResponse([ 'result' => 'Review ' . ($accepted ? 'accepted' : 'declined') ]);
+        } else {
+            return new JsonResponse([ 'result' => 'Unknown review requested' ], 404);
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="List reviews of a script",
+     *  requirements={
+     *      {
+     *          "name"="scriptId",
+     *          "dataType"="integer",
+     *          "description"="ID of the script"
+     *      }
+     *  }
+     * )
+     *
      * @Route("/reviews/{scriptId}/list")
      * @Method({"GET"})
      *
@@ -67,13 +107,13 @@ class ScriptController extends Controller {
      * @return JsonResponse
      */
     public function listReviewsAction(Request $request, $scriptId) {
-        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
-        if($script != null) {
+        $reviews = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->findReviewsForScript($scriptId);
+        if($reviews != null) {
             return new JsonResponse(
-                [ 'result' => SerializerManager::normalize($script->getReviews(), 'json', [ 'review' ]) ]
+                [ 'result' => SerializerManager::normalize($reviews, 'json', [ 'review' ]) ]
             );
         } else {
-            return new JsonResponse([ 'result' => 'Unknown script requested' ], 404);
+            return new JsonResponse([ 'result' => 'No reviews found for script' ], 404);
         }
     }
 

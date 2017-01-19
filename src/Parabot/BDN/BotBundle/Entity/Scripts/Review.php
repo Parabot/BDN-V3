@@ -73,10 +73,38 @@ class Review {
     private $script;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="accepted", type="boolean")
+     *
+     * @Groups({"review"})
+     */
+    private $accepted;
+
+    /**
      * Review constructor.
      */
     public function __construct() {
         $this->date = new \DateTime();
+        $this->accepted = false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccepted() {
+        return $this->accepted;
+    }
+
+    /**
+     * @param bool $accepted
+     *
+     * @return Review
+     */
+    public function setAccepted($accepted) {
+        $this->accepted = $accepted;
+
+        return $this;
     }
 
     /**

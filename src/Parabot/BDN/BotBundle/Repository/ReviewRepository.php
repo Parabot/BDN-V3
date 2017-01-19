@@ -13,6 +13,27 @@ use Parabot\BDN\UserBundle\Entity\User;
 class ReviewRepository extends EntityRepository {
 
     /**
+     * @param Script|int $script
+     *
+     * @return Review|array
+     */
+    public function findReviewsForScript($script) {
+        $result = $this->createQueryBuilder('review_repository')
+            ->select('r')
+            ->from('BDNBotBundle:Scripts\Review', 'r')
+            ->innerJoin('r.script', 's')
+            ->where('r.accepted = true')
+            ->orWhere('r.date < :date')
+            ->andWhere('s.id = :sid')
+            ->setParameter('sid', ($script instanceof Script ? $script->getId() : $script))
+            ->setParameter('date', new \DateTime('7 days ago'))
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
+
+    /**
      * @param Script $script
      * @param User   $user
      *
