@@ -85,7 +85,7 @@ class Review {
      * Review constructor.
      */
     public function __construct() {
-        $this->date = new \DateTime();
+        $this->date     = new \DateTime();
         $this->accepted = false;
     }
 
@@ -155,7 +155,7 @@ class Review {
      * @return Review
      */
     public function setStars($stars) {
-        if ($stars > 10 || $stars < 1){
+        if($stars > 10 || $stars < 1) {
             throw new \Exception('Stars may not be less than 1 or more than 10.')
         }
         $this->stars = round($stars);
