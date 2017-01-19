@@ -21,7 +21,7 @@ class Review {
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      *
-     * @Groups({"review"})
+     * @Groups({"review", "default"})
      */
     private $id;
 
@@ -39,7 +39,7 @@ class Review {
      *
      * @ORM\Column(name="stars", type="integer")
      *
-     * @Groups({"review"})
+     * @Groups({"review", "default"})
      */
     private $stars;
 

@@ -164,8 +164,6 @@ class Script {
      * @var Review[]
      *
      * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Review", mappedBy="script")
-     *
-     * @Groups({"default"})
      */
     private $reviews;
 
@@ -175,9 +173,47 @@ class Script {
     private $path;
 
     /**
+     * @Groups({"default"})
+     *
+     * @param bool $accepted
+     *
+     * @return float
+     */
+    public function getAverageReviewStars($accepted = true) {
+        if(count($this->getReviews($accepted)) <= 0) {
+            return 0;
+        }
+
+        $totalStars   = 0;
+        $totalReviews = 0;
+        foreach($this->getReviews($accepted) as $review) {
+            $totalStars += $review->getStars();
+            $totalReviews++;
+        }
+
+        return round($totalStars / $totalReviews, 1);
+    }
+
+    /**
+     * @Groups({"default"})
+     *
+     * @param bool $accepted
+     *
      * @return Review[]
      */
-    public function getReviews() {
+    public function getReviews($accepted = true) {
+        if($accepted !== false) {
+            $current         = new \DateTime();
+            $acceptedReviews = [];
+            foreach($this->reviews as $review) {
+                if($review->isAccepted() || $review->getDate()->diff($current)->days >= 7) {
+                    $acceptedReviews[] = $review;
+                }
+            }
+
+            return $acceptedReviews;
+        }
+
         return $this->reviews;
     }
 

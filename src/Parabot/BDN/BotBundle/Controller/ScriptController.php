@@ -47,20 +47,14 @@ class ScriptController extends Controller {
 
     /**
      * @ApiDoc(
-     *  description="List reviews of a script",
-     *  requirements={
-     *      {
-     *          "name"="scriptId",
-     *          "dataType"="integer",
-     *          "description"="ID of the script"
-     *      }
-     *  }
+     *  description="Accepts review",
+     *  requirements={}
      * )
      *
      * @Route("/reviews/accepted")
      * @Method({"POST"})
      *
-     * @PreAuthorize("isAdministrator()")
+     * @PreAuthorize("isNotBanned()")
      *
      * @param Request $request
      *
@@ -70,6 +64,13 @@ class ScriptController extends Controller {
         $review = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->findOneBy(
             [ 'id' => $request->get('id') ]
         );
+
+        if( ! $this->get('request_access_evaluator')->isAdministrator()) {
+            if( ! $review->getScript()->hasAuthor($this->get('request_access_evaluator')->getUser())) {
+                return new JsonResponse([ 'result' => 'You are not allowed to perform this action' ], 403);
+            }
+        }
+
         if($review != null) {
             $manager  = $this->getDoctrine()->getManager();
             $accepted = boolval($request->get('accepted'));
@@ -97,7 +98,7 @@ class ScriptController extends Controller {
      *  }
      * )
      *
-     * @Route("/reviews/{scriptId}/list")
+     * @Route("/reviews/list/{scriptId}")
      * @Method({"GET"})
      *
      * @param Request $request
@@ -107,10 +108,20 @@ class ScriptController extends Controller {
      * @return JsonResponse
      */
     public function listReviewsAction(Request $request, $scriptId) {
-        $reviews = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->findReviewsForScript($scriptId);
+        $script  = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+        $reviews = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->findReviewsForScript(
+            $script,
+            ! ($request->get('accepted') == 'all')
+        );
         if($reviews != null) {
+
             return new JsonResponse(
-                [ 'result' => SerializerManager::normalize($reviews, 'json', [ 'review' ]) ]
+                [
+                    'result' => [
+                        'reviews'       => SerializerManager::normalize($reviews, 'json', [ 'review' ]),
+                        'average_stars' => $script->getAverageReviewStars(),
+                    ],
+                ]
             );
         } else {
             return new JsonResponse([ 'result' => 'No reviews found for script' ], 404);
@@ -129,7 +140,7 @@ class ScriptController extends Controller {
      *  }
      * )
      *
-     * @Route("/reviews/{scriptId}/add")
+     * @Route("/reviews/add/{scriptId}")
      * @Method({"POST"})
      *
      * @PreAuthorize("isNotBanned()")
@@ -194,7 +205,7 @@ class ScriptController extends Controller {
      *  }
      * )
      *
-     * @Route("/reviews/{scriptId}/update")
+     * @Route("/reviews/update/{scriptId}")
      * @Method({"POST"})
      *
      * @PreAuthorize("isNotBanned()")

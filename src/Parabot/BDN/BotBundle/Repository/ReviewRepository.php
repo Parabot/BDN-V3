@@ -15,18 +15,24 @@ class ReviewRepository extends EntityRepository {
     /**
      * @param Script|int $script
      *
-     * @return Review|array
+     * @return Review[]
      */
-    public function findReviewsForScript($script) {
+    public function findReviewsForScript($script, $accepted = true) {
         $result = $this->createQueryBuilder('review_repository')
             ->select('r')
             ->from('BDNBotBundle:Scripts\Review', 'r')
             ->innerJoin('r.script', 's')
-            ->where('r.accepted = true')
-            ->orWhere('r.date < :date')
-            ->andWhere('s.id = :sid')
-            ->setParameter('sid', ($script instanceof Script ? $script->getId() : $script))
-            ->setParameter('date', new \DateTime('7 days ago'))
+            ->where('s.id = :sid')
+            ->setParameter('sid', ($script instanceof Script ? $script->getId() : $script));
+
+        if ($accepted !== false) {
+            $result = $result
+                ->andWhere('r.date < :date')
+                ->orWhere('r.accepted = true')
+                ->setParameter('date', new \DateTime('7 days ago'));
+        }
+
+        $result = $result
             ->getQuery()
             ->getResult();
 
