@@ -541,7 +541,7 @@ class Script {
     /**
      * @param Release $release
      */
-    public function addRelease(Release $release){
+    public function addRelease(Release $release) {
         $this->releases[] = $release;
     }
 }

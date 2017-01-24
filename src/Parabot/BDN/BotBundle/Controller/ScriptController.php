@@ -284,18 +284,18 @@ class ScriptController extends Controller {
                 }
 
                 $scriptResponse = SerializerManager::normalize($script, 'json', $groups);
-                $version = $this->getDoctrine()->getRepository(
+                $version        = $this->getDoctrine()->getRepository(
                     'BDNBotBundle:Scripts\Release'
                 )->getLatestRelease($script);
 
-                if ($version instanceof Release) {
+                if($version instanceof Release) {
                     $scriptResponse[ 'version' ] = $version->getVersion();
-                }else{
+                } else {
                     $scriptResponse[ 'version' ] = 0;
                 }
 
                 return new JsonResponse(
-                    [ 'result' =>  $scriptResponse]
+                    [ 'result' => $scriptResponse ]
                 );
             } else {
                 return new JsonResponse([ 'result' => SerializerManager::normalize($script) ]);
@@ -764,7 +764,7 @@ class ScriptController extends Controller {
                     'id'          => $script->getId(),
                     'name'        => $script->getName(),
                     'authors'     => $authors,
-                    'description' => $script->getDescription()
+                    'description' => $script->getDescription(),
                 ];
             }
 

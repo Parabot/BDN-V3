@@ -58,7 +58,10 @@ class DefaultController extends Controller {
      * @return JsonResponse
      */
     public function testAction(Request $request) {
-        $s = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Release')->getLatestRelease($this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy(['id' => 6]));
+        $s = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Release')->getLatestRelease(
+            $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => 6 ])
+        );
+
         return new JsonResponse([ 'result', $s ]);
     }
 
@@ -74,7 +77,7 @@ class DefaultController extends Controller {
         $script = new Script();
         $script->setName('Lord Peng');
 
-        $author  = $this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[ 0 ];
+        $author = $this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[ 0 ];
         $authors = [ $author ];
         $script->setAuthors($authors);
 
