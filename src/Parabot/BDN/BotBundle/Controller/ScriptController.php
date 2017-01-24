@@ -10,6 +10,7 @@ use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
+use Parabot\BDN\BotBundle\Entity\Scripts\Release;
 use Parabot\BDN\BotBundle\Entity\Scripts\Review;
 use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -110,8 +111,7 @@ class ScriptController extends Controller {
     public function listReviewsAction(Request $request, $scriptId) {
         $script  = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
         $reviews = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->findReviewsForScript(
-            $script,
-            ! ($request->get('accepted') == 'all')
+            $script, ! ($request->get('accepted') == 'all')
         );
         if($reviews != null) {
 
@@ -283,8 +283,19 @@ class ScriptController extends Controller {
                     $groups[] = 'script_users';
                 }
 
+                $scriptResponse = SerializerManager::normalize($script, 'json', $groups);
+                $version = $this->getDoctrine()->getRepository(
+                    'BDNBotBundle:Scripts\Release'
+                )->getLatestRelease($script);
+
+                if ($version instanceof Release) {
+                    $scriptResponse[ 'version' ] = $version->getVersion();
+                }else{
+                    $scriptResponse[ 'version' ] = 0;
+                }
+
                 return new JsonResponse(
-                    [ 'result' => SerializerManager::normalize($script, 'json', $groups) ]
+                    [ 'result' =>  $scriptResponse]
                 );
             } else {
                 return new JsonResponse([ 'result' => SerializerManager::normalize($script) ]);
@@ -314,28 +325,43 @@ class ScriptController extends Controller {
             if($script != null) {
                 if($script->hasAuthor($this->get('request_access_evaluator')->getUser())) {
                     if(($version = $request->request->get('version')) != null) {
+                        $release = $this->getDoctrine()->getRepository(
+                            'BDNBotBundle:Scripts\Release'
+                        )->getLatestRelease($script);
+                        if($release != null && $release instanceof Release) {
+                            $_fv = intval(trim(str_replace('.', '', $version)));
+                            $_sv = intval(trim(str_replace('.', '', $release->getVersion())));
 
-                        $_fv = intval(trim(str_replace('.', '', $version)));
-                        $_sv = intval(trim(str_replace('.', '', $script->getVersion())));
+                            if(strlen($_fv) > strlen($_sv)) {
+                                $_sv = str_pad($_sv, strlen($_fv), 0);
+                            }
 
-                        if(strlen($_fv) > strlen($_sv)) {
-                            $_sv = str_pad($_sv, strlen($_fv), 0);
+                            if(strlen($_fv) < strlen($_sv)) {
+                                $_fv = str_pad($_fv, strlen($_sv), 0);
+                            }
+
+                            if(version_compare(( string ) $_fv, ( string ) $_sv, '>=') === false) {
+                                return new JsonResponse(
+                                    [ 'result' => 'You seem to have provided a version lower or equal to the current version' ],
+                                    400
+                                );
+                            }
                         }
 
-                        if(strlen($_fv) < strlen($_sv)) {
-                            $_fv = str_pad($_fv, strlen($_sv), 0);
+                        $newRelease = new Release();
+                        $newRelease->setVersion($version);
+
+                        if(($changelog = $request->request->get('changelog')) != null) {
+                            $newRelease->setChangelog($changelog);
+                        } else {
+                            return new JsonResponse([ 'result' => 'Release changelog missing' ], 400);
                         }
 
-                        if(version_compare(( string ) $_fv, ( string ) $_sv, '>=') === false) {
-                            return new JsonResponse(
-                                [ 'result' => 'You seem to have provided a version lower or equal to the current version' ],
-                                400
-                            );
-                        }
+                        $newRelease->setScript($script);
+                        $manager->persist($newRelease);
+                        $script->addRelease($newRelease);
 
-                        $script->setVersion($version);
-
-                        $releaseDownloaded = $this->get('bot.teamcity.api')->getLatestArtifact($script);
+                        $releaseDownloaded = $this->get('bot.teamcity.api')->getLatestArtifact($script, $newRelease);
 
                         if($releaseDownloaded === true) {
                             $manager->persist($script);
@@ -397,7 +423,6 @@ class ScriptController extends Controller {
         $scriptAttributes = [
             'name'        => null,
             'forum'       => 0,
-            'version'     => 1.0,
             'description' => null,
             'git'         => null,
             'authors'     => [ $this->get('request_access_evaluator')->getUser()->getUsername() ],
@@ -427,10 +452,6 @@ class ScriptController extends Controller {
 
         if($scriptAttributes[ 'forum' ] !== null) {
             $script->setForum($scriptAttributes[ 'forum' ]);
-        }
-
-        if($scriptAttributes[ 'version' ] !== null) {
-            $script->setVersion($scriptAttributes[ 'version' ]);
         }
 
         if($scriptAttributes[ 'description' ] !== null) {
@@ -554,7 +575,6 @@ class ScriptController extends Controller {
         $scriptAttributes = [
             'name'        => null,
             'forum'       => null,
-            'version'     => null,
             'description' => null,
             'git'         => null,
             'authors'     => null,
@@ -584,10 +604,6 @@ class ScriptController extends Controller {
 
                     if($scriptAttributes[ 'forum' ] !== null) {
                         $script->setForum($scriptAttributes[ 'forum' ]);
-                    }
-
-                    if($scriptAttributes[ 'version' ] !== null) {
-                        $script->setVersion($scriptAttributes[ 'version' ]);
                     }
 
                     if($scriptAttributes[ 'description' ] !== null) {
@@ -748,8 +764,7 @@ class ScriptController extends Controller {
                     'id'          => $script->getId(),
                     'name'        => $script->getName(),
                     'authors'     => $authors,
-                    'description' => $script->getDescription(),
-                    'version'     => $script->getVersion(),
+                    'description' => $script->getDescription()
                 ];
             }
 

@@ -153,6 +153,7 @@ class Review {
      * @param integer $stars
      *
      * @return Review
+     * @throws \Exception
      */
     public function setStars($stars) {
         if($stars > 10 || $stars < 1) {

@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Parabot\BDN\BotBundle\Entity\Script;
+use Parabot\BDN\BotBundle\Entity\Scripts\Release;
 use Parabot\BDN\BotBundle\Service\Library\TeamCity\Entity\TeamCityBuild;
 use Parabot\BDN\BotBundle\Service\Library\TeamCity\Entity\TeamCityBuildType;
 use Parabot\BDN\BotBundle\Service\Library\TeamCity\Entity\TeamCityEntity;
@@ -142,7 +143,7 @@ class TeamCityAPI {
         return $result->state == 'queued';
     }
 
-    public function getLatestArtifact(Script $script) {
+    public function getLatestArtifact(Script $script, Release $release) {
         $client = new Client([ 'base_uri' => $this->endpoint, 'auth' => [ $this->username, $this->password ] ]);
 
         $headers = [ 'Accept' => ' application/octet-stream', 'Cache-Control' => 'no-cache' ];
@@ -172,7 +173,7 @@ class TeamCityAPI {
             return false;
         }
 
-        file_put_contents($script->getPath() . $script->getVersion() . '.jar', $promiseResult);
+        file_put_contents($script->getPath() . $release->getVersion() . '.jar', $promiseResult);
 
         return true;
     }

@@ -4,6 +4,7 @@ namespace Parabot\BDN\BotBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
+use Parabot\BDN\BotBundle\Entity\Scripts\Release;
 use Parabot\BDN\BotBundle\Entity\Scripts\Review;
 use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
@@ -64,7 +65,7 @@ class Script {
     private $users;
 
     /**
-     * @var Group
+     * @var Group[]
      *
      * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\Group")
      * @ORM\JoinTable(name="script_groups",
@@ -115,15 +116,6 @@ class Script {
     private $forum;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="version", type="float")
-     *
-     * @Groups({"default"})
-     */
-    private $version;
-
-    /**
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
@@ -171,6 +163,33 @@ class Script {
      * @var string
      */
     private $path;
+
+    /**
+     * @var Release[]
+     *
+     * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Release", mappedBy="script")
+     *
+     * @Groups({"default"})
+     */
+    private $releases;
+
+    /**
+     * @return Release[]
+     */
+    public function getReleases() {
+        return $this->releases;
+    }
+
+    /**
+     * @param Release[] $releases
+     *
+     * @return Script
+     */
+    public function setReleases($releases) {
+        $this->releases = $releases;
+
+        return $this;
+    }
 
     /**
      * @Groups({"default"})
@@ -424,28 +443,6 @@ class Script {
     }
 
     /**
-     * Get version
-     *
-     * @return float
-     */
-    public function getVersion() {
-        return $this->version;
-    }
-
-    /**
-     * Set version
-     *
-     * @param float $version
-     *
-     * @return Script
-     */
-    public function setVersion($version) {
-        $this->version = $version;
-
-        return $this;
-    }
-
-    /**
      * Get active
      *
      * @return boolean
@@ -539,5 +536,12 @@ class Script {
         if( ! file_exists($this->path)) {
             mkdir($this->path, 0755, true);
         }
+    }
+
+    /**
+     * @param Release $release
+     */
+    public function addRelease(Release $release){
+        $this->releases[] = $release;
     }
 }

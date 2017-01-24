@@ -58,8 +58,8 @@ class DefaultController extends Controller {
      * @return JsonResponse
      */
     public function testAction(Request $request) {
-
-        return new JsonResponse([ 'result', $request->get('asd') ]);
+        $s = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Release')->getLatestRelease($this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy(['id' => 6]));
+        return new JsonResponse([ 'result', $s ]);
     }
 
     /**
