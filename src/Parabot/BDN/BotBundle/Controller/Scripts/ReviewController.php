@@ -1,6 +1,6 @@
 <?php
 
-namespace Parabot\BDN\BotBundle\Controller;
+namespace Parabot\BDN\BotBundle\Controller\Scripts;
 
 use AppBundle\Service\SerializerManager;
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
@@ -19,7 +19,7 @@ class ReviewController extends Controller {
      *  requirements={}
      * )
      *
-     * @Route("/reviews/accepted")
+     * @Route("/accepted")
      * @Method({"POST"})
      *
      * @PreAuthorize("isNotBanned()")
@@ -66,7 +66,7 @@ class ReviewController extends Controller {
      *  }
      * )
      *
-     * @Route("/reviews/list/{scriptId}")
+     * @Route("/list/{scriptId}")
      * @Method({"GET"})
      *
      * @param Request $request
@@ -107,7 +107,7 @@ class ReviewController extends Controller {
      *  }
      * )
      *
-     * @Route("/reviews/add/{scriptId}")
+     * @Route("/add/{scriptId}")
      * @Method({"POST"})
      *
      * @PreAuthorize("isNotBanned()")
@@ -172,7 +172,7 @@ class ReviewController extends Controller {
      *  }
      * )
      *
-     * @Route("/reviews/update/{scriptId}")
+     * @Route("/update/{scriptId}")
      * @Method({"POST"})
      *
      * @PreAuthorize("isNotBanned()")

@@ -18,6 +18,11 @@ bdn_script:
     type:     annotation
     prefix:   /api/scripts
 
+bdn_script_reviews:
+    resource: "@BDNBotBundle/Controller/Scripts/ReviewController.php"
+    type:     annotation
+    prefix:   /api/scripts/reviews
+
 bdn_signatures:
     resource: "@BDNBotBundle/Controller/SignatureController.php"
     type:     annotation
