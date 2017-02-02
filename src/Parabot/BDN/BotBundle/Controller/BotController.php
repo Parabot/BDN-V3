@@ -296,7 +296,7 @@ class BotController extends Controller {
 
                     return new JsonResponse(
                         [
-                            'result'  => boolval($latest),
+                            'result'  => $latest === 'true',
                             'message' => 'There is ' . ($latest === 'true' ? 'no' : 'a') . ' new release',
                         ]
                     );
@@ -308,7 +308,7 @@ class BotController extends Controller {
             } else {
                 return new JsonResponse(
                     [
-                        'result'  => true,
+                        'result'  => false,
                         'message' => 'There is a new release',
                     ]
                 );
