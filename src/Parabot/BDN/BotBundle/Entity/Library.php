@@ -90,7 +90,7 @@ class Library {
      * @return Library
      */
     public function setVersion($version) {
-        $this->version = $version;
+        $this->version = floatval($version);
 
         return $this;
     }
@@ -99,24 +99,12 @@ class Library {
         return $this->path . $this->getFile();
     }
 
-    public function getFile(){
+    public function getFile() {
         return $this->version . '.jar';
     }
 
     public function getPath() {
         return $this->path;
-    }
-
-    /**
-     * @param File   $file
-     *
-     * @throws Exception
-     */
-    public function insertFile(File $file) {
-        if( ! $file->guessExtension() == 'zip') {
-            throw new Exception('File extension not allowed, only jar');
-        }
-        $file->move($this->path, $this->getFile());
     }
 
     /**
@@ -128,5 +116,17 @@ class Library {
         if( ! file_exists($this->path)) {
             mkdir($this->path, 0755, true);
         }
+    }
+
+    /**
+     * @param File $file
+     *
+     * @throws Exception
+     */
+    public function insertFile(File $file) {
+        if( ! $file->guessExtension() == 'zip') {
+            throw new Exception('File extension not allowed, only jar');
+        }
+        $file->move($this->path, $this->getFile());
     }
 }
