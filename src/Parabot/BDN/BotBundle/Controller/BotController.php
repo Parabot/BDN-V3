@@ -292,12 +292,12 @@ class BotController extends Controller {
                     $latestObject = $latestResult[ 0 ];
                     $latest       = boolval(
                         $latestObject->getReleaseDate() <= $currentObject->getReleaseDate()
-                    ) ? 'true' : 'false';
+                    );
 
                     return new JsonResponse(
                         [
-                            'result'  => $latest === 'true',
-                            'message' => 'There is ' . ($latest === 'true' ? 'no' : 'a') . ' new release',
+                            'result'  => $latest,
+                            'message' => 'There is ' . ($latest ? 'a' : 'no') . ' new release',
                         ]
                     );
                 } else {
