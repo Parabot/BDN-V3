@@ -5,6 +5,7 @@
 
 namespace Parabot\BDN\BotBundle\Service;
 
+use Parabot\BDN\BotBundle\Entity\Library;
 use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -63,6 +64,12 @@ class DownloadProvider {
         }
 
         return false;
+    }
+
+    public function provideLibraryDownload(Library $library) {
+        $file = $library->getAbsolutePath();
+
+        return $this->provideFileDownload($file, $library->getName());
     }
 
     public function provideScriptDownload(Script $script) {
