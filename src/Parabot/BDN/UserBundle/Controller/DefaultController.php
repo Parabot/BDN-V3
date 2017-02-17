@@ -149,6 +149,30 @@ class DefaultController extends Controller {
 
     /**
      * @ApiDoc(
+     *  description="Checks if user is in Slack",
+     *  requirements={
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/in_slack", name="slack_check")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     *
+     * @PreAuthorize("isNotBanned()")
+     */
+    public function isInSlackAction(Request $request){
+        $result = $this->get('slack_manager')->isInSlack($this->getUser());
+
+        return new JsonResponse($result, $result['code']);
+    }
+
+    /**
+     * @ApiDoc(
      *  description="Sends an invite to the logged in user",
      *  requirements={
      *  },
@@ -157,7 +181,7 @@ class DefaultController extends Controller {
      * )
      *
      * @Route("/slack", name="slack_invite")
-     * @Method({"GET"})
+     * @Method({"POST"})
      *
      * @param Request $request
      *

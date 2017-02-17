@@ -127,6 +127,47 @@ class SlackManager {
      *
      * @return array
      */
+    public function isInSlack($user){
+        $endpoint = $this->connection->getEndpoint();
+        $url      = 'https://' . $endpoint . 'users.list?token=%s';
+        $url      = sprintf(
+            $url,
+            $this->connection->getToken()
+        );
+
+        $response = $this->executeRequest($url);
+
+        if($response->getStatusCode() != 200) {
+            return [
+                'result' => false,
+                'error'  => 'Received an error status code from Slack, please contact an administrator',
+                'code'   => $response->getStatusCode(),
+            ];
+        }
+
+        $responseArray = json_decode($response->getBody(true), true);
+
+        $result =  [
+            'result'      => false,
+            'code'        => 200,
+        ];
+
+        foreach($responseArray['members'] as $member){
+            if (isset($member['profile']['email']) && ($email = $member['profile']['email']) != null){
+                if ($user->getEmail() == $email){
+                    $result['result'] = true;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
     public function inviteToChannel($user) {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Users\SlackInvite');
 
