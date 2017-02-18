@@ -231,37 +231,44 @@ class ServerController extends Controller {
      *     {
      *          "name"="name",
      *          "dataType"="string",
-     *          "description"="Name of the server"
+     *          "description"="Name of the server",
+     *          "required"=false
      *      },
      *      {
      *          "name"="active",
      *          "dataType"="boolean",
-     *          "description"="Define if the server should be active"
+     *          "description"="Define if the server should be active",
+     *          "required"=false
      *      },
      *      {
      *          "name"="groups",
      *          "dataType"="array",
-     *          "description"="Array of the group ids that may access the server, delimited with a comma"
+     *          "description"="Array of the group ids that may access the server, delimited with a comma",
+     *          "required"=false
      *      },
      *      {
      *          "name"="authors",
      *          "dataType"="array",
-     *          "description"="Array of the usernames that have made this server possible, delimited with a comma"
+     *          "description"="Array of the usernames that have made this server possible, delimited with a comma",
+     *          "required"=false
      *      },
      *      {
      *          "name"="details",
      *          "dataType"="string",
-     *          "description"="JSON object of the server details"
+     *          "description"="JSON object of the server details",
+     *          "required"=false
      *      },
      *      {
      *          "name"="version",
      *          "dataType"="float",
-     *          "description"="Version of the server"
+     *          "description"="Version of the server",
+     *          "required"=false
      *      },
      *      {
      *          "name"="description",
      *          "dataType"="string",
-     *          "description"="Description of the server"
+     *          "description"="Description of the server",
+     *          "required"=false
      *      }
      *  }
      * )
@@ -511,7 +518,8 @@ class ServerController extends Controller {
      *      {
      *          "name"="version",
      *          "dataType"="float",
-     *          "description"="Version of the hooks"
+     *          "description"="Version of the hooks",
+     *          "required"=false
      *      }
      *  }
      * )
