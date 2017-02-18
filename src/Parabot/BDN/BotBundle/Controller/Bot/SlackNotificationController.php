@@ -9,30 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SlackNotificationController extends Controller {
-
-    /**
-     * @Route("/send")
-     *
-     *
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function sendAction(Request $request) {
-        $attachment = $this->get('slack_manager')->createAttachment(
-            'Script notification',
-            'Example Script',
-            'good',
-            '',
-            [ 'Message' => 'Out of health', 'Health' => 97 ]
-        );
-
-        $this->get('slack_manager')->sendMessage('', [ $attachment ], '@emmastone');
-
-        return new JsonResponse();
-    }
-
     /**
      * @Route("/send/{scriptId}")
      * @Method({"POST"})
