@@ -28,6 +28,11 @@ bdn_bot_libraries:
     type:     annotation
     prefix:   /api/bot/libraries
 
+bdn_bot_notifications:
+    resource: "@BDNBotBundle/Controller/Bot/SlackNotificationController.php"
+    type:     annotation
+    prefix:   /api/bot/notifications/slack
+
 bdn_signatures:
     resource: "@BDNBotBundle/Controller/SignatureController.php"
     type:     annotation
