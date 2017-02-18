@@ -4,6 +4,9 @@ fos_user:
     user_class: Parabot\BDN\UserBundle\Entity\User
     group:
         group_class: Parabot\BDN\UserBundle\Entity\Group
+    from_email:
+        address: support@parabot.org
+        sender_name: Parabot
 
 scheb_two_factor:
     google:

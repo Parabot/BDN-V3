@@ -90,3 +90,7 @@ hwi_oauth_connect:
 
 hwi_forums_login:
     pattern: /api/users/login/forums
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc

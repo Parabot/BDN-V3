@@ -149,3 +149,5 @@ nelmio_cors:
             allow_methods: ['POST','GET','DELETE','PUT']
             expose_headers: []
             max_age: 3600
+
+nelmio_api_doc: ~
