@@ -2,6 +2,7 @@
 
 namespace Parabot\BDN\BotBundle\Controller\Bot;
 
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,6 +11,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SlackNotificationController extends Controller {
     /**
+     * @ApiDoc(
+     *  description="Sends a notification to the logged in user over Slack",
+     *  requirements={
+     *      {
+     *          "name"="scriptId",
+     *          "dataType"="integer",
+     *          "description"="Script ID used to send a notification"
+     *      },
+     *      {
+     *          "name"="Message",
+     *          "dataType"="string",
+     *          "description"="Message used in the notification"
+     *      }
+     *  }
+     * )
+     *
      * @Route("/send/{scriptId}")
      * @Method({"POST"})
      *
