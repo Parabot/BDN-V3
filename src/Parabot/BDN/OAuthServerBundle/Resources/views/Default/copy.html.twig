@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Copy key into Parabot</title>
+</head>
+<body>
+<h3>Copy the following key into Parabot</h3>
+
+<label for="oauth-keys">Key</label>
+<br/>
+<input id="oauth-keys" value="{{ key }}">
+<button class="button" id="copy-button" data-clipboard-target="#oauth-keys">Copy</button>
+<script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
+<script>
+    (function () {
+        new Clipboard('#copy-button');
+    })();
+</script>
+</body>
+</html>

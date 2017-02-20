@@ -15,20 +15,23 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class InternalController extends Controller {
 
     /**
-     * @Route("/internal/route/oauth/v2/token", name="internal_request_token_route")
+     * @Route("/internal/route/oauth/v2/token/{type}", name="internal_request_token_route", defaults={"type" = "frontend"})
      * @Method({"POST"})
      *
      * @param Request $request
      *
+     * @param string  $type
+     *
      * @return JsonResponse
      */
-    public function routeTokenRequest(Request $request) {
+    public function routeTokenRequest(Request $request, $type) {
         $clientId     = $request->get('client_id');
         $grantType    = $request->get('grant_type');
         $code         = $request->get('code');
         $refreshToken = $request->get('refresh_token');
         $redirectUri  = $request->get('redirect_uri');
-        $clientSecret = $this->getParameter('internal_oauth_secret');
+
+        $clientSecret = $this->getParameter($type . '_' . 'internal_oauth_secret');
 
         $curl = curl_init(
             $request->getScheme() . ':' . $this->generateUrl(

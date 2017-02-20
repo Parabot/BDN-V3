@@ -47,7 +47,7 @@ security:
             anonymous: true
 
         main:
-            pattern:    ^/api/users/(connect|loggedin|is/loggedin|log_in)
+            pattern:    ^/api/users/(connect|loggedin|is/loggedin|log_in|oauth/v2/create_copy)
             oauth:
                 remember_me: true
                 failure_path: /api/users/connect
@@ -79,6 +79,7 @@ security:
         - { path: ^/api/users/log_in, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/oauth/v2/valid, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/oauth/v2/create_copy, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/internal/route/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
 

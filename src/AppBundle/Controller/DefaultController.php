@@ -12,8 +12,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller {
+    /**
+     * @Route("/close", name="close")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function closeAction(Request $request) {
+        return new Response('You may now close this page.');
+    }
+
     /**
      * @Route("/a", name="homepage")
      * @Method({"GET"})

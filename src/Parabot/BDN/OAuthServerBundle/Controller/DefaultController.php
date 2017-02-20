@@ -33,6 +33,51 @@ class DefaultController extends Controller {
     }
 
     /**
+     * @Route("/create_copy", name="create_copy_oauth")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function createCopyAuthAction(Request $request) {
+        if($this->get('request_access_evaluator')->isNotBanned() !== true) {
+            $url = $this->generateUrl(
+                'forums_users_login',
+                [
+                    'after_login_redirect' => $request->getSchemeAndHttpHost() . $this->generateUrl(
+                        'create_copy_oauth',
+                        [ 'clientId' => $request->get('clientId') ]
+                    ),
+                ]
+            );
+        } else {
+            $url = $this->generateUrl(
+                'fos_oauth_server_authorize',
+                [
+                    'client_id'     => $request->get('clientId'),
+                    'redirect_uri'  => $request->getSchemeAndHttpHost() . $this->generateUrl('copy_oauth'),
+                    'response_type' => 'code',
+                ]
+            );
+        }
+
+        return $this->redirect($url);
+    }
+
+    /**
+     * @Route("/copy", name="copy_oauth")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function displayCopyAction(Request $request) {
+        return $this->render('@BDNOAuthServer/Default/copy.html.twig', array(
+            'key' => $request->get('code'),
+        ));
+    }
+
+    /**
      * @Route("/valid", name="valid_oauth")
      *
      * @param Request $request

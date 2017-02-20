@@ -33,7 +33,8 @@ parameters:
     transifex_username: ~
     transifex_password: ~
 
-    internal_oauth_secret: ~
+    frontend_internal_oauth_secret: ~
+    client_internal_oauth_secret: ~
 
     teamcity_username: ~
     teamcity_password: ~
