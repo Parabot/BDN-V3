@@ -2,6 +2,7 @@
 
 namespace Parabot\BDN\BotBundle\Controller\Bot;
 
+use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -29,6 +30,8 @@ class SlackNotificationController extends Controller {
      *
      * @Route("/send/{scriptId}")
      * @Method({"POST"})
+     *
+     * @PreAuthorize("isNotBanned()")
      *
      * @param Request $request
      *
@@ -72,7 +75,7 @@ class SlackNotificationController extends Controller {
                 $fields
             );
 
-            $result = $this->get('slack_manager')->sendMessage('', [ $attachment ], '@emmastone');
+            $result = $this->get('slack_manager')->sendMessage('', [ $attachment ], $this->get('request_access_evaluator')->getUser());
             if($result != null && $result->getStatus() === true) {
                 return new JsonResponse([ 'result' => 'Notification sent' ]);
             } else {
