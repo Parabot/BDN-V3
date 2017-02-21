@@ -804,7 +804,7 @@ class ServerController extends Controller {
                 $response->setData([ 'result' => 'User does not have enough permission to access this page' ]);
                 $response->setStatusCode(403);
             } else {
-                return $this->get('bot.download_manager')->provideDownload();
+                return $this->get('bot.download_manager')->provideDownload($server);
             }
         } else {
             $response->setData([ 'result' => 'Unknown server ID requested' ]);
