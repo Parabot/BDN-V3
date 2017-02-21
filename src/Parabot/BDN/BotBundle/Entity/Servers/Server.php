@@ -344,7 +344,7 @@ class Server {
      * @param string $path Directory locating to the app folder
      */
     public function setPath($path) {
-        $this->path = $path . '/data/Scripts/' . $this->id . '/';
+        $this->path = $path . '/data/Servers/' . $this->id . '/';
 
         if( ! file_exists($this->path)) {
             mkdir($this->path, 0755, true);
