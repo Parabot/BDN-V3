@@ -75,11 +75,18 @@ class SlackNotificationController extends Controller {
                 $fields
             );
 
-            $result = $this->get('slack_manager')->sendMessage('', [ $attachment ], $this->get('request_access_evaluator')->getUser());
-            if($result != null && $result->getStatus() === true) {
-                return new JsonResponse([ 'result' => 'Notification sent' ]);
+            $slackUsername = $this->get('slack_manager')->getUsername(
+                $this->get('request_access_evaluator')->getUser()
+            );
+            if($slackUsername != null) {
+                $result = $this->get('slack_manager')->sendMessage('', [ $attachment ], $slackUsername);
+                if($result != null && $result->getStatus() === true) {
+                    return new JsonResponse([ 'result' => 'Notification sent' ]);
+                } else {
+                    return new JsonResponse([ 'result' => 'Notification could not be send' ], 500);
+                }
             } else {
-                return new JsonResponse([ 'result' => 'Notification could not be send' ], 500);
+                return new JsonResponse([ 'result' => 'User not found in Slack' ], 404);
             }
         } else {
             return new JsonResponse([ 'result' => 'Unknown script ID given' ], 404);

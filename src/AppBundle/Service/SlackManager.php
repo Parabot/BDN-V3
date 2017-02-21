@@ -127,7 +127,20 @@ class SlackManager {
      *
      * @return array
      */
-    public function isInSlack($user){
+    public function isInSlack($user) {
+        $result = [
+            'result' => false,
+            'code'   => 200,
+        ];
+
+        if($this->getUsername($user) != null) {
+            $result[ 'result' ] = true;
+        }
+
+        return $result;
+    }
+
+    public function getUsername(User $user) {
         $endpoint = $this->connection->getEndpoint();
         $url      = 'https://' . $endpoint . 'users.list?token=%s';
         $url      = sprintf(
@@ -138,29 +151,34 @@ class SlackManager {
         $response = $this->executeRequest($url);
 
         if($response->getStatusCode() != 200) {
-            return [
-                'result' => false,
-                'error'  => 'Received an error status code from Slack, please contact an administrator',
-                'code'   => $response->getStatusCode(),
-            ];
+            return null;
         }
 
         $responseArray = json_decode($response->getBody(true), true);
 
-        $result =  [
-            'result'      => false,
-            'code'        => 200,
-        ];
-
-        foreach($responseArray['members'] as $member){
-            if (isset($member['profile']['email']) && ($email = $member['profile']['email']) != null){
-                if ($user->getEmail() == $email){
-                    $result['result'] = true;
+        foreach($responseArray[ 'members' ] as $member) {
+            if(isset($member[ 'profile' ][ 'email' ]) && ($email = $member[ 'profile' ][ 'email' ]) != null) {
+                if($user->getEmail() == $email) {
+                    return $member[ 'name' ];
                 }
             }
         }
 
-        return $result;
+        return null;
+    }
+
+    private function executeRequest($url) {
+        $guzzle = new \Guzzle\Http\Client();
+        $guzzle->getEventDispatcher()->addListener(
+            'request.error',
+            function (Event $event) {
+                if($event[ 'response' ]->getStatusCode() != 200) {
+                    $event->stopPropagation();
+                }
+            }
+        );
+
+        return $guzzle->createRequest('GET', $url)->send();
     }
 
     /**
@@ -224,19 +242,5 @@ class SlackManager {
         $this->entityManager->flush();
 
         return [ 'result' => true, 'message' => 'You are invited to Slack, please check your email', 'code' => 200 ];
-    }
-
-    private function executeRequest($url) {
-        $guzzle = new \Guzzle\Http\Client();
-        $guzzle->getEventDispatcher()->addListener(
-            'request.error',
-            function (Event $event) {
-                if($event[ 'response' ]->getStatusCode() != 200) {
-                    $event->stopPropagation();
-                }
-            }
-        );
-
-        return $guzzle->createRequest('GET', $url)->send();
     }
 }
