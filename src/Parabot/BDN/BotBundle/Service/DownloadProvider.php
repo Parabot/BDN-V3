@@ -7,6 +7,8 @@ namespace Parabot\BDN\BotBundle\Service;
 
 use Parabot\BDN\BotBundle\Entity\Library;
 use Parabot\BDN\BotBundle\Entity\Script;
+use Parabot\BDN\BotBundle\Entity\Scripts\Release;
+use Parabot\BDN\BotBundle\Entity\Servers\Server;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -72,8 +74,14 @@ class DownloadProvider {
         return $this->provideFileDownload($file, $library->getName());
     }
 
-    public function provideScriptDownload(Script $script) {
-        $file = $script->getPath() . $script->getVersion() . '.jar';
+    public function provideServerDownload(Server $server){
+        $file = $server->getAbsolutePath();
+
+        return $this->provideFileDownload($file, $server->getName());
+    }
+
+    public function provideScriptDownload(Script $script, Release $version) {
+        $file = $script->getPath() . $version->getVersion() . '.jar';
 
         return $this->provideFileDownload($file, $script->getName());
     }

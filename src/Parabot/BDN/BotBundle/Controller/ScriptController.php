@@ -35,9 +35,11 @@ class ScriptController extends Controller {
      */
     public function runAction(Request $request, $scriptId) {
         $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+        $release = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Release')->getLatestRelease($script);
+
         if($script != null) {
             if($script->hasUser($this->get('request_access_evaluator')->getUser())) {
-                return $this->get('bot.download_manager')->provideScriptDownload($script);
+                return $this->get('bot.download_manager')->provideScriptDownload($script, $release);
             } else {
                 return new JsonResponse([ 'result' => 'You do not have access to this script' ], 403);
             }

@@ -219,6 +219,54 @@ class ServerController extends Controller {
 
     /**
      * @ApiDoc(
+     *  description="Inserts server file into server object",
+     *  requirements={
+     *      {
+     *          "name"="name",
+     *          "dataType"="string",
+     *          "description"="Name of the server"
+     *      }
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/insert", name="insert_server")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isServerDeveloper()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function insertServer(Request $request) {
+        $server = $request->files->get('server');
+        $id     = $request->get('id');
+        if($id != null) {
+            $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
+            if($serverObject != null) {
+                if($server != null) {
+                    if($server->guessExtension() == 'zip') {
+                        $serverObject->insertFile($server);
+
+                        return new JsonResponse([ 'result' => 'Server added' ]);
+                    } else {
+                        return new JsonResponse([ 'result' => 'Upload may only be a jar' ], 400);
+                    }
+                } else {
+                    return new JsonResponse([ 'result' => 'File not provided' ], 400);
+                }
+            } else {
+                return new JsonResponse([ 'result' => 'Could not find server with ID' ], 404);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Missing server ID' ], 400);
+        }
+    }
+
+    /**
+     * @ApiDoc(
      *  description="Updates a server in the database",
      *  requirements={
      *     {
@@ -386,7 +434,7 @@ class ServerController extends Controller {
             if($server[ 'authors' ] != null) {
                 $authors = [];
                 foreach($server[ 'authors' ] as $item) {
-                    $result = $userRepository->findOneBy([ 'username' => $item['username'] ]);
+                    $result = $userRepository->findOneBy([ 'username' => $item[ 'username' ] ]);
                     if($result != null) {
                         $authors[] = $result;
                     }
@@ -705,4 +753,64 @@ class ServerController extends Controller {
         return $response;
     }
 
+    /**
+     * @ApiDoc(
+     *  description="Returns the requested server information",
+     *  requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="int",
+     *          "description"="ID of the server"
+     *      }
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/download/{id}", name="download_server")
+     * @Method({"GET"})
+     *
+     * @PreAuthorize("isNotBanned()")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function downloadAction(Request $request, $id) {
+        $response = new JsonResponse();
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+        $id   = intval($id);
+
+        $repository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
+        $server     = $repository->findById($id);
+
+        if($server != null) {
+            $allowed = false;
+            if($server->getGroups() == null || count($server->getGroups()) <= 0) {
+                $allowed = true;
+            } else {
+                foreach($server->getGroups() as $group) {
+                    if($user->hasGroupId($group->getId())) {
+                        $allowed = true;
+                    }
+                }
+            }
+
+            if($allowed !== true && $this->get('request_access_evaluator')->isServerDeveloper() !== true) {
+                $response->setData([ 'result' => 'User does not have enough permission to access this page' ]);
+                $response->setStatusCode(403);
+            } else {
+                return $this->get('bot.download_manager')->provideDownload();
+            }
+        } else {
+            $response->setData([ 'result' => 'Unknown server ID requested' ]);
+            $response->setStatusCode(404);
+        }
+
+        return $response;
+    }
 }

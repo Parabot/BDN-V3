@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -102,6 +103,11 @@ class Server {
      * @OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\Hook", mappedBy="server")
      */
     private $hooks;
+
+    /**
+     * @var string
+     */
+    private $path;
 
     /**
      * @return Hook[]
@@ -317,5 +323,43 @@ class Server {
         }
 
         return $this;
+    }
+
+    public function getFile() {
+        return $this->version . '.jar';
+    }
+
+    public function getAbsolutePath() {
+        return $this->path . $this->getFile();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath() {
+        return $this->path;
+    }
+
+    /**
+     * @param string $path Directory locating to the app folder
+     */
+    public function setPath($path) {
+        $this->path = $path . '/data/Scripts/' . $this->id . '/';
+
+        if( ! file_exists($this->path)) {
+            mkdir($this->path, 0755, true);
+        }
+    }
+
+    /**
+     * @param File $file
+     *
+     * @throws Exception
+     */
+    public function insertFile(File $file) {
+        if( ! $file->guessExtension() == 'zip') {
+            throw new Exception('File extension not allowed, only jar');
+        }
+        $file->move($this->path, $this->getFile());
     }
 }

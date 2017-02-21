@@ -9,6 +9,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Parabot\BDN\BotBundle\Entity\Library;
 use Parabot\BDN\BotBundle\Entity\Script;
+use Parabot\BDN\BotBundle\Entity\Servers\Server;
 use Parabot\BDN\BotBundle\Entity\Signatures\AbstractSignature;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -42,7 +43,7 @@ class TypeListener implements EventSubscriber {
     private function setTypePath(LifecycleEventArgs $args) {
         $entity = $args->getEntity();
 
-        if( ! ($entity instanceof Type) && ! ($entity instanceof AbstractSignature) && ! ($entity instanceof Script) && ! ($entity instanceof Library)) {
+        if( ! ($entity instanceof Type) && ! ($entity instanceof AbstractSignature) && ! ($entity instanceof Script) && ! ($entity instanceof Library) && ! ($entity instanceof Server)) {
             return;
         }
 
