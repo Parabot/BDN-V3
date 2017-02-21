@@ -385,8 +385,8 @@ class ServerController extends Controller {
 
             if($server[ 'authors' ] != null) {
                 $authors = [];
-                foreach(explode(',', $server[ 'authors' ]) as $item) {
-                    $result = $userRepository->findOneBy([ 'username' => $item ]);
+                foreach($server[ 'authors' ] as $item) {
+                    $result = $userRepository->findOneBy([ 'username' => $item['username'] ]);
                     if($result != null) {
                         $authors[] = $result;
                     }
