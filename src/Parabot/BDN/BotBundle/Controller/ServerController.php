@@ -755,7 +755,7 @@ class ServerController extends Controller {
 
     /**
      * @ApiDoc(
-     *  description="Returns the requested server information",
+     *  description="Downloads the requested server",
      *  requirements={
      *      {
      *          "name"="id",
