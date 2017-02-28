@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class ServerDetail {
 
-    const DEFAULT_DETAILS = [ 'client_class', 'live_client' ];
+    const DEFAULT_DETAILS = [ 'client_class', 'live_client', 'provider' ];
 
     /**
      * @var integer
