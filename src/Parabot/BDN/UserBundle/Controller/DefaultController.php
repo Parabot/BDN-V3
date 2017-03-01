@@ -165,10 +165,10 @@ class DefaultController extends Controller {
      *
      * @PreAuthorize("isNotBanned()")
      */
-    public function isInSlackAction(Request $request){
+    public function isInSlackAction(Request $request) {
         $result = $this->get('slack_manager')->isInSlack($this->getUser());
 
-        return new JsonResponse($result, $result['code']);
+        return new JsonResponse($result, $result[ 'code' ]);
     }
 
     /**

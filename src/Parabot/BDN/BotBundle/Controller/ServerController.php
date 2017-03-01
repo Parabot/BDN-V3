@@ -806,11 +806,13 @@ class ServerController extends Controller {
                 $response->setStatusCode(403);
             } else {
                 $download = $this->get('bot.download_manager')->provideServerDownload($server);
-                if ($download === false){
-                    $response->setData([ 'result' => 'File could not be found on server, please contact an administrator' ]);
+                if($download === false) {
+                    $response->setData(
+                        [ 'result' => 'File could not be found on server, please contact an administrator' ]
+                    );
                     $response->setStatusCode(500);
-                }else{
-                    $use = new ServerUse();
+                } else {
+                    $use     = new ServerUse();
                     $manager = $this->getDoctrine()->getManager();
 
                     $use->setUser($user);

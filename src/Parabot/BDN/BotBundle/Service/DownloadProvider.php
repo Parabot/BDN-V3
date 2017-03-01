@@ -74,7 +74,7 @@ class DownloadProvider {
         return $this->provideFileDownload($file, $library->getName());
     }
 
-    public function provideServerDownload(Server $server){
+    public function provideServerDownload(Server $server) {
         $file = $server->getAbsolutePath();
 
         return $this->provideFileDownload($file, $server->getName());

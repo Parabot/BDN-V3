@@ -40,7 +40,7 @@ class SlackNotificationController extends Controller {
      * @return JsonResponse
      */
     public function sendScriptNotificationAction(Request $request, $scriptId) {
-        $manager = $this->getDoctrine()->getManager();
+        $manager    = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository('BDNBotBundle:Script');
         if(($script = $repository->findOneBy([ 'id' => $scriptId ])) !== null) {
             $requiredFields = [

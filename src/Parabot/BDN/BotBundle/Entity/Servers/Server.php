@@ -325,12 +325,12 @@ class Server {
         return $this;
     }
 
-    public function getFile() {
-        return $this->version . '.jar';
-    }
-
     public function getAbsolutePath() {
         return $this->path . $this->getFile();
+    }
+
+    public function getFile() {
+        return $this->version . '.jar';
     }
 
     /**

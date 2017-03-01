@@ -7,11 +7,9 @@ namespace Parabot\BDN\BotBundle\Controller;
 
 use AppBundle\Service\SerializerManager;
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Scripts\Git;
 use Parabot\BDN\BotBundle\Entity\Scripts\Release;
-use Parabot\BDN\BotBundle\Entity\Scripts\Review;
 use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,7 +32,7 @@ class ScriptController extends Controller {
      * @return JsonResponse
      */
     public function runAction(Request $request, $scriptId) {
-        $script = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
+        $script  = $this->getDoctrine()->getRepository('BDNBotBundle:Script')->findOneBy([ 'id' => $scriptId ]);
         $release = $this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Release')->getLatestRelease($script);
 
         if($script != null) {

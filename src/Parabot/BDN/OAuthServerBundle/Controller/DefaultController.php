@@ -45,9 +45,9 @@ class DefaultController extends Controller {
                 'forums_users_login',
                 [
                     'after_login_redirect' => $request->getSchemeAndHttpHost() . $this->generateUrl(
-                        'create_copy_oauth',
-                        [ 'clientId' => $request->get('clientId') ]
-                    ),
+                            'create_copy_oauth',
+                            [ 'clientId' => $request->get('clientId') ]
+                        ),
                 ]
             );
         } else {
@@ -72,9 +72,12 @@ class DefaultController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function displayCopyAction(Request $request) {
-        return $this->render('@BDNOAuthServer/Default/copy.html.twig', array(
-            'key' => $request->get('code'),
-        ));
+        return $this->render(
+            '@BDNOAuthServer/Default/copy.html.twig',
+            [
+                'key' => $request->get('code'),
+            ]
+        );
     }
 
     /**

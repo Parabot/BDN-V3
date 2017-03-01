@@ -57,7 +57,7 @@ class ServerUse {
         $this->datetime = new \DateTime();
     }
 
-        /**
+    /**
      * Get id
      *
      * @return integer
