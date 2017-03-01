@@ -11,6 +11,7 @@ use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Parabot\BDN\BotBundle\Entity\Servers\Server;
 use Parabot\BDN\BotBundle\Entity\Servers\ServerDetail;
+use Parabot\BDN\BotBundle\Entity\Servers\ServerUse;
 use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -809,6 +810,14 @@ class ServerController extends Controller {
                     $response->setData([ 'result' => 'File could not be found on server, please contact an administrator' ]);
                     $response->setStatusCode(500);
                 }else{
+                    $use = new ServerUse();
+                    $manager = $this->getDoctrine()->getManager();
+
+                    $use->setUser($user);
+                    $use->setServer($server);
+                    $manager->persist($use);
+                    $manager->flush();
+
                     return $download;
                 }
             }
