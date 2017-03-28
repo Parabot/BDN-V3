@@ -2,6 +2,7 @@
 /**
  * @author JKetelaar
  */
+
 namespace Parabot\BDN\StoreBundle\Entity;
 
 use AppBundle\Entity\Dependencies\Script;

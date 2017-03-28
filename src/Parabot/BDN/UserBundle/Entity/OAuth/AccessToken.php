@@ -2,6 +2,7 @@
 /**
  * @author JKetelaar
  */
+
 namespace Parabot\BDN\UserBundle\Entity\OAuth;
 
 use Doctrine\ORM\Mapping as ORM;

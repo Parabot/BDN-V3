@@ -2,6 +2,7 @@
 /**
  * @author JKetelaar
  */
+
 namespace Parabot\BDN\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;

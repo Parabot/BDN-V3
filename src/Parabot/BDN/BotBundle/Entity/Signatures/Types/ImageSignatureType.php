@@ -5,7 +5,6 @@
 
 namespace Parabot\BDN\BotBundle\Entity\Signatures\Types;
 
-use Doctrine\ORM\Mapping as ORM;
 use Parabot\BDN\BotBundle\Entity\Signatures\AbstractSignature;
 
 class ImageSignatureType extends AbstractSignature {

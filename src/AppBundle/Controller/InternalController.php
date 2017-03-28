@@ -15,7 +15,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class InternalController extends Controller {
 
     /**
-     * @Route("/internal/route/oauth/v2/token/{type}", name="internal_request_token_route", defaults={"type" = "frontend"})
+     * @Route("/internal/route/oauth/v2/token/{type}", name="internal_request_token_route", defaults={"type" =
+     *                                                 "frontend"})
      * @Method({"POST"})
      *
      * @param Request $request

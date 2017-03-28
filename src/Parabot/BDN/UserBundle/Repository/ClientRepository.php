@@ -2,6 +2,7 @@
 /**
  * @author JKetelaar
  */
+
 namespace Parabot\BDN\UserBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;

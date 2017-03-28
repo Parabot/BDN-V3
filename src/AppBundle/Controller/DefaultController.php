@@ -90,7 +90,7 @@ class DefaultController extends Controller {
         $script = new Script();
         $script->setName('Lord Peng');
 
-        $author = $this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[ 0 ];
+        $author  = $this->getDoctrine()->getRepository('BDNUserBundle:User')->findAll()[ 0 ];
         $authors = [ $author ];
         $script->setAuthors($authors);
 

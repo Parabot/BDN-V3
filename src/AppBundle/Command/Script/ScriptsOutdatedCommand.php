@@ -83,6 +83,6 @@ class ScriptsOutdatedCommand extends ContainerAwareCommand {
     private function setScriptActiveState($doctrine, Script $script, $active = false) {
         $script->setActive($active);
         $doctrine->getManager()->persist($script);
-        $this->logger->info('Set script ' . $script->getName() . ' ' . ($active === true ? 'active' : 'inactive') );
+        $this->logger->info('Set script ' . $script->getName() . ' ' . ($active === true ? 'active' : 'inactive'));
     }
 }
