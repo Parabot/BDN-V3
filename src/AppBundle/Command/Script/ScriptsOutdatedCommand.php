@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package AppBundle\Command\Script
  *
  *
- * @Cron(hour="/12", logFile=false, server="web")
+ * @Cron(hour="/12", noLogs=true, server="web")
  */
 class ScriptsOutdatedCommand extends ContainerAwareCommand {
 
