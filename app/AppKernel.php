@@ -56,6 +56,8 @@ class AppKernel extends Kernel
             new Nelmio\CorsBundle\NelmioCorsBundle(),
 
             new Parabot\BDN\OAuthServerBundle\BDNOAuthServerBundle(),
+
+            new MyBuilder\Bundle\CronosBundle\MyBuilderCronosBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

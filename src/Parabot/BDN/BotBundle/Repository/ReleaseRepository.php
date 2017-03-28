@@ -29,6 +29,6 @@ class ReleaseRepository extends EntityRepository {
             return $result[ 0 ];
         }
 
-        return $result;
+        return null;
     }
 }
