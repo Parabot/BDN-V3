@@ -110,6 +110,16 @@ class Server {
     private $path;
 
     /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Types\Provider", inversedBy="servers")
+     * @ORM\JoinColumn(name="server_id", referencedColumnName="id")
+     *
+     * @Groups({"default"})
+     */
+    private $provider;
+
+    /**
      * @return Hook[]
      */
     public function getHooks() {

@@ -71,7 +71,8 @@ class BotController extends Controller {
             } else {
                 $download = $repository->findLatestByStability(
                     ! (ParameterParser::parseStringToBoolean($request->query->get('nightly'))),
-                    $branch
+                    $branch,
+                    $request
                 );
             }
         } else {

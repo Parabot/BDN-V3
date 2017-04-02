@@ -7,6 +7,7 @@ namespace Parabot\BDN\BotBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Parabot\BDN\BotBundle\Entity\Types\Client;
+use Symfony\Component\HttpFoundation\Request;
 
 class ClientRepository extends EntityRepository implements TypeRepository {
 
@@ -20,13 +21,15 @@ class ClientRepository extends EntityRepository implements TypeRepository {
     }
 
     /**
-     * @param boolean     $stable
+     * @param boolean      $stable
      *
-     * @param null|string $branch
+     * @param null|string  $branch
+     *
+     * @param Request|null $request
      *
      * @return null|Client
      */
-    public function findLatestByStability($stable, $branch = null) {
+    public function findLatestByStability($stable, $branch = null, Request $request = null) {
         $findBy = [ 'stable' => $stable ];
         if($branch != null) {
             $findBy[ 'branch' ] = $branch;
