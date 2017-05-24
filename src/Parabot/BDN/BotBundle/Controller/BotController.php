@@ -17,12 +17,32 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Travis\Client\Entity\Build;
 
 class BotController extends Controller {
 
     const ALLOWED_BRANCHES = [ 'master', 'development' ];
+
+    /**
+     * @Route("/download/provider", name="provider_download")
+     *
+     * @deprecated
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function downloadProviderAction(Request $request) {
+        $server = $request->get('server');
+        if($server !== null && $server == 'OS-Scape') {
+            return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'os-scape-provider' ]), 301);
+        } else {
+            return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'default-provider' ]), 301);
+        }
+    }
+
 
     /**
      * @ApiDoc(
@@ -71,8 +91,7 @@ class BotController extends Controller {
             } else {
                 $download = $repository->findLatestByStability(
                     ! (ParameterParser::parseStringToBoolean($request->query->get('nightly'))),
-                    $branch,
-                    $request
+                    $branch
                 );
             }
         } else {
@@ -227,7 +246,7 @@ class BotController extends Controller {
                         );
                     } else {
                         return new JsonResponse(
-                            [ 'result' => 'Version ' . $version . ' already exists', 500 ]
+                            [ 'result' => 'Version ' . $version . ' already exists' ], 500
                         );
                     }
                 } else {

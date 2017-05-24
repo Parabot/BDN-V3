@@ -3,16 +3,16 @@
  * @author JKetelaar
  */
 
-namespace Parabot\BDN\BotBundle\Entity\Types;
+namespace Parabot\BDN\BotBundle\Entity\Types\Providers;
 
 use Doctrine\ORM\Mapping as ORM;
 use Parabot\BDN\BotBundle\Entity\Servers\Server;
+use Parabot\BDN\BotBundle\Entity\Types\Type;
 
 /**
- * Provider
+ * Sort-of-abstract Provider
  *
- * @ORM\Table(name="type_provider")
- * @ORM\Entity(repositoryClass="Parabot\BDN\BotBundle\Repository\ProviderRepository")
+ * @ORM\MappedSuperclass
  */
 class Provider extends Type {
 
@@ -21,7 +21,7 @@ class Provider extends Type {
      *
      * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\Server", mappedBy="provider")
      */
-    private $servers;
+    protected $servers;
 
     /**
      * Client constructor.
@@ -52,7 +52,7 @@ class Provider extends Type {
      * @return string
      */
     public function getTravisRepository() {
-        return 'Parabot/Parabot-317-API-Minified';
+        return null;
     }
 
     /**
