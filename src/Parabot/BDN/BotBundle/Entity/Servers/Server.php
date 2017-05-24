@@ -372,4 +372,11 @@ class Server {
         }
         $file->move($this->path, $this->getFile());
     }
+
+    /**
+     * @return User
+     */
+    public function getProvider() {
+        return $this->provider;
+    }
 }
