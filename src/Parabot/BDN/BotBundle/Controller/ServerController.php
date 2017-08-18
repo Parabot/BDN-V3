@@ -11,6 +11,7 @@ use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Parabot\BDN\BotBundle\Entity\Servers\Server;
 use Parabot\BDN\BotBundle\Entity\Servers\ServerDetail;
+use Parabot\BDN\BotBundle\Entity\Servers\ServerSlackChannel;
 use Parabot\BDN\BotBundle\Entity\Servers\ServerUse;
 use Parabot\BDN\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -829,5 +830,111 @@ class ServerController extends Controller {
         }
 
         return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Returns the Slack channel for the server",
+     *  requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="string",
+     *          "description"="ID of the server"
+     *      }
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/slack/{id}", name="get_server_slack_channel")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getSlackChannel(Request $request, $id) {
+        if($id != null) {
+            $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
+            if($serverObject != null) {
+                $slack = $serverObject->getSlackChannel();
+                if($slack != null) {
+                    return new JsonResponse($slack);
+                } else {
+                    return new JsonResponse([ 'result' => 'Could not find Slack channel for requested server' ], 404);
+                }
+            } else {
+                return new JsonResponse([ 'result' => 'Could not find server with ID' ], 404);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Missing server ID' ], 400);
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Sets the Slack channel for the server",
+     *  requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="string",
+     *          "description"="ID of the server"
+     *      },
+     *      {
+     *          "name"="name",
+     *          "dataType"="string",
+     *          "description"="Name of the channel"
+     *      }
+     *  },
+     *  parameters={
+     *  }
+     * )
+     *
+     * @Route("/slack/{id}", name="set_server_slack_channel")
+     * @Method({"POST"})
+     *
+     * @PreAuthorize("isServerDeveloper()")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function setSlackChannel(Request $request, $id) {
+        if($id != null) {
+            $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
+            if($serverObject != null) {
+                /**
+                 * @var ServerSlackChannel $slack
+                 */
+                $slack = $serverObject->getSlackChannel();
+                if($slack != null && ! $this->get(
+                        'parabot.b_d_n.user_bundle.security.request_access_evaluator'
+                    )->isAdministrator()
+                ) {
+                    return new JsonResponse([ 'result' => 'Slack channel already set' ], 404);
+                } else {
+                    if(($channel = $request->get('channel')) != null) {
+                        if($slack != null && $this->get(
+                                'parabot.b_d_n.user_bundle.security.request_access_evaluator'
+                            )->isAdministrator()
+                        ) {
+                            $slack->setChannel($channel);
+                        } else {
+                            $slack = new ServerSlackChannel($serverObject, $channel);
+                        }
+
+                        $this->getDoctrine()->getManager()->persist($slack);
+                        $this->getDoctrine()->getManager()->flush();
+                    } else {
+                        return new JsonResponse([ 'result' => 'Missing channel' ]);
+                    }
+                }
+
+            } else {
+                return new JsonResponse([ 'result' => 'Could not find server with ID' ], 404);
+            }
+        } else {
+            return new JsonResponse([ 'result' => 'Missing server ID' ], 400);
+        }
     }
 }

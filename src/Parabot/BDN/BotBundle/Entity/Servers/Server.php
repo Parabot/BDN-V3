@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToMany;
+use Parabot\BDN\BotBundle\Entity\Types\Provider;
 use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -110,7 +111,7 @@ class Server {
     private $path;
 
     /**
-     * @var User
+     * @var Provider
      *
      * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Types\Providers\Provider", inversedBy="servers")
      * @ORM\JoinColumn(name="provider_id", referencedColumnName="id")
@@ -118,6 +119,16 @@ class Server {
      * @Groups({"default"})
      */
     private $provider;
+
+    /**
+     * @var User
+     *
+     * @ORM\OneToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\ServerSlackChannel", inversedBy="server")
+     * @ORM\JoinColumn(name="server_id", referencedColumnName="id")
+     *
+     * @Groups({"default"})
+     */
+    private $slackChannel;
 
     /**
      * @return Hook[]
@@ -371,5 +382,19 @@ class Server {
             throw new Exception('File extension not allowed, only jar');
         }
         $file->move($this->path, $this->getFile());
+    }
+
+    /**
+     * @return Provider
+     */
+    public function getProvider() {
+        return $this->provider;
+    }
+
+    /**
+     * @return User
+     */
+    public function getSlackChannel() {
+        return $this->slackChannel;
     }
 }
