@@ -14,10 +14,12 @@ class TypeHelper {
      * @var string[] $types
      */
     private static $types = [
-        'client'            => 'BDNBotBundle:Types\Client',
-        'randoms'           => 'BDNBotBundle:Types\Randoms',
-        'default-provider'  => 'BDNBotBundle:Types\Providers\DefaultProvider',
-        'os-scape-provider' => 'BDNBotBundle:Types\Providers\OSScapeProvider',
+        'client'              => 'BDNBotBundle:Types\Client',
+        'randoms'             => 'BDNBotBundle:Types\Randoms',
+        'default-provider'    => 'BDNBotBundle:Types\Providers\DefaultProvider',
+        'os-scape-provider'   => 'BDNBotBundle:Types\Providers\OSScapeProvider',
+        'pkhonor-provider'    => 'BDNBotBundle:Types\Providers\PkHonorProvider',
+        'dreamscape-provider' => 'BDNBotBundle:Types\Providers\DreamScapeProvider',
     ];
 
     private $entityManager;
