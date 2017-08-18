@@ -5,6 +5,8 @@
 
 namespace Parabot\BDN\BotBundle\Entity\Types\Providers;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Class PkHonorProvider
  *
