@@ -113,8 +113,8 @@ class Server {
     /**
      * @var Provider
      *
-     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Types\Provider", inversedBy="servers")
-     * @ORM\JoinColumn(name="server_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Types\Providers\Provider", inversedBy="servers")
+     * @ORM\JoinColumn(name="provider_id", referencedColumnName="id")
      *
      * @Groups({"default"})
      */

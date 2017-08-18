@@ -14,9 +14,10 @@ class TypeHelper {
      * @var string[] $types
      */
     private static $types = [
-        'client'   => 'BDNBotBundle:Types\Client',
-        'randoms'  => 'BDNBotBundle:Types\Randoms',
-        'provider' => 'BDNBotBundle:Types\Provider',
+        'client'            => 'BDNBotBundle:Types\Client',
+        'randoms'           => 'BDNBotBundle:Types\Randoms',
+        'default-provider'  => 'BDNBotBundle:Types\Providers\DefaultProvider',
+        'os-scape-provider' => 'BDNBotBundle:Types\Providers\OSScapeProvider',
     ];
 
     private $entityManager;

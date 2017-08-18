@@ -6,7 +6,6 @@
 namespace Parabot\BDN\BotBundle\Repository;
 
 use Parabot\BDN\BotBundle\Entity\Types\Type;
-use Symfony\Component\HttpFoundation\Request;
 
 interface TypeRepository {
 
@@ -18,13 +17,11 @@ interface TypeRepository {
     public function findAllByStability($stable);
 
     /**
-     * @param boolean      $stable
+     * @param boolean     $stable
      *
-     * @param null|string  $branch
-     *
-     * @param Request|null $request
+     * @param null|string $branch
      *
      * @return null|Type
      */
-    public function findLatestByStability($stable, $branch = null, Request $request = null);
+    public function findLatestByStability($stable, $branch = null);
 }

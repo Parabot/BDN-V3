@@ -170,3 +170,4 @@ crashlytics-build.properties
 /web/bundles/
 
 .DS_Store
+/scripts
