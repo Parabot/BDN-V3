@@ -15,7 +15,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
-    valid_domain: parabot.org
+    valid_domain: [parabot.org, bdn-v3.dev]
     teamcity_endpoint: 'http://city.parabot.org/app/rest/'
 
 framework:

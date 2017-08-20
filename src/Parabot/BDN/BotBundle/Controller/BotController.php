@@ -181,8 +181,7 @@ class BotController extends Controller {
 
                     if(($result = $repository->findOneBy([ 'version' => $version ])) == null || sizeof(
                                                                                                     $result
-                                                                                                ) <= 0
-                    ) {
+                                                                                                ) <= 0) {
                         $location = 'artifacts/' . strtolower(
                                 $typeObject->getType()
                             ) . '/' . $totalNamedVersion . '.jar';

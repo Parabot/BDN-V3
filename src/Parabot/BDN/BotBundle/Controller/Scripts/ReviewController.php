@@ -128,8 +128,7 @@ class ReviewController extends Controller {
                         if($this->getDoctrine()->getRepository('BDNBotBundle:Scripts\Review')->getReview(
                                 $script,
                                 $user
-                            ) == null
-                        ) {
+                            ) == null) {
                             $reviewObject = new Review();
                             $reviewObject->setReview($review);
                             $reviewObject->setScript($script);

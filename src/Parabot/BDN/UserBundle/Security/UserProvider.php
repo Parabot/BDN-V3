@@ -76,8 +76,7 @@ class UserProvider extends BaseClass {
         $setter_token = $setter . 'AccessToken';
         if(null !== $previousUser = $this->userManager->findUserBy(
                 [ 'communityId' => $response->getResponse()[ 'id' ] ]
-            )
-        ) {
+            )) {
             $previousUser->$setter_id(null);
             $previousUser->$setter_token(null);
             $this->userManager->updateUser($previousUser);

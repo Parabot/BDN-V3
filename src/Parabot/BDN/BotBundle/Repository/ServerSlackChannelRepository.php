@@ -5,7 +5,6 @@ namespace Parabot\BDN\BotBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Parabot\BDN\BotBundle\Entity\Servers\Server;
 use Parabot\BDN\BotBundle\Entity\Servers\ServerSlackChannel;
-use Parabot\BDN\UserBundle\Entity\User;
 
 /**
  * ServerSlackChannelRepository

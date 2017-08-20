@@ -86,8 +86,7 @@ class LoginRequestManager {
         $token      = $repository->findOneBy([ 'key' => $key ]);
 
         if($token !== null && $token->isExpired() !== true && $token->getDate() !== null && $token->getDate(
-            )->getTimestamp() > time() - 60 * 5
-        ) {
+            )->getTimestamp() > time() - 60 * 5) {
             $user = $token->getUser();
             if($user !== null) {
                 $token->setExpired(true);

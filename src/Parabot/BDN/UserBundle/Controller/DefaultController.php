@@ -83,7 +83,7 @@ class DefaultController extends Controller {
                     $this->getUser()->getApiKey(),
                     time() + (60 * 60 * 24 * 31),
                     '/',
-                    $this->getParameter('valid_domain')
+                    parse_url($request->getSchemeAndHttpHost())[ 'host' ]
                 )
             );
         } else {
@@ -139,7 +139,7 @@ class DefaultController extends Controller {
                 $redirect,
                 time() + (60 * 5),
                 '/',
-                $this->getParameter('valid_domain')
+                parse_url($request->getSchemeAndHttpHost())[ 'host' ]
             );
             $response->headers->setCookie($cookie);
         }

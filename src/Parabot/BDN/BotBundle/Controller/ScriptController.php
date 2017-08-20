@@ -63,8 +63,7 @@ class ScriptController extends Controller {
         if($script != null) {
             if($this->get('request_access_evaluator')->isScriptWriter() && $script->hasAuthor(
                     $this->get('request_access_evaluator')->getUser()
-                )
-            ) {
+                )) {
                 $groups = [ 'default', 'developer' ];
                 if($request->get('include') == 'users') {
                     $groups[] = 'script_users';
