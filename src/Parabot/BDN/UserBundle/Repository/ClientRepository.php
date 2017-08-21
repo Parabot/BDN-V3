@@ -48,4 +48,8 @@ class ClientRepository extends EntityRepository {
 
         return false;
     }
+
+    public function getCurrentHost() {
+
+    }
 }

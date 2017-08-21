@@ -8,20 +8,25 @@ namespace AppBundle\Service;
 class UrlUtils {
 
     /**
-     * @var string
+     * @var string[]
      */
-    private $domain;
+    private $domains;
 
     /**
      * UrlUtils constructor.
      *
-     * @param string $domain
+     * @param string $domains
      */
-    public function __construct($domain) { $this->domain = $domain; }
+    public function __construct($domains) { $this->domains = $domains; }
 
 
     public function isValidHostWithTLD($url = null) {
-        return $this->getHostWithTLD($url) == $this->domain;
+        foreach($this->domains as $domain){
+            if ($this->getHostWithTLD($url) == $domain){
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getHostWithTLD($url = null) {

@@ -171,3 +171,5 @@ crashlytics-build.properties
 
 .DS_Store
 /scripts
+
+/app/Migrations-old
