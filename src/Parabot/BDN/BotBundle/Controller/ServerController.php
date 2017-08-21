@@ -236,7 +236,7 @@ class ServerController extends Controller {
      * @Route("/insert", name="insert_server")
      * @Method({"POST"})
      *
-     * @PreAuthorize("isServerDeveloper()")
+     * @PreAuthorize("isAdministrator()")
      *
      * @param Request $request
      *
