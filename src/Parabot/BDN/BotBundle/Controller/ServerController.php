@@ -224,9 +224,9 @@ class ServerController extends Controller {
      *  description="Inserts server file into server object",
      *  requirements={
      *      {
-     *          "name"="name",
+     *          "name"="id",
      *          "dataType"="string",
-     *          "description"="Name of the server"
+     *          "description"="ID of the server"
      *      }
      *  },
      *  parameters={
@@ -249,7 +249,7 @@ class ServerController extends Controller {
             $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
             if($serverObject != null) {
                 if($server != null) {
-                    if($server->guessExtension() == 'zip') {
+                    if($server->guessExtension() == 'zip' || $server->guessExtension() == 'jar') {
                         $serverObject->insertFile($server);
 
                         return new JsonResponse([ 'result' => 'Server added' ]);
