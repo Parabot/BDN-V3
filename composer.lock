@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "969986e65f9d5c65049b1dafe7c6bc0c",
+    "content-hash": "0a68c7407b1367886dd1deec029ddb9f",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1564,7 +1564,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2017-08-11 10:26:53"
+            "time": "2017-08-11T10:26:53+00:00"
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -2856,7 +2856,7 @@
                 "test",
                 "travis"
             ],
-            "time": "2015-07-30 13:39:05"
+            "time": "2015-07-30T13:39:05+00:00"
         },
         {
             "name": "leaseweb/api-caller-bundle",
@@ -5921,55 +5921,6 @@
                 "templating"
             ],
             "time": "2017-06-07T18:47:58+00:00"
-        },
-        {
-            "name": "whatsapp/chat-api",
-            "version": "v2.5.5.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mgp25/Chat-API.git",
-                "reference": "d74db1a225f643013e2082bf11d98776f707678a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mgp25/Chat-API/zipball/d74db1a225f643013e2082bf11d98776f707678a",
-                "reference": "d74db1a225f643013e2082bf11d98776f707678a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-gd": "*",
-                "ext-mcrypt": "*",
-                "ext-openssl": "*",
-                "ext-pdo": "*",
-                "ext-sockets": "*",
-                "ext-sqlite3": "*",
-                "php": ">=5.6"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Chat API Contributing Team",
-                    "homepage": "https://github.com/WHAnonymous/Chat-API/graphs/contributors",
-                    "role": "Contributors"
-                }
-            ],
-            "description": "The PHP WhatsApp library",
-            "keywords": [
-                "Chat-API",
-                "whatsapi",
-                "whatsapp"
-            ],
-            "time": "2015-11-02T14:39:24+00:00"
         },
         {
             "name": "white-october/pagerfanta-bundle",
