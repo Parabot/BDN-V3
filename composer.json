@@ -37,7 +37,8 @@
         "nelmio/api-doc-bundle": "^2.13",
         "myclabs/php-enum": "^1.5",
         "guzzlehttp/guzzle": "^6.2",
-        "mybuilder/cronos-bundle": "^2.0"
+        "mybuilder/cronos-bundle": "^2.0",
+        "symfony/polyfill-iconv": "^1.5"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
