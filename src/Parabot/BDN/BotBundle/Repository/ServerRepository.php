@@ -66,7 +66,7 @@ class ServerRepository extends EntityRepository {
             return true;
         }
 
-        if (count($result->getAuthors()) > 0) {
+        if(count($result->getAuthors()) > 0) {
             foreach($result->getAuthors() as $author) {
                 if($author->getId() == $user->getId()) {
                     return true;
