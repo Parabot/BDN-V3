@@ -17,4 +17,4 @@ services:
             -  { name: serializer.normalizer }
     url_utils:
         class: AppBundle\Service\UrlUtils
-        arguments: ['%valid_domain%']
+        arguments: ['%valid_domains%']
