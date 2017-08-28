@@ -36,20 +36,18 @@ class BotController extends Controller {
      */
     public function downloadProviderAction(Request $request) {
         $server = $request->get('server');
-        if($server !== null) {
-            switch($server) {
-                case 'OS-Scape':
-                    return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'os-scape-provider' ]), 301);
-                case 'Dreamscape':
-                    return $this->redirect(
-                        $this->generateUrl('bot_download', [ 'type' => 'dreamscape-provider' ]),
-                        301
-                    );
-                case 'PkHonor':
-                    return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'pkhonor-provider' ]), 301);
-                default:
-                    return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'default-provider' ]), 301);
-            }
+        switch($server) {
+            case 'OS-Scape':
+                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'os-scape-provider' ]), 301);
+            case 'Dreamscape':
+                return $this->redirect(
+                    $this->generateUrl('bot_download', [ 'type' => 'dreamscape-provider' ]),
+                    301
+                );
+            case 'PkHonor':
+                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'pkhonor-provider' ]), 301);
+            default:
+                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'default-provider' ]), 301);
         }
     }
 
