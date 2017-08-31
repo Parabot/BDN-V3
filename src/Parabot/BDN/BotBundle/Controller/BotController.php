@@ -35,21 +35,39 @@ class BotController extends Controller {
      * @return RedirectResponse
      */
     public function downloadProviderAction(Request $request) {
-        $server = $request->get('server');
+        $server  = $request->get('server');
+        $nightly = $request->get('nightly');
+
+        if($nightly == null) {
+            $nightly = 'false';
+        }
+
         switch($server) {
             case 'OS-Scape':
-                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'os-scape-provider' ]), 301);
+                return $this->redirect(
+                    $this->generateUrl('bot_download', [ 'type' => 'os-scape-provider', 'nightly' => $nightly ]),
+                    301
+                );
             case 'Dreamscape':
                 return $this->redirect(
-                    $this->generateUrl('bot_download', [ 'type' => 'dreamscape-provider' ]),
+                    $this->generateUrl('bot_download', [ 'type' => 'dreamscape-provider', 'nightly' => $nightly ]),
                     301
                 );
             case 'PkHonor':
-                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'pkhonor-provider' ]), 301);
+                return $this->redirect(
+                    $this->generateUrl('bot_download', [ 'type' => 'pkhonor-provider', 'nightly' => $nightly ]),
+                    301
+                );
             case 'LocoPK':
-                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'locopk-provider' ]), 301);
+                return $this->redirect(
+                    $this->generateUrl('bot_download', [ 'type' => 'locopk-provider', 'nightly' => $nightly ]),
+                    301
+                );
             default:
-                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'default-provider' ]), 301);
+                return $this->redirect(
+                    $this->generateUrl('bot_download', [ 'type' => 'default-provider', 'nightly' => $nightly ]),
+                    301
+                );
         }
     }
 
