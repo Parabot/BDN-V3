@@ -46,6 +46,8 @@ class BotController extends Controller {
                 );
             case 'PkHonor':
                 return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'pkhonor-provider' ]), 301);
+            case 'LocoPK':
+                return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'locopk-provider' ]), 301);
             default:
                 return $this->redirect($this->generateUrl('bot_download', [ 'type' => 'default-provider' ]), 301);
         }
