@@ -20,6 +20,7 @@ class TypeHelper {
         'os-scape-provider'   => 'BDNBotBundle:Types\Providers\OSScapeProvider',
         'pkhonor-provider'    => 'BDNBotBundle:Types\Providers\PkHonorProvider',
         'dreamscape-provider' => 'BDNBotBundle:Types\Providers\DreamScapeProvider',
+        'locopk-provider'     => 'BDNBotBundle:Types\Providers\LocoPKProvider',
     ];
 
     private $entityManager;
