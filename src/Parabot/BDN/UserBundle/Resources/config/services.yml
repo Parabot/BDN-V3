@@ -1,14 +1,4 @@
 services:
-    authentication_handler:
-        class: Parabot\BDN\UserBundle\Listener\AuthenticationListener
-        arguments: ['@doctrine.orm.entity_manager']
-
-    bdn_blocking_login_listener:
-        class: Parabot\BDN\UserBundle\Listener\BlockingLoginListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 9 }
-        arguments: ['%blocking_routes%', '@doctrine.orm.entity_manager', '%block_count%']
-
     login_request_manager:
         class: Parabot\BDN\UserBundle\Service\LoginRequestManager
         arguments: ['@doctrine.orm.entity_manager', '@url_utils']
@@ -16,11 +6,6 @@ services:
     oauth_user_provider:
         class: Parabot\BDN\UserBundle\Security\UserProvider
         arguments: ['@fos_user.user_manager',{forums: forums}, '@security.password_encoder', '@doctrine.orm.entity_manager', '@login_request_manager', '@request_stack']
-
-
-    internal_user_manager:
-        class: Parabot\BDN\UserBundle\Service\InternalUserManager
-        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
 
     request_access_evaluator:
         class: Parabot\BDN\UserBundle\Security\RequestAccessEvaluator
