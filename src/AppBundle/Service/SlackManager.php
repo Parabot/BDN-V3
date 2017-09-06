@@ -227,9 +227,9 @@ class SlackManager {
 
         if($status === false) {
             return [
-                'result'      => false,
+                'result'      => $responseArray[ 'error' ],
                 'error'       => 'Status is not true, please contact an administrator',
-                'slack_error' => $responseArray[ 'error' ],
+                'slack_error' => $responseArray,
                 'code'        => 500,
             ];
         }
