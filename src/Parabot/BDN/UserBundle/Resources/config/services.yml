@@ -10,3 +10,7 @@ services:
     request_access_evaluator:
         class: Parabot\BDN\UserBundle\Security\RequestAccessEvaluator
         arguments: ['@service_container']
+
+    internal_user_manager:
+        class: Parabot\BDN\UserBundle\Service\InternalUserManager
+        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
