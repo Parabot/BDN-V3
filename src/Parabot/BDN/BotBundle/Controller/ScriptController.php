@@ -441,6 +441,12 @@ class ScriptController extends Controller {
                         $gitURL = $scriptAttributes[ 'git' ][ 'url' ];
                         if(preg_match('/((git)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:\/\-~]+)(\.git)(\/)?/', $gitURL)) {
                             $script->getGit()->setUrl($gitURL);
+                            if ($this->get('bot.teamcity.api')->updateVSCGitURL($script) !== true){
+                                return new JsonResponse(
+                                    [ 'result' => 'Could not update Git URL at TeamCity, please contact a system administrator' ],
+                                    500
+                                );
+                            }
                         } else {
                             return new JsonResponse(
                                 [ 'result' => 'Git URL not a valid Git URL (like git@domain.com:username/project.git)' ],

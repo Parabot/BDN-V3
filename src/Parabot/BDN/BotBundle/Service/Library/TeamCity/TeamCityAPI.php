@@ -58,11 +58,13 @@ class TeamCityAPI {
      *
      * @param array                $headers
      *
+     * @param bool                 $isClass
+     *
      * @return mixed
      * @throws \Exception
      */
-    protected function callPoint($class = null, $method = 'GET', $parameters = [], $headers = []) {
-        if($class !== null && is_string($class)) {
+    protected function callPoint($class = null, $method = 'GET', $parameters = [], $headers = [], $isClass = true) {
+        if($class !== null && is_string($class) && $isClass !== false) {
             $reflectionClass = new \ReflectionClass($class);
 
             /**
@@ -75,7 +77,9 @@ class TeamCityAPI {
             $point    = $class;
         }
 
-        $point = $point->getValue();
+        if($isClass !== false) {
+            $point = $point->getValue();
+        }
 
         $client = new Client([ 'base_uri' => $this->endpoint, 'auth' => [ $this->username, $this->password ] ]);
         if(is_array($parameters)) {
@@ -114,7 +118,7 @@ class TeamCityAPI {
                 }
             );
             $promiseResult = $promise->wait();
-        } catch(AccountExpiredException $e) {
+        } catch(\Exception $e) {
             throw new \Exception('Error occurred while retrieving TeamCity API');
         }
 
@@ -280,6 +284,18 @@ class TeamCityAPI {
 
     public function getVCSID(Script $script) {
         return $this->getProjectID($script) . '_' . $script->getId();
+    }
+
+    public function updateVSCGitURL(Script $script) {
+        $result = $this->callPoint(
+            sprintf(TeamCityPoint::VSC_ROOTS_URL(), $this->getVCSID($script)),
+            'PUT',
+            $script->getGit()->getUrl(),
+            [ 'Content-Type' => 'text/plain', 'Accept' => '' ],
+            false
+        );
+
+        return $result === $script->getGit()->getUrl();
     }
 
     /**
