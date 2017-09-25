@@ -216,6 +216,17 @@ class ServerController extends Controller {
         $this->getDoctrine()->getManager()->persist($server);
         $this->getDoctrine()->getManager()->flush();
 
+        $slack = $server->getDetail('slack');
+        if($slack != null) {
+            $this->get('slack_manager')->sendSuccessMessage(
+                'Server updated',
+                $server->getName() . ' has been added!',
+                null,
+                [ 'Version' => $server->getVersion(), 'Description' => $server->getDescription() ],
+                $slack->getValue()
+            );
+        }
+
         return $response->setData([ 'result' => 'Server inserted' ]);
     }
 
@@ -236,7 +247,6 @@ class ServerController extends Controller {
      * @Route("/insert", name="insert_server")
      * @Method({"POST"})
      *
-     * @PreAuthorize("isAdministrator()")
      *
      * @param Request $request
      *
@@ -252,7 +262,18 @@ class ServerController extends Controller {
                     if($server->guessExtension() == 'zip' || $server->guessExtension() == 'jar') {
                         $serverObject->insertFile($server);
 
-                        return new JsonResponse([ 'result' => 'Server added' ]);
+                        $slack = $serverObject->getDetail('slack');
+                        if($slack != null) {
+                            $this->get('slack_manager')->sendSuccessMessage(
+                                'Server updated',
+                                'Client for server ' . $serverObject->getName() . ' has been updated!',
+                                null,
+                                [ 'Server' => $serverObject->getName(), 'Version' => $serverObject->getVersion() ],
+                                $slack->getValue()
+                            );
+                        }
+
+                        return new JsonResponse([ 'result' => 'Server uploaded' ]);
                     } else {
                         return new JsonResponse([ 'result' => 'Upload may only be a jar' ], 400);
                     }
@@ -467,7 +488,6 @@ class ServerController extends Controller {
             $this->getDoctrine()->getManager()->flush();
 
             $response->setData([ 'result' => 'Server saved!' ]);
-
         } else {
             $response->setData([ 'result' => 'Could not find server' ]);
             $response->setStatusCode(404);
@@ -609,6 +629,17 @@ class ServerController extends Controller {
                         }
 
                         $this->getDoctrine()->getManager()->flush();
+
+                        $slack = $server->getDetail('slack');
+                        if($slack != null) {
+                            $this->get('slack_manager')->sendSuccessMessage(
+                                'Server updated',
+                                'Hooks for ' . $server->getName() . ' have been updated!',
+                                null,
+                                [ 'Server' => $server->getName(), 'Amount of hooks' => count($hooks) ],
+                                $slack->getValue()
+                            );
+                        }
 
                         $response->setData([ 'result' => 'Hooks inserted' ]);
                     } else {
@@ -857,7 +888,7 @@ class ServerController extends Controller {
             if($serverObject != null) {
                 $slack = $serverObject->getDetail('slack');
                 if($slack != null) {
-                    return new JsonResponse(['result' => $slack->getValue()]);
+                    return new JsonResponse([ 'result' => $slack->getValue() ]);
                 } else {
                     return new JsonResponse([ 'result' => 'Could not find Slack channel for requested server' ], 404);
                 }
