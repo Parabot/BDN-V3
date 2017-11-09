@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToMany;
-use Parabot\BDN\BotBundle\Entity\Types\Provider;
+use Parabot\BDN\BotBundle\Entity\Types\Providers\Provider;
 use Parabot\BDN\UserBundle\Entity\Group;
 use Parabot\BDN\UserBundle\Entity\User;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -119,16 +119,6 @@ class Server {
      * @Groups({"default"})
      */
     private $provider;
-
-    /**
-     * @var User
-     *
-     * @ORM\OneToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\ServerSlackChannel", inversedBy="server")
-     * @ORM\JoinColumn(name="server_id", referencedColumnName="id")
-     *
-     * @Groups({"default"})
-     */
-    private $slackChannel;
 
     /**
      * @return Hook[]
@@ -323,6 +313,21 @@ class Server {
     }
 
     /**
+     * @param string $key
+     *
+     * @return ServerDetail|null
+     */
+    public function getDetail($key){
+        foreach ($this->details as $detail){
+            if ($detail->getName() == $key){
+                return $detail;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param ServerDetail[] $details
      *
      * @return Server
@@ -389,12 +394,5 @@ class Server {
      */
     public function getProvider() {
         return $this->provider;
-    }
-
-    /**
-     * @return User
-     */
-    public function getSlackChannel() {
-        return $this->slackChannel;
     }
 }

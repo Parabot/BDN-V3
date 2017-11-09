@@ -216,6 +216,17 @@ class ServerController extends Controller {
         $this->getDoctrine()->getManager()->persist($server);
         $this->getDoctrine()->getManager()->flush();
 
+        $slack = $server->getDetail('slack');
+        if($slack != null) {
+            $this->get('slack_manager')->sendSuccessMessage(
+                'Server updated',
+                $server->getName() . ' has been added!',
+                null,
+                [ 'Version' => $server->getVersion(), 'Description' => $server->getDescription() ],
+                $slack->getValue()
+            );
+        }
+
         return $response->setData([ 'result' => 'Server inserted' ]);
     }
 
@@ -236,7 +247,6 @@ class ServerController extends Controller {
      * @Route("/insert", name="insert_server")
      * @Method({"POST"})
      *
-     * @PreAuthorize("isAdministrator()")
      *
      * @param Request $request
      *
@@ -252,7 +262,18 @@ class ServerController extends Controller {
                     if($server->guessExtension() == 'zip' || $server->guessExtension() == 'jar') {
                         $serverObject->insertFile($server);
 
-                        return new JsonResponse([ 'result' => 'Server added' ]);
+                        $slack = $serverObject->getDetail('slack');
+                        if($slack != null) {
+                            $this->get('slack_manager')->sendSuccessMessage(
+                                'Server updated',
+                                'Client for server ' . $serverObject->getName() . ' has been updated!',
+                                null,
+                                [ 'Server' => $serverObject->getName(), 'Version' => $serverObject->getVersion() ],
+                                $slack->getValue()
+                            );
+                        }
+
+                        return new JsonResponse([ 'result' => 'Server uploaded' ]);
                     } else {
                         return new JsonResponse([ 'result' => 'Upload may only be a jar' ], 400);
                     }
@@ -467,7 +488,6 @@ class ServerController extends Controller {
             $this->getDoctrine()->getManager()->flush();
 
             $response->setData([ 'result' => 'Server saved!' ]);
-
         } else {
             $response->setData([ 'result' => 'Could not find server' ]);
             $response->setStatusCode(404);
@@ -609,6 +629,17 @@ class ServerController extends Controller {
                         }
 
                         $this->getDoctrine()->getManager()->flush();
+
+                        $slack = $server->getDetail('slack');
+                        if($slack != null) {
+                            $this->get('slack_manager')->sendSuccessMessage(
+                                'Server updated',
+                                'Hooks for ' . $server->getName() . ' have been updated!',
+                                null,
+                                [ 'Server' => $server->getName(), 'Amount of hooks' => count($hooks) ],
+                                $slack->getValue()
+                            );
+                        }
 
                         $response->setData([ 'result' => 'Hooks inserted' ]);
                     } else {
@@ -855,77 +886,12 @@ class ServerController extends Controller {
         if($id != null) {
             $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
             if($serverObject != null) {
-                $slack = $serverObject->getSlackChannel();
+                $slack = $serverObject->getDetail('slack');
                 if($slack != null) {
-                    return new JsonResponse($slack);
+                    return new JsonResponse([ 'result' => $slack->getValue() ]);
                 } else {
                     return new JsonResponse([ 'result' => 'Could not find Slack channel for requested server' ], 404);
                 }
-            } else {
-                return new JsonResponse([ 'result' => 'Could not find server with ID' ], 404);
-            }
-        } else {
-            return new JsonResponse([ 'result' => 'Missing server ID' ], 400);
-        }
-    }
-
-    /**
-     * @ApiDoc(
-     *  description="Sets the Slack channel for the server",
-     *  requirements={
-     *      {
-     *          "name"="id",
-     *          "dataType"="string",
-     *          "description"="ID of the server"
-     *      },
-     *      {
-     *          "name"="name",
-     *          "dataType"="string",
-     *          "description"="Name of the channel"
-     *      }
-     *  },
-     *  parameters={
-     *  }
-     * )
-     *
-     * @Route("/slack/{id}", name="set_server_slack_channel")
-     * @Method({"POST"})
-     *
-     * @PreAuthorize("isServerDeveloper()")
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function setSlackChannel(Request $request, $id) {
-        if($id != null) {
-            $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
-            if($serverObject != null) {
-                /**
-                 * @var ServerSlackChannel $slack
-                 */
-                $slack = $serverObject->getSlackChannel();
-                if($slack != null && ! $this->get(
-                        'parabot.b_d_n.user_bundle.security.request_access_evaluator'
-                    )->isAdministrator()) {
-                    return new JsonResponse([ 'result' => 'Slack channel already set' ], 404);
-                } else {
-                    if(($channel = $request->get('channel')) != null) {
-                        if($slack != null && $this->get(
-                                'parabot.b_d_n.user_bundle.security.request_access_evaluator'
-                            )->isAdministrator()) {
-                            $slack->setChannel($channel);
-                        } else {
-                            $slack = new ServerSlackChannel($serverObject, $channel);
-                        }
-
-                        $this->getDoctrine()->getManager()->persist($slack);
-                        $this->getDoctrine()->getManager()->flush();
-                    } else {
-                        return new JsonResponse([ 'result' => 'Missing channel' ]);
-                    }
-                }
-
             } else {
                 return new JsonResponse([ 'result' => 'Could not find server with ID' ], 404);
             }
