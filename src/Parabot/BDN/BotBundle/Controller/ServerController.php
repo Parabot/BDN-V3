@@ -879,6 +879,7 @@ class ServerController extends Controller {
      * @Method({"GET"})
      *
      * @param Request $request
+     * @param         $id
      *
      * @return JsonResponse
      */
