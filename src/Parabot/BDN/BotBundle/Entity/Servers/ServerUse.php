@@ -27,22 +27,16 @@ class ServerUse {
     /**
      * @var User
      *
-     * @ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User")
-     * @JoinTable(name="user_serveruses",
-     *      joinColumns={@JoinColumn(name="serveruse_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="user_id", referencedColumnName="id")}
-     * )
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User", inversedBy="serverUses")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
 
     /**
      * @var Server
      *
-     * @ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\Server")
-     * @JoinTable(name="server_serveruse",
-     *      joinColumns={@JoinColumn(name="serveruse_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="server_id", referencedColumnName="id")}
-     * )
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\Server", inversedBy="uses")
+     * @ORM\JoinColumn(name="server_id", referencedColumnName="id")
      */
     private $server;
 

@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Scripts\Review;
+use Parabot\BDN\BotBundle\Entity\Servers\ServerUse;
 use Parabot\BDN\UserBundle\Entity\OAuth\Client;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -104,6 +105,13 @@ class User extends BaseUser implements TwoFactorInterface {
      * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Scripts\Review", mappedBy="user")
      */
     private $reviews;
+
+    /**
+     * @var ServerUse[]
+     *
+     * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\ServerUse", mappedBy="user")
+     */
+    private $serverUses;
 
     public function __construct() {
         parent::__construct();
