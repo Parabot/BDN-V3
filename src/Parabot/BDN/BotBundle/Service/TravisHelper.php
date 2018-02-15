@@ -25,7 +25,7 @@ class TravisHelper {
      * @return Client\Entity\Repository
      */
     public function getRepository($slug) {
-        return $this->client->fetchRepository($slug);
+        return $this->client->fetchRepository('repos/' . $slug);
     }
 
     /**
@@ -35,7 +35,7 @@ class TravisHelper {
      * @return null|Client\Entity\Build
      */
     public function getLatestBuild($slug, $build_id) {
-        $repository = $this->client->fetchRepository($slug);
+        $repository = $this->client->fetchRepository('repos/' . $slug);
         $builds     = $repository->getBuilds();
 
         /** @var Client\Entity\Build $build */
