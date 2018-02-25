@@ -30,8 +30,8 @@ class AppKernel extends Kernel
             new Sylius\Bundle\ResourceBundle\SyliusResourceBundle(),
             new Sylius\Bundle\MoneyBundle\SyliusMoneyBundle(),
             new Sylius\Bundle\SequenceBundle\SyliusSequenceBundle(),
-
             new Sylius\Bundle\OrderBundle\SyliusOrderBundle(),
+            new \winzou\Bundle\StateMachineBundle\winzouStateMachineBundle(),
 
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Parabot\BDN\StoreBundle\BDNStoreBundle(),
