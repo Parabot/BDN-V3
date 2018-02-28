@@ -25,7 +25,7 @@
         "friendsofsymfony/rest-bundle": "~1.7",
         "jms/serializer-bundle": "~1.1",
         "friendsofsymfony/oauth-server-bundle": "~1.5",
-        "sylius/cart-bundle": "0.17.*",
+        "sylius/cart-bundle": "~0.17",
         "leaseweb/api-caller-bundle": "~1.2",
         "seferov/aws-bundle": "~1.2",
         "l3l0/php-travis-client": "dev-master",
