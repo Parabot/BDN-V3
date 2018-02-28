@@ -121,6 +121,13 @@ class Server {
     private $provider;
 
     /**
+     * @var ServerUse
+     *
+     * @ORM\OneToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Servers\ServerUse", mappedBy="server")
+     */
+    private $uses;
+
+    /**
      * @return Hook[]
      */
     public function getHooks() {
