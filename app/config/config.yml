@@ -3,13 +3,11 @@ imports:
     - { resource: security.yml }
     - { resource: services.yml }
 
-    - { resource: @BDNUserBundle/Resources/config/main.yml }
-    - { resource: @BDNUserBundle/Resources/config/parameters.yml }
+    - { resource: '@BDNUserBundle/Resources/config/main.yml' }
+    - { resource: '@BDNUserBundle/Resources/config/parameters.yml' }
 
-    - { resource: @BDNStoreBundle/Resources/config/main.yml }
-
-    - { resource: @BDNBotBundle/Resources/config/main.yml }
-    - { resource: @BDNBotBundle/Resources/config/parameters.yml }
+    - { resource: '@BDNBotBundle/Resources/config/main.yml' }
+    - { resource: '@BDNBotBundle/Resources/config/parameters.yml' }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -108,11 +106,6 @@ nelmio_api_doc:
         enabled: true
 
 hwi_oauth:
-    http_client:
-        timeout:       10
-        verify_peer:   false
-        ignore_errors: false
-        max_redirects: 5
     firewall_names: [main]
     fosub:
         username_iterations: 30

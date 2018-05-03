@@ -1,16 +1,20 @@
 imports:
-    - { resource: @BDNStoreBundle/Resources/config/services.yml }
-    - { resource: @BDNUserBundle/Resources/config/services.yml }
-    - { resource: @BDNBotBundle/Resources/config/services.yml }
-    - { resource: @BDNOAuthServerBundle/Resources/config/services.yml }
+    - { resource: '@BDNUserBundle/Resources/config/services.yml' }
+    - { resource: '@BDNBotBundle/Resources/config/services.yml' }
+    - { resource: '@BDNOAuthServerBundle/Resources/config/services.yml' }
 
 parameters:
 #    parameter_name: value
 
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
     slack_manager:
         class: AppBundle\Service\SlackManager
-        arguments: ['@dz.slack.messaging', '@dz.slack.identity_bag', '@dz.slack.connection', '@doctrine.orm.entity_manager']
+        arguments: ['@dz.slack.messaging', '@dz.slack.identity_bag', '@dz.slack.connection']
     date_time.normalizer:
         class: AppBundle\Service\Normalizers\DateTimeNormalizer
         tags:

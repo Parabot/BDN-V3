@@ -1,15 +1,18 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
     bot.type_listener:
         class: Parabot\BDN\BotBundle\Listener\TypeListener
         arguments:
-            - @kernel
+            - '@kernel'
         tags:
             - { name: doctrine.event_subscriber }
 
     bot.type_helper:
         class: Parabot\BDN\BotBundle\Service\TypeHelper
-        arguments:
-            entityManager: "@doctrine.orm.entity_manager"
 
     bot.download_manager:
         class: Parabot\BDN\BotBundle\Service\DownloadProvider
@@ -19,7 +22,7 @@ services:
 
     bot.script_repository_service:
         class: Parabot\BDN\BotBundle\Service\Repository\ScriptRepositoryService
-        arguments: ['@doctrine.orm.entity_manager', %groups%]
+        arguments: ['@doctrine.orm.entity_manager', '%groups%']
 
     bot.translation_helper:
         class: Parabot\BDN\BotBundle\Service\TranslationHelper

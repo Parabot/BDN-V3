@@ -8,15 +8,6 @@ fos_user:
         address: support@parabot.org
         sender_name: Parabot
 
-scheb_two_factor:
-    google:
-        enabled: true
-        template: AppBundle:Authentication:form.html.twig
-    trusted_computer:
-        enabled: true
-        cookie_name: two_factor_trusted_computer
-        cookie_lifetime: 5184000 # 60 days
-
 fos_rest:
     routing_loader:
         default_format: json                            # All responses should be JSON formated

@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -7,7 +8,7 @@ class AppKernel extends Kernel
 {
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -17,7 +18,6 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
             new FOS\UserBundle\FOSUserBundle(),
-            new Scheb\TwoFactorBundle\SchebTwoFactorBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
@@ -27,18 +27,9 @@ class AppKernel extends Kernel
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
 
-            new Sylius\Bundle\ResourceBundle\SyliusResourceBundle(),
-            new Sylius\Bundle\MoneyBundle\SyliusMoneyBundle(),
-            new Sylius\Bundle\SequenceBundle\SyliusSequenceBundle(),
-            new Sylius\Bundle\OrderBundle\SyliusOrderBundle(),
-            new \winzou\Bundle\StateMachineBundle\winzouStateMachineBundle(),
-
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Parabot\BDN\StoreBundle\BDNStoreBundle(),
-            new Parabot\BDN\UserBundle\BDNUserBundle(),
 
             new Lsw\ApiCallerBundle\LswApiCallerBundle(),
-            new Parabot\BDN\BotBundle\BDNBotBundle(),
 
             new Seferov\AwsBundle\SeferovAwsBundle(),
 
@@ -47,6 +38,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
 
+            new Http\HttplugBundle\HttplugBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
 
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
@@ -55,12 +47,14 @@ class AppKernel extends Kernel
 
             new Nelmio\CorsBundle\NelmioCorsBundle(),
 
-            new Parabot\BDN\OAuthServerBundle\BDNOAuthServerBundle(),
-
             new MyBuilder\Bundle\CronosBundle\MyBuilderCronosBundle(),
-        );
 
-        if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+            new Parabot\BDN\UserBundle\BDNUserBundle(),
+            new Parabot\BDN\BotBundle\BDNBotBundle(),
+            new Parabot\BDN\OAuthServerBundle\BDNOAuthServerBundle(),
+        ];
+
+        if (in_array($this->getEnvironment(), ['dev', 'test'])) {
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
@@ -70,8 +64,31 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
+    public function getCacheDir()
+    {
+        return dirname(__DIR__).'/var/cache/'.$this->getEnvironment();
+    }
+
+    public function getLogDir()
+    {
+        return dirname(__DIR__).'/var/logs';
+    }
+
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
+        $loader->load(
+            function (ContainerBuilder $container) {
+                $container->setParameter('container.autowiring.strict_mode', true);
+                $container->setParameter('container.dumper.inline_class_loader', true);
+
+                $container->addObjectResource($this);
+            }
+        );
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
+    }
+
+    public function getRootDir()
+    {
+        return __DIR__;
     }
 }

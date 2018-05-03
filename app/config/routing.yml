@@ -43,11 +43,6 @@ bdn_teamcity:
     type:     annotation
     prefix:   /api/city
 
-bdn_store:
-    resource: "@BDNStoreBundle/Controller/"
-    type:     annotation
-    prefix:   /api/store
-
 home:
     path:      /
     defaults:  { _controller: AppBundle:Default:home }

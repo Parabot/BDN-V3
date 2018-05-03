@@ -5,16 +5,12 @@
 /app/logs/*
 !app/logs/.gitkeep
 /app/phpunit.xml
-/bin/
 /composer.phar
 ### Sass template
 .sass-cache/
-*.css.map
 ### NetBeans template
 nbproject/private/
-build/
 nbbuild/
-dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
@@ -61,25 +57,14 @@ local.properties
 .texlipse
 ### Symfony template
 # Cache and logs (Symfony2)
-/app/cache/*
-/app/logs/*
-!app/cache/.gitkeep
-!app/logs/.gitkeep
-
 # Cache and logs (Symfony3)
-/var/cache/*
-/var/logs/*
 !var/cache/.gitkeep
 !var/logs/.gitkeep
 
 # Parameters
-/app/config/parameters.yml
 /app/config/parameters.ini
 
 # Managed by Composer
-/app/bootstrap.php.cache
-/var/bootstrap.php.cache
-/bin/*
 !bin/console
 !bin/symfony_requirements
 /vendor/
@@ -91,18 +76,14 @@ local.properties
 
 /sami/
 # PHPUnit
-/app/phpunit.xml
 /phpunit.xml
 
 # Build data
 /build/
 
 # Composer PHAR
-/composer.phar
 ### Composer template
 composer.phar
-vendor/
-
 ### SublimeText template
 # cache files for sublime text
 *.tmlanguage.cache
@@ -120,8 +101,6 @@ vendor/
 sftp-config.json
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
-
-*.iml
 
 ## Directory-based project format:
 .idea/
@@ -166,10 +145,25 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 
-/vendor/
-/web/bundles/
-
 .DS_Store
 /scripts
 
 /app/Migrations-old
+
+/.web-server-pid
+/app/config/parameters.yml
+/build/
+/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
+/vendor/
+/web/bundles/

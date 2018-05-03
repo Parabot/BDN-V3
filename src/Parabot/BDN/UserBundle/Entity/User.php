@@ -11,14 +11,13 @@ use Parabot\BDN\BotBundle\Entity\Script;
 use Parabot\BDN\BotBundle\Entity\Scripts\Review;
 use Parabot\BDN\BotBundle\Entity\Servers\ServerUse;
 use Parabot\BDN\UserBundle\Entity\OAuth\Client;
-use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="Parabot\BDN\UserBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
-class User extends BaseUser implements TwoFactorInterface {
+class User extends BaseUser {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -45,11 +44,6 @@ class User extends BaseUser implements TwoFactorInterface {
      * @ORM\Column(type="string", name="api_key", length=255, nullable=true)
      */
     private $apiKey = null;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $googleAuthenticatorSecret;
 
     /**
      * @var int
@@ -191,25 +185,6 @@ class User extends BaseUser implements TwoFactorInterface {
      */
     public function setScripts($scripts) {
         $this->scripts = $scripts;
-    }
-
-    /**
-     * Return the Google Authenticator secret
-     * When an empty string or null is returned, the Google authentication is disabled.
-     *
-     * @return string|null
-     */
-    public function getGoogleAuthenticatorSecret() {
-        return $this->googleAuthenticatorSecret;
-    }
-
-    /**
-     * Set the Google Authenticator secret
-     *
-     * @param integer $googleAuthenticatorSecret
-     */
-    public function setGoogleAuthenticatorSecret($googleAuthenticatorSecret) {
-        $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
     }
 
     /**

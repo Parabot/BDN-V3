@@ -6,6 +6,7 @@
 namespace Parabot\BDN\BotBundle\Service;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 
 class TypeHelper {
@@ -29,9 +30,9 @@ class TypeHelper {
     /**
      * TypeHelper constructor.
      *
-     * @param EntityManager $entityManager
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManager $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager) {
         $this->entityManager = $entityManager;
     }
 
