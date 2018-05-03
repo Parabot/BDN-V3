@@ -6,10 +6,12 @@
 namespace Parabot\BDN\BotBundle\Service;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Parabot\BDN\BotBundle\Entity\Servers\Hook;
 use Parabot\BDN\BotBundle\Entity\Servers\Server;
 
-class HooksManager {
+class HooksManager
+{
 
     /**
      * @var EntityManager
@@ -19,44 +21,46 @@ class HooksManager {
     /**
      * HooksManager constructor.
      *
-     * @param EntityManager $entityManager
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManager $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
     }
 
-    public function createHookArray(Server $server, $version = null, $detailed = false) {
+    public function createHookArray(Server $server, $version = null, $detailed = false)
+    {
         $repository = $this->entityManager->getRepository('BDNBotBundle:Servers\Hook');
-        $result     = $repository->findHooksByServer($server, $version);
+        $result = $repository->findHooksByServer($server, $version);
 
         $hooks = [
             'interfaces' => [],
-            'getters'    => [],
-            'setters'    => [],
-            'callbacks'  => [],
-            'invokers'   => [],
+            'getters' => [],
+            'setters' => [],
+            'callbacks' => [],
+            'invokers' => [],
         ];
 
-        foreach($result as $item) {
+        foreach ($result as $item) {
             $value = [];
-            if($detailed === true) {
-                $value[ 'id' ] = $item->getId();
+            if ($detailed === true) {
+                $value['id'] = $item->getId();
             }
-            switch($item->getType()) {
+            switch ($item->getType()) {
                 case Hook::INTERFACE_TYPE:
-                    $hooks[ Hook::INTERFACE_TYPE ][] = array_merge($value, $item->toInterfaceArray());
+                    $hooks[Hook::INTERFACE_TYPE][] = array_merge($value, $item->toInterfaceArray());
                     break;
                 case Hook::GETTER_TYPE:
-                    $hooks[ Hook::GETTER_TYPE ][] = array_merge($value, $item->toGetterArray());
+                    $hooks[Hook::GETTER_TYPE][] = array_merge($value, $item->toGetterArray());
                     break;
                 case Hook::SETTER_TYPE:
-                    $hooks[ Hook::SETTER_TYPE ][] = array_merge($value, $item->toSetterArray());
+                    $hooks[Hook::SETTER_TYPE][] = array_merge($value, $item->toSetterArray());
                     break;
                 case Hook::CALLBACK_TYPE:
-                    $hooks[ Hook::CALLBACK_TYPE ][] = array_merge($value, $item->toCallbackArray());
+                    $hooks[Hook::CALLBACK_TYPE][] = array_merge($value, $item->toCallbackArray());
                     break;
                 case Hook::INVOKER_TYPE:
-                    $hooks[ Hook::INVOKER_TYPE ][] = array_merge($value, $item->toInvokerArray());
+                    $hooks[Hook::INVOKER_TYPE][] = array_merge($value, $item->toInvokerArray());
                     break;
             }
         }
@@ -64,21 +68,22 @@ class HooksManager {
         return $hooks;
     }
 
-    public function hookArrayToXML($hookArray) {
+    public function hookArrayToXML($hookArray)
+    {
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
         $xml .= '<injector>';
-        foreach($hookArray as $type => $types) {
-            $xml .= '<' . $type . '>';
-            foreach($types as $items) {
+        foreach ($hookArray as $type => $types) {
+            $xml .= '<'.$type.'>';
+            foreach ($types as $items) {
                 $xml .= '<add>';
-                foreach($items as $i => $k) {
-                    $xml .= '<' . $i . '>';
+                foreach ($items as $i => $k) {
+                    $xml .= '<'.$i.'>';
                     $xml .= $k;
-                    $xml .= '</' . $i . '>';
+                    $xml .= '</'.$i.'>';
                 }
                 $xml .= '</add>';
             }
-            $xml .= '</' . $type . '>';
+            $xml .= '</'.$type.'>';
         }
         $xml .= '</injector>';
 
@@ -90,18 +95,19 @@ class HooksManager {
      *
      * @return Hook[]
      */
-    public function toHookType($xml) {
+    public function toHookType($xml)
+    {
         $hooks = [];
-        foreach($xml as $type => $adds) {
-            foreach($adds as $add) {
-                if(count($add) > 0 && is_array($add) && ( ! isset($add[ 0 ]) || ! is_array($add[ 0 ]))) {
-                    $add = [ $add ];
+        foreach ($xml as $type => $adds) {
+            foreach ($adds as $add) {
+                if (count($add) > 0 && is_array($add) && (!isset($add[0]) || !is_array($add[0]))) {
+                    $add = [$add];
                 }
 
-                foreach($add as $hook) {
+                foreach ($add as $hook) {
                     $hookObject = new Hook();
 
-                    switch($type) {
+                    switch ($type) {
                         case Hook::INTERFACE_TYPE:
                             $hookObject->setType(Hook::INTERFACE_TYPE);
                             break;
@@ -122,35 +128,35 @@ class HooksManager {
                             $hookObject->setType(Hook::CALLBACK_TYPE);
                             break;
                     }
-                    foreach($hook as $key => $value) {
+                    foreach ($hook as $key => $value) {
                         /* TODO: Make a switch out of this */
-                        if($key == 'classname') {
+                        if ($key == 'classname') {
                             $hookObject->setClassname($value);
-                        } elseif($key == 'interface') {
+                        } elseif ($key == 'interface') {
                             $hookObject->setInterface($value);
-                        } elseif($key == 'accessor') {
+                        } elseif ($key == 'accessor') {
                             $hookObject->setAccessor($value);
-                        } elseif($key == 'field') {
+                        } elseif ($key == 'field') {
                             $hookObject->setField($value);
-                        } elseif($key == 'methodname') {
+                        } elseif ($key == 'methodname') {
                             $hookObject->setMethodname($value);
-                        } elseif($key == 'desc') {
+                        } elseif ($key == 'desc') {
                             $hookObject->setDesctype($value);
-                        } elseif($key == 'descfield') {
+                        } elseif ($key == 'descfield') {
                             $hookObject->setDescfield($value);
-                        } elseif($key == 'into') {
+                        } elseif ($key == 'into') {
                             $hookObject->setIntoclass($value);
-                        } elseif($key == 'callclass') {
+                        } elseif ($key == 'callclass') {
                             $hookObject->setCallclass($value);
-                        } elseif($key == 'callmethod') {
+                        } elseif ($key == 'callmethod') {
                             $hookObject->setCallmethod($value);
-                        } elseif($key == 'calldesc') {
+                        } elseif ($key == 'calldesc') {
                             $hookObject->setCalldesc($value);
-                        } elseif($key == 'callargs') {
+                        } elseif ($key == 'callargs') {
                             $hookObject->setCallargs($value);
-                        } elseif($key == 'invokemethod') {
+                        } elseif ($key == 'invokemethod') {
                             $hookObject->setInvokemethod($value);
-                        } elseif($key == 'argsdesc') {
+                        } elseif ($key == 'argsdesc') {
                             $hookObject->setArgsdesc($value);
                         }
                     }

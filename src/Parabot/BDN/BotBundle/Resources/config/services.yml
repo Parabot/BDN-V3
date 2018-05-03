@@ -22,15 +22,14 @@ services:
 
     bot.script_repository_service:
         class: Parabot\BDN\BotBundle\Service\Repository\ScriptRepositoryService
-        arguments: ['@doctrine.orm.entity_manager', '%groups%']
+        arguments: ['%groups%']
 
     bot.translation_helper:
         class: Parabot\BDN\BotBundle\Service\TranslationHelper
-        arguments: ['@doctrine.orm.entity_manager', '@kernel', '%transifex_username%', '%transifex_password%']
+        arguments: ['@kernel', '%transifex_username%', '%transifex_password%']
 
     bot.servers.hook_manager:
         class: Parabot\BDN\BotBundle\Service\HooksManager
-        arguments: ['@doctrine.orm.entity_manager']
 
     bot.teamcity.api:
         class: Parabot\BDN\BotBundle\Service\Library\TeamCity\TeamCityAPI

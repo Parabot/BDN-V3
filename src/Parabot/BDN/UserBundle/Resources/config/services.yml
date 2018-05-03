@@ -1,11 +1,16 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
     login_request_manager:
         class: Parabot\BDN\UserBundle\Service\LoginRequestManager
-        arguments: ['@doctrine.orm.entity_manager', '@url_utils']
+        arguments: [ '@url_utils']
 
     oauth_user_provider:
         class: Parabot\BDN\UserBundle\Security\UserProvider
-        arguments: ['@fos_user.user_manager',{forums: forums}, '@security.password_encoder', '@doctrine.orm.entity_manager', '@login_request_manager', '@request_stack']
+        arguments: ['@fos_user.user_manager',{forums: forums}, '@security.password_encoder', '@login_request_manager', '@request_stack']
 
     request_access_evaluator:
         class: Parabot\BDN\UserBundle\Security\RequestAccessEvaluator
@@ -13,4 +18,4 @@ services:
 
     internal_user_manager:
         class: Parabot\BDN\UserBundle\Service\InternalUserManager
-        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
+        arguments: ['@security.token_storage']

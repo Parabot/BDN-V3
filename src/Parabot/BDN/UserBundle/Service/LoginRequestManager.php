@@ -8,9 +8,11 @@ namespace Parabot\BDN\UserBundle\Service;
 use AppBundle\Service\StringUtils;
 use AppBundle\Service\UrlUtils;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Parabot\BDN\UserBundle\Entity\Login\RequestToken;
 
-class LoginRequestManager {
+class LoginRequestManager
+{
 
     const KEY_COOKIE = 'KEY_OAUTH';
 
@@ -24,12 +26,13 @@ class LoginRequestManager {
     /**
      * LoginRequestManager constructor.
      *
-     * @param EntityManager $entityManager
-     * @param UrlUtils      $urlUtils
+     * @param EntityManagerInterface $entityManager
+     * @param UrlUtils $urlUtils
      */
-    public function __construct(EntityManager $entityManager, UrlUtils $urlUtils) {
+    public function __construct(UrlUtils $urlUtils, EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
-        $this->urlUtils      = $urlUtils;
+        $this->urlUtils = $urlUtils;
     }
 
     /**
@@ -37,16 +40,17 @@ class LoginRequestManager {
      *
      * @return bool|string
      */
-    public function insertRequest($redirect = null) {
+    public function insertRequest($redirect = null)
+    {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
 
-        $key   = StringUtils::generateRandomString(20, false);
+        $key = StringUtils::generateRandomString(20, false);
         $tries = 0;
-        while(($result = $repository->findOneBy([ 'key' => $key ])) != null && $tries < 20) {
+        while (($result = $repository->findOneBy(['key' => $key])) != null && $tries < 20) {
             $key = StringUtils::generateRandomString(20, false);
             $tries++;
         }
-        if($tries >= 20) {
+        if ($tries >= 20) {
             return false;
         }
 
@@ -54,7 +58,7 @@ class LoginRequestManager {
         $token->setKey($key);
         $token->setDate(new \DateTime());
 
-        if($redirect != null && $this->urlUtils->isValidHostWithTLD($redirect)) {
+        if ($redirect != null && $this->urlUtils->isValidHostWithTLD($redirect)) {
             $token->setRedirect($redirect);
         }
 
@@ -64,11 +68,12 @@ class LoginRequestManager {
         return $key;
     }
 
-    public function assignUserToKey($key, $user) {
+    public function assignUserToKey($key, $user)
+    {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
-        $token      = $repository->findOneBy([ 'key' => $key ]);
+        $token = $repository->findOneBy(['key' => $key]);
 
-        if($token !== null && $token->getUser() === null) {
+        if ($token !== null && $token->getUser() === null) {
             $token->setUser($user);
 
             $this->entityManager->persist($user);
@@ -81,14 +86,15 @@ class LoginRequestManager {
      *
      * @return bool|string
      */
-    public function retrieveUserApiFromKey($key) {
+    public function retrieveUserApiFromKey($key)
+    {
         $repository = $this->entityManager->getRepository('BDNUserBundle:Login\RequestToken');
-        $token      = $repository->findOneBy([ 'key' => $key ]);
+        $token = $repository->findOneBy(['key' => $key]);
 
-        if($token !== null && $token->isExpired() !== true && $token->getDate() !== null && $token->getDate(
+        if ($token !== null && $token->isExpired() !== true && $token->getDate() !== null && $token->getDate(
             )->getTimestamp() > time() - 60 * 5) {
             $user = $token->getUser();
-            if($user !== null) {
+            if ($user !== null) {
                 $token->setExpired(true);
                 $this->entityManager->persist($token);
                 $this->entityManager->flush();

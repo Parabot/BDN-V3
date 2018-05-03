@@ -1,7 +1,12 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
     oauth_client_creator:
         class: Parabot\BDN\OAuthServerBundle\Service\ClientCreator
-        arguments: ['@fos_oauth_server.client_manager', '@doctrine.orm.entity_manager']
+        arguments: ['@fos_oauth_server.client_manager']
 
     oauth_manager:
         class: Parabot\BDN\OAuthServerBundle\Service\OAuthManager

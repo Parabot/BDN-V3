@@ -8,14 +8,16 @@ namespace Parabot\BDN\BotBundle\Service;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 use Travis\Client;
 
-class TravisHelper {
+class TravisHelper
+{
 
     private $client;
 
     /**
      * TravisHelper constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->client = new Client();
     }
 
@@ -24,23 +26,25 @@ class TravisHelper {
      *
      * @return Client\Entity\Repository
      */
-    public function getRepository($slug) {
-        return $this->client->fetchRepository('repos/' . $slug);
+    public function getRepository($slug)
+    {
+        return $this->client->fetchRepository('repos/'.$slug);
     }
 
     /**
      * @param string $slug
-     * @param int    $build_id
+     * @param int $build_id
      *
      * @return null|Client\Entity\Build
      */
-    public function getLatestBuild($slug, $build_id) {
-        $repository = $this->client->fetchRepository('repos/' . $slug);
-        $builds     = $repository->getBuilds();
+    public function getLatestBuild($slug, $build_id)
+    {
+        $repository = $this->client->fetchRepository('repos/'.$slug);
+        $builds = $repository->getBuilds();
 
         /** @var Client\Entity\Build $build */
-        foreach($builds as $build) {
-            if($build->getId() == $build_id) {
+        foreach ($builds as $build) {
+            if ($build->getId() == $build_id) {
                 return $build;
             }
         }
@@ -49,14 +53,15 @@ class TravisHelper {
     }
 
     /**
-     * @param Type                $type
+     * @param Type $type
      * @param Client\Entity\Build $build
      *
      * @return string
      */
-    public function getDownloadString($type, $build) {
-        $rc = ($build->getBranch() == 'master' ?: '-RC-' . $build->getId());
+    public function getDownloadString($type, $build)
+    {
+        $rc = ($build->getBranch() == 'master' ?: '-RC-'.$build->getId());
 
-        return $type->getName() . '-V' . $type->getVersion() . $rc;
+        return $type->getName().'-V'.$type->getVersion().$rc;
     }
 }

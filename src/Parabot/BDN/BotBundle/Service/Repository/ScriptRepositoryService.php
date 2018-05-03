@@ -6,6 +6,7 @@
 namespace Parabot\BDN\BotBundle\Service\Repository;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ScriptRepositoryService {
 
@@ -22,10 +23,10 @@ class ScriptRepositoryService {
     /**
      * ScriptRepositoryService constructor.
      *
-     * @param EntityManager $entityManager
+     * @param EntityManagerInterface $entityManager
      * @param               $groups
      */
-    public function __construct(EntityManager $entityManager, $groups) {
+    public function __construct($groups, EntityManagerInterface $entityManager) {
         $this->entityManager = $entityManager;
         $this->groups        = $groups;
     }

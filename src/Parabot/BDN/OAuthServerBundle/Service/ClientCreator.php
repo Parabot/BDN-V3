@@ -5,13 +5,14 @@
 
 namespace Parabot\BDN\OAuthServerBundle\Service;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\OAuthServerBundle\Entity\ClientManager;
 use Parabot\BDN\UserBundle\Entity\OAuth\Client;
 use Parabot\BDN\UserBundle\Repository\ClientRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ClientCreator {
+class ClientCreator
+{
     const ARGUMENTS = [
         'name',
         'redirect-uri',
@@ -32,10 +33,11 @@ class ClientCreator {
      * ClientCreator constructor.
      *
      * @param ClientManager $clientManager
-     * @param EntityManager $entityManager
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(ClientManager $clientManager, EntityManager $entityManager) {
-        $this->clientManager    = $clientManager;
+    public function __construct(ClientManager $clientManager, EntityManagerInterface $entityManager)
+    {
+        $this->clientManager = $clientManager;
         $this->clientRepository = $entityManager->getRepository('BDNUserBundle:OAuth\Client');
     }
 
@@ -45,28 +47,29 @@ class ClientCreator {
      *
      * @return JsonResponse
      */
-    public function createClient($values) {
-        if(($name = $values[ 'name' ]) != null) {
-            if(($redirectUris = $values[ 'redirect-uri' ]) != null) {
-                if( ! is_array($redirectUris)) {
-                    if(($exploded = explode(',', $redirectUris)) && count($exploded) >= 2) {
+    public function createClient($values)
+    {
+        if (($name = $values['name']) != null) {
+            if (($redirectUris = $values['redirect-uri']) != null) {
+                if (!is_array($redirectUris)) {
+                    if (($exploded = explode(',', $redirectUris)) && count($exploded) >= 2) {
                         $redirectUris = $exploded;
                     } else {
-                        $redirectUris = [ $redirectUris ];
+                        $redirectUris = [$redirectUris];
                     }
                 }
 
-                foreach($redirectUris as $redirectUri) {
-                    if(filter_var($redirectUri, FILTER_VALIDATE_URL) === false) {
+                foreach ($redirectUris as $redirectUri) {
+                    if (filter_var($redirectUri, FILTER_VALIDATE_URL) === false) {
                         return new JsonResponse(
-                            [ 'result' => 'Given URL \'' . $redirectUri . '\' is not valid; format should be \'http://example.com/path\'' ],
+                            ['result' => 'Given URL \''.$redirectUri.'\' is not valid; format should be \'http://example.com/path\''],
                             400
                         );
                     }
                 }
 
-                if($this->clientRepository->redirectUrisAvailable($redirectUris) == false) {
-                    return new JsonResponse([ 'result' => 'Client already exists with one of your redirects' ], 400);
+                if ($this->clientRepository->redirectUrisAvailable($redirectUris) == false) {
+                    return new JsonResponse(['result' => 'Client already exists with one of your redirects'], 400);
                 }
 
                 /**
@@ -74,13 +77,13 @@ class ClientCreator {
                  */
                 $client = $this->clientManager->createClient();
                 $client->setRedirectUris($redirectUris);
-                if($values[ 'grant-type' ] != null) {
-                    if( ! is_array($values[ 'grant-type' ])) {
-                        $values[ 'grant-type' ] = [ $values[ 'grant-type' ] ];
+                if ($values['grant-type'] != null) {
+                    if (!is_array($values['grant-type'])) {
+                        $values['grant-type'] = [$values['grant-type']];
                     }
-                    $client->setAllowedGrantTypes($values[ 'grant-type' ]);
+                    $client->setAllowedGrantTypes($values['grant-type']);
                 } else {
-                    $client->setAllowedGrantTypes([ 'token', 'authorization_code', 'refresh_token' ]);
+                    $client->setAllowedGrantTypes(['token', 'authorization_code', 'refresh_token']);
                 }
                 $client->setName($name);
 
@@ -93,10 +96,10 @@ class ClientCreator {
                     ]
                 );
             } else {
-                return new JsonResponse([ 'result' => 'Incorrect parameter \'redirect-uri\' given' ], 400);
+                return new JsonResponse(['result' => 'Incorrect parameter \'redirect-uri\' given'], 400);
             }
         } else {
-            return new JsonResponse([ 'result' => 'Incorrect parameter \'name\' given' ], 400);
+            return new JsonResponse(['result' => 'Incorrect parameter \'name\' given'], 400);
         }
     }
 }

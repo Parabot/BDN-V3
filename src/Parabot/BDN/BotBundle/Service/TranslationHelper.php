@@ -10,14 +10,16 @@ use Buzz\Listener\BasicAuthListener;
 use Buzz\Message\Request;
 use Buzz\Message\Response;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Parabot\BDN\BotBundle\Entity\Language;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class TranslationHelper {
+class TranslationHelper
+{
 
-    const PATH             = '/data/Translations/';
-    const HOST             = 'http://www.transifex.com';
+    const PATH = '/data/Translations/';
+    const HOST = 'http://www.transifex.com';
     const DEFAULT_LANGUAGE = 'en';
 
     /**
@@ -43,26 +45,27 @@ class TranslationHelper {
     /**
      * TranslationHelper constructor.
      *
-     * @param EntityManager   $entityManager
+     * @param EntityManagerInterface $entityManager
      * @param KernelInterface $kernel
      * @param                 $username
      * @param                 $password
      */
-    public function __construct(EntityManager $entityManager, KernelInterface $kernel, $username, $password) {
+    public function __construct(KernelInterface $kernel, $username, $password, EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
-        $this->kernel        = $kernel;
-        $this->username      = $username;
-        $this->password      = $password;
+        $this->kernel = $kernel;
+        $this->username = $username;
+        $this->password = $password;
     }
 
-    public function getDownloadTranslation(Language $language) {
+    public function getDownloadTranslation(Language $language)
+    {
         $request = new Request(
             Request::METHOD_GET,
-            '/api/2/project/parabot/resource/strings/translation/' . $language->getLanguageKey(
-            ) . '/?mode=default&file',
+            '/api/2/project/parabot/resource/strings/translation/'.$language->getLanguageKey().'/?mode=default&file',
             self::HOST
         );
-        $auth    = new BasicAuthListener($this->username, $this->password);
+        $auth = new BasicAuthListener($this->username, $this->password);
         $auth->preSend($request);
 
         $response = new Response();
@@ -72,19 +75,21 @@ class TranslationHelper {
 
         $json = json_decode($response->getContent(), true);
 
-        file_put_contents($this->getPath() . $language->getLanguageKey() . '.json', json_encode($json));
+        file_put_contents($this->getPath().$language->getLanguageKey().'.json', json_encode($json));
     }
 
-    private function getPath() {
-        return $this->kernel->getRootDir() . self::PATH;
+    private function getPath()
+    {
+        return $this->kernel->getRootDir().self::PATH;
     }
 
     /**
      * @return Language[]
      */
-    public function listAPITranslations() {
+    public function listAPITranslations()
+    {
         $request = new Request(Request::METHOD_GET, '/api/2/project/parabot/languages/', self::HOST);
-        $auth    = new BasicAuthListener($this->username, $this->password);
+        $auth = new BasicAuthListener($this->username, $this->password);
         $auth->preSend($request);
 
         $response = new Response();
@@ -94,21 +99,21 @@ class TranslationHelper {
 
         $json = json_decode($response->getContent(), true);
 
-        $languages     = [];
+        $languages = [];
         $englishPassed = false;
-        foreach($json as $lang) {
+        foreach ($json as $lang) {
             $language = new Language();
-            $language->setLanguageKey($lang[ 'language_code' ]);
+            $language->setLanguageKey($lang['language_code']);
             $language->setLanguage(\Locale::getDisplayName($language->getLanguageKey()));
 
             $languages[] = $language;
 
-            if($language->getLanguageKey() == self::DEFAULT_LANGUAGE) {
+            if ($language->getLanguageKey() == self::DEFAULT_LANGUAGE) {
                 $englishPassed = true;
             }
         }
 
-        if($englishPassed === false) {
+        if ($englishPassed === false) {
             $language = new Language();
             $language->setLanguageKey('en');
             $language->setLanguage('English');
@@ -119,10 +124,11 @@ class TranslationHelper {
         return $languages;
     }
 
-    public function returnTranslation($key) {
-        if(file_exists(($file = $this->getPath() . $key . '.json'))) {
+    public function returnTranslation($key)
+    {
+        if (file_exists(($file = $this->getPath().$key.'.json'))) {
             $content = file_get_contents($file);
-            if($content != null && $content != false) {
+            if ($content != null && $content != false) {
                 return json_decode($content, true);
             }
         }
