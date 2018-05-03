@@ -89,7 +89,7 @@ hwi_oauth_connect:
     prefix:   /api/users/connect
 
 hwi_forums_login:
-    pattern: /api/users/login/forums
+    path: /api/users/login/forums
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
