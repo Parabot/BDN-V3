@@ -58,23 +58,20 @@ bdn_oauth_server:
 
 fos_oauth_server_token:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
-    prefix: /
 
 fos_oauth_server_authorize:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
-    prefix: /
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
-    prefix: /api/users
-
-user:
-    resource: "@BDNUserBundle/Resources/config/routing.yml"
-    prefix: /api/users
 
 fos_user_group:
     resource: "@FOSUserBundle/Resources/config/routing/group.xml"
     prefix: /api/group
+
+user:
+    resource: "@BDNUserBundle/Resources/config/routing.yml"
+    prefix: /api/users
 
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
@@ -89,7 +86,7 @@ hwi_oauth_connect:
     prefix:   /api/users/connect
 
 hwi_forums_login:
-    path: /api/users/login/forums
+    path: /api/users/connect/forums
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"

@@ -78,7 +78,7 @@ class UserProvider extends BaseClass
         $setter_id = $setter.'Id';
         $setter_token = $setter.'AccessToken';
         if (null !== $previousUser = $this->userManager->findUserBy(
-                ['communityId' => $response->getResponse()['id']]
+                ['communityId' => $response->getData()['id']]
             )) {
             $previousUser->$setter_id(null);
             $previousUser->$setter_token(null);
@@ -92,12 +92,12 @@ class UserProvider extends BaseClass
     private function parseResponse(UserResponseInterface $response)
     {
         return [
-            'username' => $response->getResponse()['username'],
-            'id' => $response->getResponse()['id'],
-            'email' => $response->getResponse()['email'],
+            'username' => $response->getData()['username'],
+            'id' => $response->getData()['id'],
+            'email' => $response->getData()['email'],
             'groups' => array_merge(
-                [$response->getResponse()['group']],
-                $response->getResponse()['group_others']
+                [$response->getData()['group']],
+                $response->getData()['group_others']
             ),
         ];
     }

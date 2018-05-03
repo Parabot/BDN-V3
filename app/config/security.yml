@@ -41,9 +41,9 @@ security:
         oauth_authorize:
             pattern:    ^/oauth/v2/auth
             form_login:
-                 provider: fos_userbundle
-                 check_path: /oauth/v2/auth_login_check
-                 login_path: /oauth/v2/auth_login
+                provider: fos_userbundle
+                check_path: /oauth/v2/auth_login_check
+                login_path: /oauth/v2/auth_login
             anonymous: true
 
         main:
@@ -73,7 +73,6 @@ security:
     access_denied_url: unauthorised_notice
 
     access_control:
-        - { path: ^/oauth/v2/, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/is/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/users/log_in, role: IS_AUTHENTICATED_ANONYMOUSLY }
