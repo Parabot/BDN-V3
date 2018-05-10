@@ -24,8 +24,6 @@ class AppKernel extends Kernel
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
 
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
-            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
-            new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
 
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 

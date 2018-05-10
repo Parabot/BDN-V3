@@ -20,7 +20,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ServerController extends Controller {
+/**
+ * @Route("/api/servers")
+ *
+ * Class ServerController
+ * @package Parabot\BDN\BotBundle\Controller
+ */
+class ServerController extends Controller
+{
 
     /**
      * @ApiDoc(
@@ -75,40 +82,41 @@ class ServerController extends Controller {
      *
      * @return JsonResponse
      */
-    public function insertServerAction(Request $request) {
-        $response         = new JsonResponse();
-        $groupRepository  = $this->getDoctrine()->getRepository('BDNUserBundle:Group');
-        $userRepository   = $this->getDoctrine()->getRepository('BDNUserBundle:User');
+    public function insertServerAction(Request $request)
+    {
+        $response = new JsonResponse();
+        $groupRepository = $this->getDoctrine()->getRepository('BDNUserBundle:Group');
+        $userRepository = $this->getDoctrine()->getRepository('BDNUserBundle:User');
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        $manager          = $this->getDoctrine()->getManager();
+        $manager = $this->getDoctrine()->getManager();
 
         $serverAttributes = [
-            'name'        => null,
-            'active'      => true,
-            'groups'      => [],
-            'authors'     => [ $this->get('request_access_evaluator')->getUser()->getUsername() ],
-            'details'     => null,
-            'version'     => 1.0,
+            'name' => null,
+            'active' => true,
+            'groups' => [],
+            'authors' => [$this->get('request_access_evaluator')->getUser()->getUsername()],
+            'details' => null,
+            'version' => 1.0,
             'description' => null,
         ];
 
-        foreach($serverAttributes as $attribute => $value) {
+        foreach ($serverAttributes as $attribute => $value) {
             $temp = $request->request->get($attribute);
-            if($temp !== null) {
-                $serverAttributes[ $attribute ] = $temp;
-            } elseif($value !== null) {
-                $serverAttributes[ $attribute ] = $value;
+            if ($temp !== null) {
+                $serverAttributes[$attribute] = $temp;
+            } elseif ($value !== null) {
+                $serverAttributes[$attribute] = $value;
             } else {
-                return new JsonResponse([ 'result' => 'Missing attribute (' . $attribute . ')' ], 400);
+                return new JsonResponse(['result' => 'Missing attribute ('.$attribute.')'], 400);
             }
         }
 
         $server = new Server();
 
-        if(($name = $serverAttributes[ 'name' ]) !== null) {
-            if($serverRepository->findOneBy([ 'name' => $name ]) != null) {
+        if (($name = $serverAttributes['name']) !== null) {
+            if ($serverRepository->findOneBy(['name' => $name]) != null) {
                 return $response->setData(
-                    [ 'result' => 'There is already a server that is named like this' ]
+                    ['result' => 'There is already a server that is named like this']
                 )->setStatusCode(400);
             } else {
                 $server->setName($name);
@@ -116,13 +124,13 @@ class ServerController extends Controller {
         }
 
         $matching = 0;
-        foreach(ServerDetail::DEFAULT_DETAILS as $detail) {
-            foreach($serverAttributes[ 'details' ] as $serverAttributeDetail) {
-                if($serverAttributeDetail[ 'name' ] == $detail) {
-                    if($serverAttributeDetail[ 'value' ] != null) {
+        foreach (ServerDetail::DEFAULT_DETAILS as $detail) {
+            foreach ($serverAttributes['details'] as $serverAttributeDetail) {
+                if ($serverAttributeDetail['name'] == $detail) {
+                    if ($serverAttributeDetail['value'] != null) {
                         $matching++;
                     } else {
-                        $response->setData([ 'result' => 'Missing value for detail ' . $detail ])->setStatusCode(
+                        $response->setData(['result' => 'Missing value for detail '.$detail])->setStatusCode(
                             400
                         );
 
@@ -132,21 +140,21 @@ class ServerController extends Controller {
             }
         }
 
-        if($matching !== count(ServerDetail::DEFAULT_DETAILS)) {
+        if ($matching !== count(ServerDetail::DEFAULT_DETAILS)) {
             return new JsonResponse(
                 [
-                    'result' => 'There are missing required server details (' . implode(
+                    'result' => 'There are missing required server details ('.implode(
                             ', ',
                             ServerDetail::DEFAULT_DETAILS
-                        ) . ')',
+                        ).')',
                 ], 400
             );
         }
 
         $details = [];
-        foreach($serverAttributes[ 'details' ] as $serverAttributeDetail) {
-            $name  = $serverAttributeDetail[ 'name' ];
-            $value = $serverAttributeDetail[ 'value' ];
+        foreach ($serverAttributes['details'] as $serverAttributeDetail) {
+            $name = $serverAttributeDetail['name'];
+            $value = $serverAttributeDetail['value'];
 
             $d = new ServerDetail();
             $d->setName($name);
@@ -159,36 +167,36 @@ class ServerController extends Controller {
 
         $server->setDetails($details);
 
-        if($serverAttributes[ 'active' ] !== null) {
-            $server->setActive(boolval($serverAttributes[ 'active' ]));
+        if ($serverAttributes['active'] !== null) {
+            $server->setActive(boolval($serverAttributes['active']));
         }
 
-        if($serverAttributes[ 'description' ] !== null) {
-            $server->setDescription($serverAttributes[ 'description' ]);
+        if ($serverAttributes['description'] !== null) {
+            $server->setDescription($serverAttributes['description']);
         }
 
-        if($serverAttributes[ 'version' ] !== null) {
-            $server->setVersion($serverAttributes[ 'version' ]);
+        if ($serverAttributes['version'] !== null) {
+            $server->setVersion($serverAttributes['version']);
         }
 
-        if(($authors = $serverAttributes[ 'authors' ]) !== null && count($authors) > 0) {
+        if (($authors = $serverAttributes['authors']) !== null && count($authors) > 0) {
             /**
              * @var User[] $serverAuthors
              */
             $serverAuthors = [];
-            foreach($authors as $author) {
-                $a = $userRepository->findOneBy([ 'username' => $author[ 'username' ] ]);
-                if($a != null) {
-                    if($this->get('request_access_evaluator')->isServerDeveloper($a)) {
+            foreach ($authors as $author) {
+                $a = $userRepository->findOneBy(['username' => $author['username']]);
+                if ($a != null) {
+                    if ($this->get('request_access_evaluator')->isServerDeveloper($a)) {
                         $serverAuthors[] = $a;
                     } else {
                         return new JsonResponse(
-                            [ 'result' => 'Given user (' . $author[ 'username' ] . ') is not a server developer' ], 400
+                            ['result' => 'Given user ('.$author['username'].') is not a server developer'], 400
                         );
                     }
                 } else {
                     return new JsonResponse(
-                        [ 'result' => 'Given user (' . $author[ 'username' ] . ') is unknown' ], 400
+                        ['result' => 'Given user ('.$author['username'].') is unknown'], 400
                     );
                 }
             }
@@ -196,16 +204,16 @@ class ServerController extends Controller {
             $server->setAuthors($serverAuthors);
         }
 
-        if(($groups = $serverAttributes[ 'groups' ]) !== null && count($groups) > 0) {
+        if (($groups = $serverAttributes['groups']) !== null && count($groups) > 0) {
             $serverGroups = [];
-            foreach($groups as $group) {
-                $g = $groupRepository->findOneBy([ 'id' => $group[ 'id' ] ]);
+            foreach ($groups as $group) {
+                $g = $groupRepository->findOneBy(['id' => $group['id']]);
 
-                if($g != null) {
+                if ($g != null) {
                     $serverGroups[] = $g;
                 } else {
                     return new JsonResponse(
-                        [ 'result' => 'Unknown group ID given (' . $group[ 'id' ] . ')', 404 ]
+                        ['result' => 'Unknown group ID given ('.$group['id'].')', 404]
                     );
                 }
             }
@@ -217,17 +225,17 @@ class ServerController extends Controller {
         $this->getDoctrine()->getManager()->flush();
 
         $slack = $server->getDetail('slack');
-        if($slack != null) {
+        if ($slack != null) {
             $this->get('slack_manager')->sendSuccessMessage(
                 'Server updated',
-                $server->getName() . ' has been added!',
+                $server->getName().' has been added!',
                 null,
-                [ 'Version' => $server->getVersion(), 'Description' => $server->getDescription() ],
+                ['Version' => $server->getVersion(), 'Description' => $server->getDescription()],
                 $slack->getValue()
             );
         }
 
-        return $response->setData([ 'result' => 'Server inserted' ]);
+        return $response->setData(['result' => 'Server inserted']);
     }
 
     /**
@@ -252,39 +260,40 @@ class ServerController extends Controller {
      *
      * @return JsonResponse
      */
-    public function insertServer(Request $request) {
+    public function insertServer(Request $request)
+    {
         $server = $request->files->get('server');
-        $id     = $request->get('id');
-        if($id != null) {
+        $id = $request->get('id');
+        if ($id != null) {
             $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
-            if($serverObject != null) {
-                if($server != null) {
-                    if($server->guessExtension() == 'zip' || $server->guessExtension() == 'jar') {
+            if ($serverObject != null) {
+                if ($server != null) {
+                    if ($server->guessExtension() == 'zip' || $server->guessExtension() == 'jar') {
                         $serverObject->insertFile($server);
 
                         $slack = $serverObject->getDetail('slack');
-                        if($slack != null) {
+                        if ($slack != null) {
                             $this->get('slack_manager')->sendSuccessMessage(
                                 'Server updated',
-                                'Client for server ' . $serverObject->getName() . ' has been updated!',
+                                'Client for server '.$serverObject->getName().' has been updated!',
                                 null,
-                                [ 'Server' => $serverObject->getName(), 'Version' => $serverObject->getVersion() ],
+                                ['Server' => $serverObject->getName(), 'Version' => $serverObject->getVersion()],
                                 $slack->getValue()
                             );
                         }
 
-                        return new JsonResponse([ 'result' => 'Server uploaded' ]);
+                        return new JsonResponse(['result' => 'Server uploaded']);
                     } else {
-                        return new JsonResponse([ 'result' => 'Upload may only be a jar' ], 400);
+                        return new JsonResponse(['result' => 'Upload may only be a jar'], 400);
                     }
                 } else {
-                    return new JsonResponse([ 'result' => 'File not provided' ], 400);
+                    return new JsonResponse(['result' => 'File not provided'], 400);
                 }
             } else {
-                return new JsonResponse([ 'result' => 'Could not find server with ID' ], 404);
+                return new JsonResponse(['result' => 'Could not find server with ID'], 404);
             }
         } else {
-            return new JsonResponse([ 'result' => 'Missing server ID' ], 400);
+            return new JsonResponse(['result' => 'Missing server ID'], 400);
         }
     }
 
@@ -353,62 +362,63 @@ class ServerController extends Controller {
      *
      * @return JsonResponse
      */
-    public function updateServerAction(Request $request) {
-        $response         = new JsonResponse();
-        $groupRepository  = $this->getDoctrine()->getRepository('BDNUserBundle:Group');
-        $userRepository   = $this->getDoctrine()->getRepository('BDNUserBundle:User');
+    public function updateServerAction(Request $request)
+    {
+        $response = new JsonResponse();
+        $groupRepository = $this->getDoctrine()->getRepository('BDNUserBundle:Group');
+        $userRepository = $this->getDoctrine()->getRepository('BDNUserBundle:User');
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        $serverID         = $request->request->get('id');
+        $serverID = $request->request->get('id');
 
-        if(($serverObject = $serverRepository->findById($serverID)) != null) {
+        if (($serverObject = $serverRepository->findById($serverID)) != null) {
             $server = [
-                'name'        => '',
-                'active'      => '',
-                'groups'      => '',
-                'authors'     => '',
-                'details'     => '',
-                'version'     => '',
+                'name' => '',
+                'active' => '',
+                'groups' => '',
+                'authors' => '',
+                'details' => '',
+                'version' => '',
                 'description' => '',
             ];
-            foreach($server as $key => $value) {
-                if(($requestValue = $request->request->get($key)) != null && (is_array($requestValue) || strlen(
-                                                                                                             $requestValue
-                                                                                                         ) > 0)) {
-                    $value          = $requestValue;
-                    $server[ $key ] = $value;
+            foreach ($server as $key => $value) {
+                if (($requestValue = $request->request->get($key)) != null && (is_array($requestValue) || strlen(
+                            $requestValue
+                        ) > 0)) {
+                    $value = $requestValue;
+                    $server[$key] = $value;
                 }
 
-                switch($key) {
+                switch ($key) {
                     case 'name':
-                        if($requestValue != null && $serverRepository->notExistingNameWithoutID(
+                        if ($requestValue != null && $serverRepository->notExistingNameWithoutID(
                                 $serverID,
                                 $value
                             ) !== true) {
                             return $response->setData(
-                                [ 'result' => 'There is already a server that is named like this' ]
+                                ['result' => 'There is already a server that is named like this']
                             )->setStatusCode(400);
                         }
                         break;
                     case 'details':
-                        if($requestValue != null) {
+                        if ($requestValue != null) {
                             $details = $value;
                             $matches = 0;
-                            foreach(ServerDetail::DEFAULT_DETAILS as $detail) {
-                                foreach($details as $item) {
-                                    if($item[ 'name' ] == $detail) {
+                            foreach (ServerDetail::DEFAULT_DETAILS as $detail) {
+                                foreach ($details as $item) {
+                                    if ($item['name'] == $detail) {
                                         $matches++;
                                         break;
                                     }
                                 }
                             }
 
-                            if($matches != count(ServerDetail::DEFAULT_DETAILS)) {
+                            if ($matches != count(ServerDetail::DEFAULT_DETAILS)) {
                                 $response->setData(
                                     [
-                                        'result' => 'Missing values for default details: [' . implode(
+                                        'result' => 'Missing values for default details: ['.implode(
                                                 ', ',
                                                 ServerDetail::DEFAULT_DETAILS
-                                            ) . ']',
+                                            ).']',
                                     ]
                                 )->setStatusCode(
                                     400
@@ -421,62 +431,62 @@ class ServerController extends Controller {
                 }
             }
 
-            if($server[ 'name' ] != null) {
-                $serverObject->setName($server[ 'name' ]);
+            if ($server['name'] != null) {
+                $serverObject->setName($server['name']);
             }
 
-            if($server[ 'active' ] != null) {
-                $serverObject->setActive(boolval($server[ 'active' ]));
+            if ($server['active'] != null) {
+                $serverObject->setActive(boolval($server['active']));
             }
 
-            if($server[ 'description' ] != null) {
-                $serverObject->setDescription($server[ 'description' ]);
+            if ($server['description'] != null) {
+                $serverObject->setDescription($server['description']);
             }
 
-            if($server[ 'version' ] != null) {
-                $serverObject->setVersion(floatval($server[ 'version' ]));
+            if ($server['version'] != null) {
+                $serverObject->setVersion(floatval($server['version']));
             }
 
-            if($server[ 'groups' ] != null) {
+            if ($server['groups'] != null) {
                 $groups = [];
-                if( ! is_array($server[ 'groups' ])) {
-                    foreach(explode(',', $server[ 'groups' ]) as $item) {
-                        $result = $groupRepository->findOneBy([ 'id' => $item ]);
-                        if($result != null) {
+                if (!is_array($server['groups'])) {
+                    foreach (explode(',', $server['groups']) as $item) {
+                        $result = $groupRepository->findOneBy(['id' => $item]);
+                        if ($result != null) {
                             $groups[] = $result;
                         }
                     }
                 } else {
-                    $groups = $server[ 'groups' ];
+                    $groups = $server['groups'];
                 }
                 $serverObject->setGroups($groups);
             }
 
-            if($server[ 'authors' ] != null) {
+            if ($server['authors'] != null) {
                 $authors = [];
-                foreach($server[ 'authors' ] as $item) {
-                    $result = $userRepository->findOneBy([ 'username' => $item[ 'username' ] ]);
-                    if($result != null) {
+                foreach ($server['authors'] as $item) {
+                    $result = $userRepository->findOneBy(['username' => $item['username']]);
+                    if ($result != null) {
                         $authors[] = $result;
                     }
                 }
                 $serverObject->setAuthors($authors);
             }
 
-            if($server[ 'details' ] != null) {
+            if ($server['details'] != null) {
                 $details = [];
-                foreach($server[ 'details' ] as $value) {
+                foreach ($server['details'] as $value) {
                     $detail = new ServerDetail();
 
-                    $detail->setName($value[ 'name' ]);
-                    $detail->setValue($value[ 'value' ]);
+                    $detail->setName($value['name']);
+                    $detail->setValue($value['value']);
                     $details[] = $detail;
 
                     $this->getDoctrine()->getManager()->persist($detail);
                 }
 
-                if(count($details) >= count(ServerDetail::DEFAULT_DETAILS)) {
-                    foreach($serverObject->getDetails() as $d) {
+                if (count($details) >= count(ServerDetail::DEFAULT_DETAILS)) {
+                    foreach ($serverObject->getDetails() as $d) {
                         $this->getDoctrine()->getManager()->remove($d);
                     }
 
@@ -487,9 +497,9 @@ class ServerController extends Controller {
             $this->getDoctrine()->getManager()->persist($serverObject);
             $this->getDoctrine()->getManager()->flush();
 
-            $response->setData([ 'result' => 'Server saved!' ]);
+            $response->setData(['result' => 'Server saved!']);
         } else {
-            $response->setData([ 'result' => 'Could not find server' ]);
+            $response->setData(['result' => 'Could not find server']);
             $response->setStatusCode(404);
         }
 
@@ -514,9 +524,10 @@ class ServerController extends Controller {
      *
      * @return JsonResponse
      */
-    public function listServersAction(Request $request) {
+    public function listServersAction(Request $request)
+    {
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        $servers          = $serverRepository->findForUser(
+        $servers = $serverRepository->findForUser(
             $this->getUser(),
             $this->get('request_access_evaluator')->isServerDeveloper()
         );
@@ -531,36 +542,37 @@ class ServerController extends Controller {
      * @PreAuthorize("isNotBanned()")
      *
      * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @return JsonResponse
      */
-    public function getHooksAction(Request $request, $id) {
-        $response         = new JsonResponse();
+    public function getHooksAction(Request $request, $id)
+    {
+        $response = new JsonResponse();
         $serverRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        $xmlFormat        = (($format = $request->query->get('format')) != null && $format == 'xml') ? true : false;
-        $version          = ($version = $request->query->get('version')) != null ? floatval($version) : null;
-        $detailed         = ($d = $request->query->get('detailed')) != null && $d == 'true' ? true : false;
+        $xmlFormat = (($format = $request->query->get('format')) != null && $format == 'xml') ? true : false;
+        $version = ($version = $request->query->get('version')) != null ? floatval($version) : null;
+        $detailed = ($d = $request->query->get('detailed')) != null && $d == 'true' ? true : false;
 
         /**
          * @var Server $server
          */
-        $server = $serverRepository->findOneBy([ 'id' => $id ]);
-        if($server != null) {
-            if($serverRepository->hasAccess($this->getUser(), $server->getId())) {
+        $server = $serverRepository->findOneBy(['id' => $id]);
+        if ($server != null) {
+            if ($serverRepository->hasAccess($this->getUser(), $server->getId())) {
                 $hooks = $this->get('bot.servers.hook_manager')->createHookArray($server, $version, $detailed);
-                if($xmlFormat !== true) {
-                    $response->setData([ 'hooks' => $hooks ]);
+                if ($xmlFormat !== true) {
+                    $response->setData(['hooks' => $hooks]);
                 } else {
                     $response = new Response();
                     $response->headers->set('Content-Type', 'xml');
                     $response->setContent($this->get('bot.servers.hook_manager')->hookArrayToXML($hooks));
                 }
             } else {
-                $response->setData([ 'result' => 'User does not have access to this server', 403 ]);
+                $response->setData(['result' => 'User does not have access to this server', 403]);
             }
         } else {
-            $response->setData([ 'result' => 'Given server ID does not exist' ]);
+            $response->setData(['result' => 'Given server ID does not exist']);
             $response->setStatusCode(404);
         }
 
@@ -601,27 +613,28 @@ class ServerController extends Controller {
      *
      * @return JsonResponse
      */
-    public function hooksFileToDatabaseAction(Request $request) {
+    public function hooksFileToDatabaseAction(Request $request)
+    {
         /**
          * @var Server $server
          */
-        $server          = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findOneBy(
-            [ 'id' => $request->request->get('id') ]
+        $server = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findOneBy(
+            ['id' => $request->request->get('id')]
         );
-        $response        = new JsonResponse();
+        $response = new JsonResponse();
         $hooksRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Hook');
 
-        if($server != null) {
-            if(count($hooksRepository->findHooksByServer($server)) < 15) {
-                if($request->request->get('xml') != null) {
-                    if(substr($request->request->get('xml'), 0, 5) === '<?xml') {
-                        $xml   = str_replace([ "\t", "\n" ], '', $request->request->get('xml'));
-                        $xml   = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        if ($server != null) {
+            if (count($hooksRepository->findHooksByServer($server)) < 15) {
+                if ($request->request->get('xml') != null) {
+                    if (substr($request->request->get('xml'), 0, 5) === '<?xml') {
+                        $xml = str_replace(["\t", "\n"], '', $request->request->get('xml'));
+                        $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
                         $array = json_decode(json_encode($xml), true);
 
                         $hooks = $this->get('bot.servers.hook_manager')->toHookType($array);
 
-                        foreach($hooks as $hook) {
+                        foreach ($hooks as $hook) {
                             $hook->setVersion($server->getVersion());
                             $hook->setServer($server);
 
@@ -631,33 +644,33 @@ class ServerController extends Controller {
                         $this->getDoctrine()->getManager()->flush();
 
                         $slack = $server->getDetail('slack');
-                        if($slack != null) {
+                        if ($slack != null) {
                             $this->get('slack_manager')->sendSuccessMessage(
                                 'Server updated',
-                                'Hooks for ' . $server->getName() . ' have been updated!',
+                                'Hooks for '.$server->getName().' have been updated!',
                                 null,
-                                [ 'Server' => $server->getName(), 'Amount of hooks' => count($hooks) ],
+                                ['Server' => $server->getName(), 'Amount of hooks' => count($hooks)],
                                 $slack->getValue()
                             );
                         }
 
-                        $response->setData([ 'result' => 'Hooks inserted' ]);
+                        $response->setData(['result' => 'Hooks inserted']);
                     } else {
                         $response->setData(
-                            [ 'result' => 'Incorrect XML data given, does not seem to be an XML data type' ]
+                            ['result' => 'Incorrect XML data given, does not seem to be an XML data type']
                         );
                         $response->setStatusCode(500);
                     }
                 } else {
-                    $response->setData([ 'result' => 'XML parameter not filled' ]);
+                    $response->setData(['result' => 'XML parameter not filled']);
                     $response->setStatusCode(500);
                 }
             } else {
-                $response->setData([ 'result' => 'Latest server version already has more than 15 hooks' ]);
+                $response->setData(['result' => 'Latest server version already has more than 15 hooks']);
                 $response->setStatusCode(401);
             }
         } else {
-            $response->setData([ 'result' => 'Server ID given is not a valid server ID' ]);
+            $response->setData(['result' => 'Server ID given is not a valid server ID']);
             $response->setStatusCode(404);
         }
 
@@ -690,32 +703,33 @@ class ServerController extends Controller {
      * @PreAuthorize("isServerDeveloper()")
      *
      * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @return JsonResponse
      */
-    public function setHookAction(Request $request, $id) {
-        $response        = new JsonResponse();
+    public function setHookAction(Request $request, $id)
+    {
+        $response = new JsonResponse();
         $hooksRepository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Hook');
-        $fields          = json_decode($request->request->get('fields'), true);
+        $fields = json_decode($request->request->get('fields'), true);
 
-        if($fields != null) {
-            $arguments = [ 'id' => $id ];
-            $hook      = $hooksRepository->findOneBy($arguments);
-            if($hook != null) {
+        if ($fields != null) {
+            $arguments = ['id' => $id];
+            $hook = $hooksRepository->findOneBy($arguments);
+            if ($hook != null) {
                 $hook->setFromFields($fields);
 
                 $this->getDoctrine()->getManager()->persist($hook);
                 $this->getDoctrine()->getManager()->flush();
 
-                $response->setData([ 'result' => 'Hook fields adjusted for hook ' . $hook->getId() ]);
+                $response->setData(['result' => 'Hook fields adjusted for hook '.$hook->getId()]);
             } else {
-                $response->setData([ 'result' => 'Hook ID given is not a valid hook ID' ]);
+                $response->setData(['result' => 'Hook ID given is not a valid hook ID']);
                 $response->setStatusCode(404);
             }
         } else {
             $response->setData(
-                [ 'result' => 'Fields parameter is not filled correctly' ]
+                ['result' => 'Fields parameter is not filled correctly']
             );
             $response->setStatusCode(404);
         }
@@ -743,41 +757,42 @@ class ServerController extends Controller {
      * @PreAuthorize("isNotBanned()")
      *
      * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @return JsonResponse
      */
-    public function getInformationAction(Request $request, $id) {
+    public function getInformationAction(Request $request, $id)
+    {
         $response = new JsonResponse();
         /**
          * @var User $user
          */
         $user = $this->getUser();
-        $id   = intval($id);
+        $id = intval($id);
 
         $repository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        $server     = $repository->findById($id);
+        $server = $repository->findById($id);
 
-        if($server != null) {
+        if ($server != null) {
             $allowed = false;
-            if($server->getGroups() == null || count($server->getGroups()) <= 0) {
+            if ($server->getGroups() == null || count($server->getGroups()) <= 0) {
                 $allowed = true;
             } else {
-                foreach($server->getGroups() as $group) {
-                    if($user->hasGroupId($group->getId())) {
+                foreach ($server->getGroups() as $group) {
+                    if ($user->hasGroupId($group->getId())) {
                         $allowed = true;
                     }
                 }
             }
 
-            if($allowed !== true && $this->get('request_access_evaluator')->isServerDeveloper() !== true) {
-                $response->setData([ 'result' => 'User does not have enough permission to access this page' ]);
+            if ($allowed !== true && $this->get('request_access_evaluator')->isServerDeveloper() !== true) {
+                $response->setData(['result' => 'User does not have enough permission to access this page']);
                 $response->setStatusCode(403);
             } else {
-                $response->setData([ 'result' => SerializerManager::normalize($server) ]);
+                $response->setData(['result' => SerializerManager::normalize($server)]);
             }
         } else {
-            $response->setData([ 'result' => 'Unknown server ID requested' ]);
+            $response->setData(['result' => 'Unknown server ID requested']);
             $response->setStatusCode(404);
         }
 
@@ -804,45 +819,46 @@ class ServerController extends Controller {
      * @PreAuthorize("isNotBanned()")
      *
      * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @return JsonResponse
      */
-    public function downloadAction(Request $request, $id) {
+    public function downloadAction(Request $request, $id)
+    {
         $response = new JsonResponse();
         /**
          * @var User $user
          */
         $user = $this->getUser();
-        $id   = intval($id);
+        $id = intval($id);
 
         $repository = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server');
-        $server     = $repository->findById($id);
+        $server = $repository->findById($id);
 
-        if($server != null) {
+        if ($server != null) {
             $allowed = false;
-            if($server->getGroups() == null || count($server->getGroups()) <= 0) {
+            if ($server->getGroups() == null || count($server->getGroups()) <= 0) {
                 $allowed = true;
             } else {
-                foreach($server->getGroups() as $group) {
-                    if($user->hasGroupId($group->getId())) {
+                foreach ($server->getGroups() as $group) {
+                    if ($user->hasGroupId($group->getId())) {
                         $allowed = true;
                     }
                 }
             }
 
-            if($allowed !== true && $this->get('request_access_evaluator')->isServerDeveloper() !== true) {
-                $response->setData([ 'result' => 'User does not have enough permission to access this page' ]);
+            if ($allowed !== true && $this->get('request_access_evaluator')->isServerDeveloper() !== true) {
+                $response->setData(['result' => 'User does not have enough permission to access this page']);
                 $response->setStatusCode(403);
             } else {
                 $download = $this->get('bot.download_manager')->provideServerDownload($server);
-                if($download === false) {
+                if ($download === false) {
                     $response->setData(
-                        [ 'result' => 'File could not be found on server, please contact an administrator' ]
+                        ['result' => 'File could not be found on server, please contact an administrator']
                     );
                     $response->setStatusCode(500);
                 } else {
-                    $use     = new ServerUse();
+                    $use = new ServerUse();
                     $manager = $this->getDoctrine()->getManager();
 
                     $use->setUser($user);
@@ -854,7 +870,7 @@ class ServerController extends Controller {
                 }
             }
         } else {
-            $response->setData([ 'result' => 'Unknown server ID requested' ]);
+            $response->setData(['result' => 'Unknown server ID requested']);
             $response->setStatusCode(404);
         }
 
@@ -883,21 +899,22 @@ class ServerController extends Controller {
      *
      * @return JsonResponse
      */
-    public function getSlackChannel(Request $request, $id) {
-        if($id != null) {
+    public function getSlackChannel(Request $request, $id)
+    {
+        if ($id != null) {
             $serverObject = $this->getDoctrine()->getRepository('BDNBotBundle:Servers\Server')->findById($id);
-            if($serverObject != null) {
+            if ($serverObject != null) {
                 $slack = $serverObject->getDetail('slack');
-                if($slack != null) {
-                    return new JsonResponse([ 'result' => $slack->getValue() ]);
+                if ($slack != null) {
+                    return new JsonResponse(['result' => $slack->getValue()]);
                 } else {
-                    return new JsonResponse([ 'result' => 'Could not find Slack channel for requested server' ], 404);
+                    return new JsonResponse(['result' => 'Could not find Slack channel for requested server'], 404);
                 }
             } else {
-                return new JsonResponse([ 'result' => 'Could not find server with ID' ], 404);
+                return new JsonResponse(['result' => 'Could not find server with ID'], 404);
             }
         } else {
-            return new JsonResponse([ 'result' => 'Missing server ID' ], 400);
+            return new JsonResponse(['result' => 'Missing server ID'], 400);
         }
     }
 }

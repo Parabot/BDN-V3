@@ -54,7 +54,7 @@ class Script {
     /**
      * @var User[]
      *
-     * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User")
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\UserBundle\Entity\User", inversedBy="scripts")
      * @ORM\JoinTable(name="script_users",
      *      joinColumns={@ORM\JoinColumn(name="script_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}

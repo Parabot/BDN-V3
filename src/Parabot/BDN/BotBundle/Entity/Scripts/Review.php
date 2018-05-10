@@ -55,7 +55,7 @@ class Review {
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User", inversedBy="review")
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\UserBundle\Entity\User", inversedBy="reviews")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      * @Groups({"review"})
@@ -65,7 +65,7 @@ class Review {
     /**
      * @var Script
      *
-     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Script", inversedBy="review")
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Script", inversedBy="reviews")
      * @ORM\JoinColumn(name="script_id", referencedColumnName="id")
      *
      * @Groups({"review"})

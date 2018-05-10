@@ -71,7 +71,7 @@ class User extends BaseUser {
     /**
      * @var Script[]
      *
-     * @ORM\ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Script", mappedBy="scripts")
+     * @ORM\ManyToMany(targetEntity="Parabot\BDN\BotBundle\Entity\Script", mappedBy="users")
      */
     private $scripts;
 

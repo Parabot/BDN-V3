@@ -11,7 +11,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SignatureController extends Controller {
+/**
+ * @Route("/api/signatures")
+ *
+ * Class SignatureController
+ * @package Parabot\BDN\BotBundle\Controller
+ */
+class SignatureController extends Controller
+{
     /**
      * @Route("create", name="create_signature")
      * @Method({"POST"})
@@ -20,13 +27,14 @@ class SignatureController extends Controller {
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listAction(Request $request) {
+    public function listAction(Request $request)
+    {
         /**
          * @var $file File
          */
-        $file     = $request->files->get('file');
-        $filename = StringUtils::generateRandomString() . $file->guessExtension();
-        $name     = $request->request->get('name');
+        $file = $request->files->get('file');
+        $filename = StringUtils::generateRandomString().$file->guessExtension();
+        $name = $request->request->get('name');
 
         $image = new ImageSignatureType();
         $image->setName($name);

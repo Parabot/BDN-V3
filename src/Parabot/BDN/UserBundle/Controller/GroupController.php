@@ -8,7 +8,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class GroupController extends Controller {
+/**
+ * @Route("/groups")
+ *
+ * Class GroupController
+ * @package Parabot\BDN\UserBundle\Controller
+ */
+class GroupController extends Controller
+{
     /**
      * @Route("/list", name="list_user_groups")
      *
@@ -16,7 +23,8 @@ class GroupController extends Controller {
      *
      * @return JsonResponse
      */
-    public function isLoggedInAction(Request $request) {
+    public function isLoggedInAction(Request $request)
+    {
         return new JsonResponse(
             [
                 'groups' => SerializerManager::normalize(

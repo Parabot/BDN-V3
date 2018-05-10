@@ -4,13 +4,21 @@ services:
         autoconfigure: true
         public: true
 
+    entry_point_authorisation:
+        class: Parabot\BDN\UserBundle\Security\EntryPointRedirection
+
     login_request_manager:
         class: Parabot\BDN\UserBundle\Service\LoginRequestManager
         arguments: [ '@url_utils']
 
     oauth_user_provider:
         class: Parabot\BDN\UserBundle\Security\UserProvider
-        arguments: ['@fos_user.user_manager',{forums: forums}, '@security.password_encoder', '@login_request_manager', '@request_stack']
+        arguments:
+            - '@fos_user.user_manager'
+            - {forums: forums}
+            - '@security.password_encoder'
+            - '@login_request_manager'
+            - '@request_stack'
 
     request_access_evaluator:
         class: Parabot\BDN\UserBundle\Security\RequestAccessEvaluator

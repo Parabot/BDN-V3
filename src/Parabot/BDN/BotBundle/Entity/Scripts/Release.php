@@ -54,7 +54,7 @@ class Release {
     /**
      * @var Script
      *
-     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Script", inversedBy="release")
+     * @ORM\ManyToOne(targetEntity="Parabot\BDN\BotBundle\Entity\Script", inversedBy="releases")
      * @ORM\JoinColumn(name="script_id", referencedColumnName="id")
      */
     private $script;

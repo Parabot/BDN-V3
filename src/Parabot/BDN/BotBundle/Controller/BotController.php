@@ -21,6 +21,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Travis\Client\Entity\Build;
 
+/**
+ * @Route("/api/bot")
+ *
+ * Class BotController
+ * @package Parabot\BDN\BotBundle\Controller
+ */
 class BotController extends Controller {
 
     const ALLOWED_BRANCHES = [ 'master', 'development' ];

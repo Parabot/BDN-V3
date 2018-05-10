@@ -19,7 +19,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserProvider extends BaseClass
 {
-
     /**
      * @var UserPasswordEncoder
      */

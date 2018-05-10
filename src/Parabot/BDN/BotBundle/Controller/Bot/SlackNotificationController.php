@@ -10,7 +10,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SlackNotificationController extends Controller {
+/**
+ * @Route("/api/bot/notifications/slack")
+ *
+ * Class SlackNotificationController
+ * @package Parabot\BDN\BotBundle\Controller\Bot
+ */
+class SlackNotificationController extends Controller
+{
     /**
      * @ApiDoc(
      *  description="Sends a notification to the logged in user over Slack",
@@ -35,33 +42,34 @@ class SlackNotificationController extends Controller {
      *
      * @param Request $request
      *
-     * @param int     $scriptId
+     * @param int $scriptId
      *
      * @return JsonResponse
      */
-    public function sendScriptNotificationAction(Request $request, $scriptId) {
-        $manager    = $this->getDoctrine()->getManager();
+    public function sendScriptNotificationAction(Request $request, $scriptId)
+    {
+        $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository('BDNBotBundle:Script');
-        if(($script = $repository->findOneBy([ 'id' => $scriptId ])) !== null) {
+        if (($script = $repository->findOneBy(['id' => $scriptId])) !== null) {
             $requiredFields = [
                 'Message' => null,
             ];
-            $fields         = [];
+            $fields = [];
 
-            foreach($requiredFields as $field => $value) {
-                if(($value = $request->get($field)) != null) {
-                    $fields[ $field ] = $value;
+            foreach ($requiredFields as $field => $value) {
+                if (($value = $request->get($field)) != null) {
+                    $fields[$field] = $value;
                 } else {
-                    return new JsonResponse([ 'result' => 'Missing required parameter (' . $field . ')' ], 400);
+                    return new JsonResponse(['result' => 'Missing required parameter ('.$field.')'], 400);
                 }
             }
 
-            foreach($request->request->all() as $key => $value) {
-                if(substr($key, 0, 2) === 'f_') {
+            foreach ($request->request->all() as $key => $value) {
+                if (substr($key, 0, 2) === 'f_') {
                     $key = substr($key, 2, strlen($key));
-                    foreach($requiredFields as $i => $j) {
-                        if($i != $key) {
-                            $fields[ $key ] = $value;
+                    foreach ($requiredFields as $i => $j) {
+                        if ($i != $key) {
+                            $fields[$key] = $value;
                         }
                     }
                 }
@@ -78,18 +86,18 @@ class SlackNotificationController extends Controller {
             $slackUsername = $this->get('slack_manager')->getUsername(
                 $this->get('request_access_evaluator')->getUser()
             );
-            if($slackUsername != null) {
-                $result = $this->get('slack_manager')->sendMessage('', [ $attachment ], $slackUsername);
-                if($result != null && $result->getStatus() === true) {
-                    return new JsonResponse([ 'result' => 'Notification sent' ]);
+            if ($slackUsername != null) {
+                $result = $this->get('slack_manager')->sendMessage('', [$attachment], $slackUsername);
+                if ($result != null && $result->getStatus() === true) {
+                    return new JsonResponse(['result' => 'Notification sent']);
                 } else {
-                    return new JsonResponse([ 'result' => 'Notification could not be send' ], 500);
+                    return new JsonResponse(['result' => 'Notification could not be send'], 500);
                 }
             } else {
-                return new JsonResponse([ 'result' => 'User not found in Slack' ], 404);
+                return new JsonResponse(['result' => 'User not found in Slack'], 404);
             }
         } else {
-            return new JsonResponse([ 'result' => 'Unknown script ID given' ], 404);
+            return new JsonResponse(['result' => 'Unknown script ID given'], 404);
         }
     }
 }

@@ -94,17 +94,6 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/unauthorised", name="unauthorised_notice")
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function unAuthorisedAction(Request $request) {
-        return new JsonResponse([ 'result' => 'User not authorized to access this page' ], 401);
-    }
-
-    /**
      * @Route("/csrf", name="get_csrf")
      *
      * @param Request $request

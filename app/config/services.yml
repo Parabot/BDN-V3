@@ -15,10 +15,12 @@ services:
     slack_manager:
         class: AppBundle\Service\SlackManager
         arguments: ['@dz.slack.messaging', '@dz.slack.identity_bag', '@dz.slack.connection']
+
     date_time.normalizer:
         class: AppBundle\Service\Normalizers\DateTimeNormalizer
         tags:
             -  { name: serializer.normalizer }
+
     url_utils:
         class: AppBundle\Service\UrlUtils
         arguments: ['%valid_domains%']

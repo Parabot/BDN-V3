@@ -14,8 +14,8 @@ use Parabot\BDN\BotBundle\Entity\Types\Type;
  *
  * @ORM\MappedSuperclass
  */
-class Provider extends Type {
-
+class Provider extends Type
+{
     /**
      * @var Server[]
      *
@@ -26,39 +26,45 @@ class Provider extends Type {
     /**
      * Client constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
     /**
      * @return Server[]
      */
-    public function getServers() {
+    public function getServers()
+    {
         return $this->servers;
     }
 
     /**
      * @param Server[] $servers
      */
-    public function setServers($servers) {
+    public function setServers($servers)
+    {
         $this->servers = $servers;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return 'Provider';
     }
 
     /**
      * @return string
      */
-    public function getTravisRepository() {
+    public function getTravisRepository()
+    {
         return null;
     }
 
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return 'Provider';
     }
 }

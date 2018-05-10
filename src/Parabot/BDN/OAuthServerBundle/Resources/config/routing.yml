@@ -1,3 +1,4 @@
 bdn_oauth:
     resource: "@BDNOAuthServerBundle/Controller/"
     type:     annotation
+    prefix:   /api/users/oauth/v2

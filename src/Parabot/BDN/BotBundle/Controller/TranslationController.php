@@ -13,7 +13,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class TranslationController extends Controller {
+/**
+ * @Route("/api/bot/translations")
+ *
+ * Class TranslationController
+ * @package Parabot\BDN\BotBundle\Controller
+ */
+class TranslationController extends Controller
+{
     /**
      * @ApiDoc(
      *  description="Returns a translation for a specific language",
@@ -33,19 +40,20 @@ class TranslationController extends Controller {
      * @Method({"GET"})
      *
      * @param Request $request
-     * @param string  $lang
+     * @param string $lang
      *
      * @return JsonResponse
      */
-    public function getAction(Request $request, $lang) {
-        $manager    = $this->getDoctrine()->getManager();
+    public function getAction(Request $request, $lang)
+    {
+        $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository('BDNBotBundle:Language');
-        if(($language = $repository->findOneBy([ 'languageKey' => $lang ]))) {
+        if (($language = $repository->findOneBy(['languageKey' => $lang]))) {
             return new JsonResponse(
                 $this->get('bot.translation_helper')->returnTranslation($language->getLanguageKey())
             );
         } else {
-            return new JsonResponse([ 'result' => 'Unknown language requested' ], 404);
+            return new JsonResponse(['result' => 'Unknown language requested'], 404);
         }
     }
 
@@ -66,15 +74,16 @@ class TranslationController extends Controller {
      *
      * @return JsonResponse
      */
-    public function listAction(Request $request) {
-        $manager       = $this->getDoctrine()->getManager();
-        $repository    = $manager->getRepository('BDNBotBundle:Language');
+    public function listAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository('BDNBotBundle:Language');
         $jsonLanguages = [];
 
-        $languages = $repository->findBy([ 'active' => true ]);
-        if($languages != null && count($languages) > 0) {
-            foreach($languages as $language) {
-                $jsonLanguages[ 'languages' ][ $language->getLanguageKey() ] = $language->getLanguage();
+        $languages = $repository->findBy(['active' => true]);
+        if ($languages != null && count($languages) > 0) {
+            foreach ($languages as $language) {
+                $jsonLanguages['languages'][$language->getLanguageKey()] = $language->getLanguage();
             }
         }
 
@@ -98,24 +107,25 @@ class TranslationController extends Controller {
      *
      * @return JsonResponse
      */
-    public function createAction(Request $request) {
-        $manager    = $this->getDoctrine()->getManager();
+    public function createAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository('BDNBotBundle:Language');
 
         $translations = $this->get('bot.translation_helper')->listAPITranslations();
-        foreach($translations as $translation) {
-            if($repository->findOneBy([ 'languageKey' => $translation->getLanguageKey() ]) == null) {
+        foreach ($translations as $translation) {
+            if ($repository->findOneBy(['languageKey' => $translation->getLanguageKey()]) == null) {
                 $manager->persist($translation);
             }
         }
         $manager->flush();
 
-        foreach($repository->findAll() as $language) {
-            if($language->getActive()) {
+        foreach ($repository->findAll() as $language) {
+            if ($language->getActive()) {
                 $this->get('bot.translation_helper')->getDownloadTranslation($language);
             }
         }
 
-        return new JsonResponse([ 'result' => 'ok' ]);
+        return new JsonResponse(['result' => 'ok']);
     }
 }

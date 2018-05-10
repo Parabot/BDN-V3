@@ -1,89 +1,30 @@
-# To get started with security, check out the documentation:
-# http://symfony.com/doc/current/book/security.html
 security:
     encoders:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_BANNED:      ROLE_BANNED
-        ROLE_DEVELOPER:   ROLE_USER
-        ROLE_ADMIN:       ROLE_DEVELOPER
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
-    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory:
-            memory: ~
         fos_userbundle:
             id: fos_user.user_provider.username
 
-        chain_provider:
-            chain:
-                providers: [in_memory, fos_userbundle]
-
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
-            logout:       true
-            anonymous:    true
-
-        internal_routes:
-            pattern: ^/internal/route/
-            anonymous: true
-
-        oauth_token:
-            pattern:    ^/oauth/v2/token
-            security:   false
-
-        oauth_authorize:
-            pattern:    ^/oauth/v2/auth
-            form_login:
-                provider: fos_userbundle
-                check_path: /oauth/v2/auth_login_check
-                login_path: /oauth/v2/auth_login
-            anonymous: true
-
         main:
-            pattern:    ^/api/users/(connect|loggedin|is/loggedin|log_in|oauth/v2/create_copy)
+            pattern: ^/
+            entry_point: entry_point_authorisation
             oauth:
-                remember_me: true
-                failure_path: /api/users/connect
-                login_path: /api/users/connect/service/forums
-                check_path: /api/users/connect
-                provider: fos_userbundle
                 resource_owners:
-                    forums: "/api/users/connect/service/forums"
+                    forums: /connect/check-forums
+                login_path: /connect/check-forums
+                failure_path: /user/login
+                default_target_path: /api/users/loggedin
                 oauth_user_provider:
                     service: oauth_user_provider
-                default_target_path: /api/users/loggedin
+                remember_me: true
             anonymous: true
-            logout:
-                path: /api/users/logout
-                target: /
-
-        api:
-            pattern:    ^/api
-            fos_oauth:  true
-            stateless:  true
-            anonymous:  true
-
-    access_denied_url: unauthorised_notice
 
     access_control:
-        - { path: ^/api/users/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/is/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/log_in, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/oauth/v2/valid, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/users/oauth/v2/create_copy, role: IS_AUTHENTICATED_ANONYMOUSLY }
-
-        - { path: ^/internal/route/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
-
-        - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/bot/download/randoms, role: IS_AUTHENTICATED_ANONYMOUSLY }
-
-        - { path: ^/api/signatures/list, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_ADMIN }

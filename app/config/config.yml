@@ -112,7 +112,7 @@ hwi_oauth:
     fosub:
         username_iterations: 30
         properties:
-            forums: forums
+            forums: forums_id
     connect:
         confirmation: true
     resource_owners:

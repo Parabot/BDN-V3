@@ -12,7 +12,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class LibraryController extends Controller {
+/**
+ * @Route("/api/bot/libraries")
+ *
+ * Class LibraryController
+ * @package Parabot\BDN\BotBundle\Controller\Bot
+ */
+class LibraryController extends Controller
+{
     /**
      * @ApiDoc(
      *  description="Returns the requested download file",
@@ -29,21 +36,22 @@ class LibraryController extends Controller {
      * @Method({"GET"})
      *
      * @param Request $request
-     * @param string  $library
+     * @param string $library
      *
      * @return JsonResponse
      */
-    public function downloadLibraryAction(Request $request, $library) {
-        $manager    = $this->getDoctrine()->getManager();
+    public function downloadLibraryAction(Request $request, $library)
+    {
+        $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository('BDNBotBundle:Library');
 
-        if(($libraryObject = $repository->findOneBy([ 'name' => $library ])) != null) {
+        if (($libraryObject = $repository->findOneBy(['name' => $library])) != null) {
             $result = $this->get('bot.download_manager')->provideLibraryDownload($libraryObject);
-            if($result === false) {
+            if ($result === false) {
                 return new JsonResponse(
                     [
-                        'result'     => 'Could not find requested library',
-                        'help'       => 'Please ask an administrator to solve this issue',
+                        'result' => 'Could not find requested library',
+                        'help' => 'Please ask an administrator to solve this issue',
                         'error_code' => '29GOAFJEAH1',
                     ], 500
                 );
@@ -51,7 +59,7 @@ class LibraryController extends Controller {
                 return $result;
             }
         } else {
-            return new JsonResponse([ 'result' => 'No version of library found' ], 404);
+            return new JsonResponse(['result' => 'No version of library found'], 404);
         }
     }
 
@@ -65,49 +73,50 @@ class LibraryController extends Controller {
      *
      * @return JsonResponse
      */
-    public function addLibraryAction(Request $request) {
-        $manager    = $this->getDoctrine()->getManager();
+    public function addLibraryAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository('BDNBotBundle:Library');
 
         $libraryAttributes = [
             'version' => 1.0,
-            'name'    => null,
+            'name' => null,
         ];
 
-        foreach($libraryAttributes as $key => $libraryAttribute) {
-            if(($attribute = $request->request->get($key)) != null) {
-                $libraryAttributes[ $key ] = $attribute;
+        foreach ($libraryAttributes as $key => $libraryAttribute) {
+            if (($attribute = $request->request->get($key)) != null) {
+                $libraryAttributes[$key] = $attribute;
             } else {
-                if($libraryAttribute == null) {
-                    return new JsonResponse([ 'result' => 'Missing value for parameter (' . $key . ')' ], 400);
+                if ($libraryAttribute == null) {
+                    return new JsonResponse(['result' => 'Missing value for parameter ('.$key.')'], 400);
                 }
             }
         }
 
-        if($repository->findOneBy([ 'name' => $libraryAttributes[ 'name' ] ]) == null) {
+        if ($repository->findOneBy(['name' => $libraryAttributes['name']]) == null) {
             /**
              * @var $libraryFile File
              */
-            if(($libraryFile = $request->files->get('library')) != null) {
-                if($libraryFile->guessExtension() == 'zip') {
+            if (($libraryFile = $request->files->get('library')) != null) {
+                if ($libraryFile->guessExtension() == 'zip') {
                     $library = new Library();
-                    $library->setName($libraryAttributes[ 'name' ]);
-                    $library->setVersion($libraryAttributes[ 'version' ]);
+                    $library->setName($libraryAttributes['name']);
+                    $library->setVersion($libraryAttributes['version']);
 
                     $manager->persist($library);
                     $manager->flush();
 
                     $library->insertFile($libraryFile);
 
-                    return new JsonResponse([ 'result' => 'Library added' ]);
+                    return new JsonResponse(['result' => 'Library added']);
                 } else {
-                    return new JsonResponse([ 'result' => 'Upload may only be a jar' ], 400);
+                    return new JsonResponse(['result' => 'Upload may only be a jar'], 400);
                 }
             } else {
-                return new JsonResponse([ 'result' => 'Missing library file' ], 400);
+                return new JsonResponse(['result' => 'Missing library file'], 400);
             }
         } else {
-            return new JsonResponse([ 'result' => 'A library already exists with the same name' ], 400);
+            return new JsonResponse(['result' => 'A library already exists with the same name'], 400);
         }
     }
 }

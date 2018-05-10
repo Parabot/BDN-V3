@@ -28,7 +28,7 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/a", name="homepage")
+     * @Route("/", name="homepage")
      * @Method({"GET"})
      *
      * @PreAuthorize("isNotBanned()")
@@ -119,12 +119,5 @@ class DefaultController extends Controller {
      */
     public function docsAction() {
         return new RedirectResponse('/docs/index.html', 301);
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function homeAction() {
-        return new JsonResponse([ "result" => "ok" ]);
     }
 }
