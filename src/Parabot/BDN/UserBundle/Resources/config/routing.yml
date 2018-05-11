@@ -1,3 +1,4 @@
 user:
     resource: "@BDNUserBundle/Controller/"
     type:     annotation
+    prefix: /api/users

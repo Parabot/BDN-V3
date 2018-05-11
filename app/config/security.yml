@@ -37,6 +37,10 @@ security:
                 login_path: /oauth/v2/auth/login
             anonymous: true
 
+        internal_routes:
+            pattern: ^/internal/route/
+            anonymous: true
+
         api:
             pattern: ^/api/
             fos_oauth: true

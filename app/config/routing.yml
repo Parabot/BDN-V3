@@ -8,14 +8,13 @@ bdn_bot:
     resource: "@BDNBotBundle/Controller/"
     type:     annotation
 
-# BDNU ser bundle
-user:
-    resource: "@BDNUserBundle/Resources/config/routing.yml"
-    prefix: /api/users
-
-# BDNO Auth Server bundle
+# BDN OAuth Server bundle
 bdn_oauth_server:
     resource: "@BDNOAuthServerBundle/Resources/config/routing.yml"
+
+# BDN User bundle
+user:
+    resource: "@BDNUserBundle/Resources/config/routing.yml"
 
 # Fos OAUTH Server bundle
 fos_oauth_server_token:

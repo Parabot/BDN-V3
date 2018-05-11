@@ -15,7 +15,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
-    valid_domains: [parabot.org, bdn-v3.dev, bdn-v3-frontend.dev, bdn-v3.test, localhost]
+    valid_domains: [parabot.org, bdn-v3.dev, bdn-v3-frontend.dev, bdn-v3.test, localhost, parabot.test]
     teamcity_endpoint: 'http://city.parabot.org/app/rest/'
 
 framework:

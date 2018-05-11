@@ -571,6 +571,7 @@
                     <div class="form-grant-access">
                         {{ form_start(form) }}
                         {{ form_widget(form) }}
+                        <input type="submit" name="Submit">
                         {{ form_end(form) }}
                     </div>
                 </div>
@@ -580,11 +581,11 @@
     </div>
 </div>
 </body>
-{% if remembered == true %}
-    <script>
-        jQuery(document).ready(function ($) {
-            $('#authorize_form_allowAccess').trigger('click');
-        });
-    </script>
-{% endif %}
+{#{% if remembered == true %}#}
+    {#<script>#}
+        {#jQuery(document).ready(function ($) {#}
+            {#$('#authorize_form_allowAccess').trigger('click');#}
+        {#});#}
+    {#// </script>#}
+{#{% endif %}#}
 </html>

@@ -8,8 +8,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends Controller {
-
+/**
+ * Class DefaultController
+ * @package Parabot\BDN\OAuthServerBundle\Controller
+ */
+class DefaultController extends Controller
+{
     /**
      * @Route("/create", name="create_oauth_application")
      *
@@ -19,13 +23,14 @@ class DefaultController extends Controller {
      *
      * @return JsonResponse
      */
-    public function createAuthAction(Request $request) {
+    public function createAuthAction(Request $request)
+    {
         $clientCreator = $this->get('oauth_client_creator');
-        $values        = [];
+        $values = [];
 
-        foreach($clientCreator::ARGUMENTS as $item) {
-            if(($value = $request->get($item)) != null) {
-                $values[ $item ] = $value;
+        foreach ($clientCreator::ARGUMENTS as $item) {
+            if (($value = $request->get($item)) != null) {
+                $values[$item] = $value;
             }
         }
 
@@ -39,14 +44,15 @@ class DefaultController extends Controller {
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function createCopyAuthAction(Request $request) {
-        if($this->get('request_access_evaluator')->isNotBanned() !== true) {
+    public function createCopyAuthAction(Request $request)
+    {
+        if ($this->get('request_access_evaluator')->isNotBanned() !== true) {
             $url = $this->generateUrl(
                 'forums_users_login',
                 [
-                    'after_login_redirect' => $request->getSchemeAndHttpHost() . $this->generateUrl(
+                    'after_login_redirect' => $request->getSchemeAndHttpHost().$this->generateUrl(
                             'create_copy_oauth',
-                            [ 'clientId' => $request->get('clientId') ]
+                            ['clientId' => $request->get('clientId')]
                         ),
                 ]
             );
@@ -54,8 +60,8 @@ class DefaultController extends Controller {
             $url = $this->generateUrl(
                 'fos_oauth_server_authorize',
                 [
-                    'client_id'     => $request->get('clientId'),
-                    'redirect_uri'  => $request->getSchemeAndHttpHost() . $this->generateUrl('copy_oauth'),
+                    'client_id' => $request->get('clientId'),
+                    'redirect_uri' => $request->getSchemeAndHttpHost().$this->generateUrl('copy_oauth'),
                     'response_type' => 'code',
                 ]
             );
@@ -71,7 +77,8 @@ class DefaultController extends Controller {
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function displayCopyAction(Request $request) {
+    public function displayCopyAction(Request $request)
+    {
         return $this->render(
             '@BDNOAuthServer/Default/copy.html.twig',
             [
@@ -89,9 +96,10 @@ class DefaultController extends Controller {
      *
      * @return JsonResponse
      */
-    public function isValidOAuth(Request $request) {
+    public function isValidOAuth(Request $request)
+    {
         return new JsonResponse(
-            [ 'result' => $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY') ]
+            ['result' => $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')]
         );
     }
 }

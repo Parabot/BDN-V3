@@ -45,7 +45,6 @@ class ClientRepository extends EntityRepository {
                 }
             }
         }
-
         return false;
     }
 

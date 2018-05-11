@@ -63,7 +63,6 @@ class DefaultController extends Controller {
     public function loggedInAction(Request $request) {
         if($this->getUser() != null) {
             $redirect = $request->cookies->get($this->getParameter('redirect_url_cookie'));
-
             $response = new JsonResponse([ 'result' => 'You are now logged in' ]);
 
             if($redirect != null) {
