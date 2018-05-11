@@ -10,8 +10,8 @@ fos_user:
 
 fos_rest:
     routing_loader:
-        default_format: json                            # All responses should be JSON formated
-        include_format: false                           # We do not include format in request, so that all responses
+        default_format: json
+        include_format: false
 
 fos_oauth_server:
     db_driver:           orm
@@ -20,7 +20,7 @@ fos_oauth_server:
     refresh_token_class: Parabot\BDN\UserBundle\Entity\OAuth\RefreshToken
     auth_code_class:     Parabot\BDN\UserBundle\Entity\OAuth\AuthCode
     service:
-        user_provider: fos_user.user_provider.username             # This property will be used when valid credentials are given to load the user upon access token creation
+        user_provider: fos_user.user_provider.username
 
 jms_security_extra:
     expressions: true

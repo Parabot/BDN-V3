@@ -25,6 +25,37 @@ security:
                 remember_me: true
             anonymous: true
 
+        oauth_token:
+            pattern: ^/oauth/v2/token
+            security: false
+
+        oauth_authorize:
+            pattern: ^/oauth/v2/auth
+            form_login:
+                provider: fos_userbundle
+                check_path: /oauth/v2/auth/login_check
+                login_path: /oauth/v2/auth/login
+            anonymous: true
+
+        api:
+            pattern: ^/api/
+            fos_oauth: true
+            stateless: true
+            anonymous: true
+
     access_control:
-        - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/api/users/is/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/log_in, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/loggedin, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/oauth/v2/valid, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/oauth/v2/create_copy, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/internal/route/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/bot/download, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/bot/download/randoms, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/api/signatures/list, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/oauth/v2/auth, role: IS_AUTHENTICATED_FULLY }
