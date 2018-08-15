@@ -14,14 +14,15 @@ class TypeHelper {
      * @var string[] $types
      */
     private static $types = [
-        'client'              => 'BDNBotBundle:Types\Client',
-        'randoms'             => 'BDNBotBundle:Types\Randoms',
-        'default-provider'    => 'BDNBotBundle:Types\Providers\DefaultProvider',
-        'os-scape-provider'   => 'BDNBotBundle:Types\Providers\OSScapeProvider',
-        'pkhonor-provider'    => 'BDNBotBundle:Types\Providers\PkHonorProvider',
+        'client' => 'BDNBotBundle:Types\Client',
+        'randoms' => 'BDNBotBundle:Types\Randoms',
+        'default-provider' => 'BDNBotBundle:Types\Providers\DefaultProvider',
+        'os-scape-provider' => 'BDNBotBundle:Types\Providers\OSScapeProvider',
+        'pkhonor-provider' => 'BDNBotBundle:Types\Providers\PkHonorProvider',
         'dreamscape-provider' => 'BDNBotBundle:Types\Providers\DreamScapeProvider',
-        'locopk-provider'     => 'BDNBotBundle:Types\Providers\LocoPKProvider',
-        'soulplay-provider'     => 'BDNBotBundle:Types\Providers\SoulPlayProvider',
+        'locopk-provider' => 'BDNBotBundle:Types\Providers\LocoPKProvider',
+        'roatzpk-provider' => 'BDNBotBundle:Types\Providers\RoatzPKProvider',
+        'soulplay-provider' => 'BDNBotBundle:Types\Providers\SoulPlayProvider',
     ];
 
     private $entityManager;
