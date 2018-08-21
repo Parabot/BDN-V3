@@ -22,6 +22,7 @@ class TypeHelper {
         'dreamscape-provider' => 'BDNBotBundle:Types\Providers\DreamScapeProvider',
         'locopk-provider' => 'BDNBotBundle:Types\Providers\LocoPKProvider',
         'roatzpk-provider' => 'BDNBotBundle:Types\Providers\RoatzPKProvider',
+        'runewild-provider' => 'BDNBotBundle:Types\Providers\RuneWildProvider',
         'soulplay-provider' => 'BDNBotBundle:Types\Providers\SoulPlayProvider',
     ];
 
