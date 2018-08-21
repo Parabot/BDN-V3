@@ -68,6 +68,11 @@ class BotController extends Controller {
                     $this->generateUrl('bot_download', [ 'type' => 'roatzpk-provider', 'nightly' => $nightly ]),
                     301
                 );
+            case 'RuneWild':
+                return $this->redirect(
+                    $this->generateUrl('bot_download', [ 'type' => 'runewild-provider', 'nightly' => $nightly ]),
+                    301
+                );
             case 'SoulPlay':
                 return $this->redirect(
                     $this->generateUrl('bot_download', [ 'type' => 'soulplay-provider', 'nightly' => $nightly ]),
