@@ -8,7 +8,8 @@ namespace Parabot\BDN\BotBundle\Service;
 use Doctrine\ORM\EntityManager;
 use Parabot\BDN\BotBundle\Entity\Types\Type;
 
-class TypeHelper {
+class TypeHelper
+{
 
     /**
      * @var string[] $types
@@ -33,7 +34,8 @@ class TypeHelper {
      *
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager) {
+    public function __construct(EntityManager $entityManager)
+    {
         $this->entityManager = $entityManager;
     }
 
@@ -42,9 +44,10 @@ class TypeHelper {
      *
      * @return bool
      */
-    public function typeExists($type) {
-        foreach(self::$types as $key => $value) {
-            if(strtolower($key) == strtolower($type)) {
+    public function typeExists($type)
+    {
+        foreach (self::$types as $key => $value) {
+            if (strtolower($key) == strtolower($type)) {
                 return true;
             }
         }
@@ -57,9 +60,10 @@ class TypeHelper {
      *
      * @return Type
      */
-    public function createType($type) {
+    public function createType($type)
+    {
         $repository = $this->getRepositorySlug($type);
-        $class      = $this->entityManager->getClassMetadata($repository)->getName();
+        $class = $this->entityManager->getClassMetadata($repository)->getName();
 
         return new $class();
     }
@@ -69,7 +73,44 @@ class TypeHelper {
      *
      * @return string
      */
-    public function getRepositorySlug($type) {
-        return self::$types[ strtolower($type) ];
+    public function getRepositorySlug($type)
+    {
+        return self::$types[strtolower($type)];
+    }
+
+    /**
+     * @param string $server
+     * @return string
+     */
+    public function serverToType($server)
+    {
+        switch ($server) {
+            case 'OS-Scape':
+                $type = 'os-scape-provider';
+                break;
+            case 'Dreamscape':
+                $type = 'dreamscape-provider';
+                break;
+            case 'PkHonor':
+                $type = 'pkhonor-provider';
+                break;
+            case 'LocoPK':
+                $type = 'locopk-provider';
+                break;
+            case 'RoatzPK':
+                $type = 'roatzpk-provider';
+                break;
+            case 'RuneWild':
+                $type = 'runewild-provider';
+                break;
+            case 'SoulPlay':
+                $type = 'soulplay-provider';
+                break;
+            default:
+                $type = 'default-provider';
+                break;
+        }
+
+        return $type;
     }
 }
