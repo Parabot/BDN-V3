@@ -21,6 +21,7 @@ class TypeHelper
         'os-scape-provider' => 'BDNBotBundle:Types\Providers\OSScapeProvider',
         'pkhonor-provider' => 'BDNBotBundle:Types\Providers\PkHonorProvider',
         'dreamscape-provider' => 'BDNBotBundle:Types\Providers\DreamScapeProvider',
+        'ikov-provider' => 'BDNBotBundle:Types\Providers\IkovProvider',
         'locopk-provider' => 'BDNBotBundle:Types\Providers\LocoPKProvider',
         'roatzpk-provider' => 'BDNBotBundle:Types\Providers\RoatzPKProvider',
         'runewild-provider' => 'BDNBotBundle:Types\Providers\RuneWildProvider',
@@ -87,6 +88,9 @@ class TypeHelper
         switch ($server) {
             case 'OS-Scape':
                 $type = 'os-scape-provider';
+                break;
+            case 'Ikov':
+                $type = 'ikov-provider';
                 break;
             case 'Dreamscape':
                 $type = 'dreamscape-provider';
