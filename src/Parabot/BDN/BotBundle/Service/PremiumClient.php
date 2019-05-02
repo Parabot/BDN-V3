@@ -46,7 +46,7 @@ class PremiumClient extends Client
         }
         $repository->fromArray($repositoryArray);
 
-        $buildCollection = new BuildCollection(json_decode($this->browser->get($buildsUrl)->getContent(), true));
+        $buildCollection = new BuildCollection(json_decode($this->browser->get($buildsUrl, ['Authorization' => 'token "' . $this->token . '"'])->getContent(), true));
         $repository->setBuilds($buildCollection);
 
         return $repository;
