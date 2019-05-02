@@ -40,7 +40,7 @@ class PremiumClient extends Client
         $buildsUrl = sprintf('%s/%s/builds.json', $this->apiUrl, $slug);
 
         $repository = new Repository();
-        $repositoryArray = json_decode($this->browser->get($repositoryUrl, ['github_token' => $this->token])->getContent(), true);
+        $repositoryArray = json_decode($this->browser->get($repositoryUrl, ['Authorization' => 'token "' . $this->token . '"'])->getContent(), true);
         if (!$repositoryArray) {
             throw new \UnexpectedValueException(sprintf('Response is empty for url %s', $repositoryUrl));
         }
