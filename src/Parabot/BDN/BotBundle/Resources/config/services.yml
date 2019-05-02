@@ -16,6 +16,7 @@ services:
 
     bot.travis_helper:
         class: Parabot\BDN\BotBundle\Service\TravisHelper
+        arguments: ['%github_token%']
 
     bot.script_repository_service:
         class: Parabot\BDN\BotBundle\Service\Repository\ScriptRepositoryService

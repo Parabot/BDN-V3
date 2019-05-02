@@ -16,11 +16,12 @@ class TravisHelper
 
     /**
      * TravisHelper constructor.
+     * @param string $token
      */
-    public function __construct()
+    public function __construct($token)
     {
         $this->client = new Client();
-        $this->premiumClient = new PremiumClient();
+        $this->premiumClient = new PremiumClient($token);
     }
 
     /**

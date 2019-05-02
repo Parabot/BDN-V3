@@ -38,3 +38,5 @@ parameters:
 
     teamcity_username: ~
     teamcity_password: ~
+
+    github_token: ~
