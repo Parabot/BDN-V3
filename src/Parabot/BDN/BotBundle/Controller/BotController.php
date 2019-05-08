@@ -264,22 +264,24 @@ class BotController extends Controller
                             $body->read($result['ContentLength'])
                         );
 
-                        $this->get('slack_manager')->sendSuccessMessage(
-                            'New release available',
-                            'Created new '.$typeObject->getType().' from latest '.($typeObject->getStable(
-                            ) ? '' : 'nightly ').'build.',
-                            $request->getSchemeAndHttpHost().$this->generateUrl(
-                                'bot_download',
-                                ['type' => strtolower($typeObject->getType()), 'build' => $typeObject->getBuild()]
-                            ),
-                            [
-                                'Stable' => ucfirst($typeObject->getStable() ? 'true' : 'false'),
-                                'Build' => ucfirst($typeObject->getBuild()),
-                                'Version' => ucfirst($typeObject->getVersion()),
-                                'Branch' => ucfirst($typeObject->getBranch()),
-                            ],
-                            $build->getBranch() == 'master' ? 'news' : null
-                        );
+                        if (($silent = $request->get('silent')) == null || $silent != '1') {
+                            $this->get('slack_manager')->sendSuccessMessage(
+                                'New release available',
+                                'Created new '.$typeObject->getType().' from latest '.($typeObject->getStable(
+                                ) ? '' : 'nightly ').'build.',
+                                $request->getSchemeAndHttpHost().$this->generateUrl(
+                                    'bot_download',
+                                    ['type' => strtolower($typeObject->getType()), 'build' => $typeObject->getBuild()]
+                                ),
+                                [
+                                    'Stable' => ucfirst($typeObject->getStable() ? 'true' : 'false'),
+                                    'Build' => ucfirst($typeObject->getBuild()),
+                                    'Version' => ucfirst($typeObject->getVersion()),
+                                    'Branch' => ucfirst($typeObject->getBranch()),
+                                ],
+                                $build->getBranch() == 'master' ? 'news' : null
+                            );
+                        }
 
                         return new JsonResponse(
                             ['result' => 'Created new '.$typeObject->getName().' from latest build']
