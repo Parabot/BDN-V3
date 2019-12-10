@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+    db:
+        environment:
+            MYSQL_DATABASE: ${DATABASE_NAME}
+            MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+            MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+            MYSQL_USER: ${DATABASE_USERNAME}
+        image: 'mariadb/server:10.4'
+        ports:
+            - '3306:3306'
+        volumes:
+            - 'db-data:/var/lib/mysql'
+
+    php:
+        image: 'intercube/php-fpm-docker:latest'
+        links:
+            - 'db:db.localhost'
+        volumes:
+            - './:/var/www/website:cached'
+
+    web:
+        image: 'intercube/nginx-symfony-docker:latest'
+        links:
+            - php
+        ports:
+            - '80:80'
+        volumes:
+            - './:/var/www/website:cached'
+
+volumes:
+    db-data:
+        name: ${PROJECT_NAME}
+        external: false
